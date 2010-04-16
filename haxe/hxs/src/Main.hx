@@ -38,11 +38,11 @@ class Main extends Sprite
 	{
 		super();
 		
-		//testSimple();
+		testSimple();
 		//testMuteSignal();
 		//testMuteListener();
 		//testBubbling();
-		testAS3();
+		//testAS3();
 		//testTriggers();
 		
 	}
@@ -57,8 +57,9 @@ class Main extends Sprite
 	{
 		// A simple signal that dispatches to a listener function.
 		
-		var s = new Signal();
+		var s = new Signal(this);
 		s.add(function() {
+			trace(SignalInfo.currentSignal.target);
 			trace("test simple signal");
 		});
 		s.dispatch();

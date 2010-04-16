@@ -11,9 +11,9 @@ import hxs.extras.Trigger;
 class Signal extends SignalBase <Void->Void>
 {
 
-	public function new() 
+	public function new(?caller:Dynamic) 
 	{ 
-		super(); 
+		super(caller); 
 	}
 	
 	public function dispatch()
