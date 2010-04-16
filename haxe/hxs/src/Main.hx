@@ -40,9 +40,9 @@ class Main extends Sprite
 		
 		//testSimple();
 		//testMuteSignal();
-		testMuteListener();
+		//testMuteListener();
 		//testBubbling();
-		//testAS3();
+		testAS3();
 		//testTriggers();
 		
 	}
@@ -184,7 +184,6 @@ class Main extends Sprite
 		var onClick = new AS3Signal(this, MouseEvent.CLICK);
 		
 		onClick.add(function(e){
-			
 			trace("clicked");
 		});	
 	}
