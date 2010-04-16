@@ -6,6 +6,7 @@
 package hxs;
 import hxs.core.SignalBase;
 import hxs.extras.Trigger;
+import hxs.extras.SignalInfo;
 
 class Signal1 < T1 > extends SignalBase<T1->Void>
 {

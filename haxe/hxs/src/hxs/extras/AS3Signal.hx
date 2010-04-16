@@ -6,7 +6,7 @@
 package hxs.extras;
 import hxs.core.SignalBase;
 import flash.events.IEventDispatcher;
-import hxs.SignalInfo;
+import hxs.extras.SignalInfo;
 
 class AS3Signal<EventType> extends SignalBase <EventType->Void>
 {

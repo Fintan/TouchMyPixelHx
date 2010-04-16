@@ -7,6 +7,7 @@ package hxs;
 
 import hxs.core.SignalBase;
 import hxs.extras.Trigger;
+import hxs.extras.SignalInfo;
 
 class Signal4 <T1,T2,T3,T4> extends SignalBase<T1->T2->T3->T4->Void>
 {

@@ -20,7 +20,7 @@ import hxs.Signal2;
 import hxs.Signal3;
 import hxs.Signal4;
 import hxs.Signal5;
-import hxs.SignalInfo;
+import hxs.extras.SignalInfo;
 
 
 class Main extends Sprite

@@ -3,7 +3,7 @@
  * @author Tonypee
  */
 
-package hxs;
+package hxs.extras;
 import hxs.core.SignalBase;
 
 class SignalInfo 
