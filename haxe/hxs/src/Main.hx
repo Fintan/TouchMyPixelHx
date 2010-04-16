@@ -227,8 +227,6 @@ class Main extends Sprite
 		box.x = 200;
 		addChild(box);
 		
-		var onClick = new AS3Signal(this, MouseEvent.CLICK);
-		
 		box.onClick().add(function(e) {
 			trace("onClick");
 		});
@@ -252,8 +250,9 @@ class Main extends Sprite
 		box.onReleaseOutside().add(function(e) {
 			trace("** onReleaseOutside ** (HELL YEAH!)");
 		});
-		
 	}
+	
+	
 }
 
 class Box extends flash.display.Sprite
