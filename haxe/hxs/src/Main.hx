@@ -22,6 +22,7 @@ import hxs.Signal4;
 import hxs.Signal5;
 import hxs.extras.SignalInfo;
 
+using hxs.extras.as3Shortcuts.InteractionShortcuts;
 
 class Main extends Sprite
 {
@@ -38,13 +39,13 @@ class Main extends Sprite
 	{
 		super();
 		
-		testSimple();
+		//testSimple();
 		//testMuteSignal();
 		//testMuteListener();
 		//testBubbling();
 		//testAS3();
 		//testTriggers();
-		
+		testShortcuts();
 	}
 	
 	/*
@@ -55,6 +56,7 @@ class Main extends Sprite
 	*/
 	public function testSimple()
 	{
+		
 		// A simple signal that dispatches to a listener function.
 		
 		var s = new Signal(this);
@@ -174,15 +176,10 @@ class Main extends Sprite
 	*/
 	public function testAS3()
 	{
-		graphics.beginFill(0, 1);
-		graphics.drawRect(300, 300, 100, 100);
+		var box = new Box(0xffff00);
+		addChild(box);
 		
-		var tf = new TextField();
-		tf.x = tf.y = 200;
-		tf.text = "click the box";
-		addChild(tf);
-		
-		var onClick = new AS3Signal(this, MouseEvent.CLICK);
+		var onClick = new AS3Signal(box, MouseEvent.CLICK);
 		
 		onClick.add(function(e){
 			trace("clicked");
@@ -220,5 +217,57 @@ class Main extends Sprite
 		trace("--- and trigger 2");
 		
 		trigger2.dispatch();
+	}
+	
+	
+	
+	public function testShortcuts()
+	{
+		var box = new Box(0xff0000);
+		box.x = 200;
+		addChild(box);
+		
+		var onClick = new AS3Signal(this, MouseEvent.CLICK);
+		
+		box.onClick().add(function(e) {
+			trace("onClick");
+		});
+		
+		box.onRollOver().add(function(e) {
+			trace("onRollOver");
+		});
+		
+		box.onRollOut().add(function(e) {
+			trace("onRollOut");
+		});
+		
+		box.onMouseDown().add(function(e) {
+			trace("onMouseDown");
+		});
+		
+		box.onMouseUp().add(function(e) {
+			trace("onMouseUp");
+		});
+		
+		box.onReleaseOutside().add(function(e) {
+			trace("** onReleaseOutside ** (HELL YEAH!)");
+		});
+		
+	}
+}
+
+class Box extends flash.display.Sprite
+{
+	public function new(color:Int)
+	{
+		super();
+		
+		graphics.beginFill(color, 1);
+		graphics.drawRect(0, 0, 100, 100);
+		
+		var tf = new TextField();
+		tf.y = 110;
+		tf.text = "click the box";
+		addChild(tf);
 	}
 }
