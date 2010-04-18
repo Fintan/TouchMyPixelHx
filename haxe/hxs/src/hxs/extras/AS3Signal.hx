@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ...
  * @author Tonypee
  */
@@ -6,9 +6,10 @@
 package hxs.extras;
 import hxs.core.SignalBase;
 import flash.events.IEventDispatcher;
-import hxs.extras.SignalInfo;
+import hxs.core.Info;
+import hxs.core.SignalType;
 
-class AS3Signal<EventType> extends SignalBase <EventType->Void>
+class AS3Signal<EventType> extends SignalBase <EventType->Void, EventType->Info->Void>
 {
 	var event:String;
 	
@@ -27,9 +28,12 @@ class AS3Signal<EventType> extends SignalBase <EventType->Void>
 		{
 			if (isMuted) return;
 			if (slot.isMuted) continue;
-			SignalInfo.currentSignal = this; 
-			SignalInfo.currentSlot = slot; 
-			slot.listener(e);
+			switch(slot.type)
+			{
+				case SignalType.NORMAL:slot.listener(e);
+				case SignalType.ADVANCED:slot.listener(e, new Info(this, slot));
+				case SignalType.VOID:slot.listener();
+			}
 		}
     }
 	
@@ -41,7 +45,7 @@ class AS3Signal<EventType> extends SignalBase <EventType->Void>
 		super.add(listener, priority, runCount);
 	}
 	
-	override public function remove(listener:EventType->Void):Void
+	override public function remove(listener:Dynamic):Void
     {
 		var r = super.remove(listener);
 		

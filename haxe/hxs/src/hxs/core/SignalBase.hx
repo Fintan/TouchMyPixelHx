@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ...
  * @author Tonypee
  */
@@ -6,10 +6,11 @@
 package hxs.core;
 
 import hxs.core.PriorityQueue;
+import hxs.core.SignalType;
 
-class SignalBase < T >
+class SignalBase < T, T2 >
 {
-	private var slots:PriorityQueue<Slot<T>>;
+	private var slots:PriorityQueue<Slot>;
 	public var isMuted:Bool;
 	public var target:Dynamic;
 	
@@ -26,7 +27,7 @@ class SignalBase < T >
 	{
 		remove(listener);
 		
-		slots.add({listener:listener, remainingCalls:runCount, isMuted:false},priority);
+		slots.add(new Slot(listener, SignalType.NORMAL, runCount),priority);
 	}
 	
 	public function addOnce(listener:T, ?priority:Int = 0):Void
@@ -34,7 +35,21 @@ class SignalBase < T >
 		add(listener, priority, 1);
 	}
 	
-	public function remove(listener:T):Void
+	public function addAdvanced(listener:T2, ?priority:Int=0, ?runCount:Int=-1):Void
+	{
+		remove(listener);
+		
+		slots.add( new Slot(listener, SignalType.ADVANCED, runCount), priority);
+	}
+	
+	public function addVoid(listener:Void->Void, ?priority:Int=0, ?runCount:Int=-1):Void
+	{
+		remove(listener);
+		
+		slots.add( new Slot(listener, SignalType.VOID, runCount), priority);
+	}
+	
+	public function remove(listener:Dynamic):Void
 	{
 		for (i in slots)
 			if (i.listener == listener)
@@ -58,33 +73,26 @@ class SignalBase < T >
 		isMuted = false;
 	}
 	
-	public function muteListener(listener:T):Void
+	public function muteSlot(listener:Dynamic):Void
 	{
 		for (i in slots.items)
 			if (i.item.listener == listener)
-				i.item.isMuted = true;
+				i.item.mute();
 	}
 	
-	public function unmuteListener(listener:T):Void
+	public function unmuteSlot(listener:Dynamic):Void
 	{
 		for (i in slots.items)
 			if (i.item.listener == listener)
-				i.item.isMuted = false;
+				i.item.unmute();
 	}
 	
 	/***** PRIVATE ****/
 	
-	private function onFireSlot(slot:Slot<T>)
+	private function onFireSlot(slot:Slot)
 	{
 		if (slot.remainingCalls != -1)
 			if (--slot.remainingCalls <= 0)
 				remove(slot.listener);
 	}
-}
-
-typedef Slot<T> =
-{
-	var listener:T;
-	var remainingCalls:Int;
-	var isMuted:Bool;
 }

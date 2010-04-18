@@ -12,6 +12,7 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.Lib;
 import flash.text.TextField;
+import hxs.core.Info;
 
 import hxs.extras.AS3Signal;
 import hxs.Signal;
@@ -20,7 +21,6 @@ import hxs.Signal2;
 import hxs.Signal3;
 import hxs.Signal4;
 import hxs.Signal5;
-import hxs.extras.SignalInfo;
 
 using hxs.extras.as3Shortcuts.InteractionShortcuts;
 
@@ -39,13 +39,15 @@ class Main extends Sprite
 	{
 		super();
 		
-		//testSimple();
+		testSimple();
+		//testAdvanced();
+		//testVoid();
 		//testMuteSignal();
-		//testMuteListener();
+		//testMuteSlot();
 		//testBubbling();
 		//testAS3();
 		//testTriggers();
-		testShortcuts();
+		//testShortcuts();
 	}
 	
 	/*
@@ -61,9 +63,10 @@ class Main extends Sprite
 		
 		var s = new Signal(this);
 		s.add(function() {
-			trace(SignalInfo.currentSignal.target);
-			trace("test simple signal");
+			trace("** test simple signal");
 		});
+		
+		s.dispatch();
 		s.dispatch();
 		
 		// A Signal which will dispatch with 3 arguments. 
@@ -71,11 +74,39 @@ class Main extends Sprite
 		
 		var s3 = new Signal3();
 		s3.add(function(s:String, v1:Int, v2:Float) {
-			trace("test " + s +" signal: product of " + v1 + " and " + v1 + " is: " + (v1 * v2));
+			trace("** test " + s +" signal: product of " + v1 + " and " + v1 + " is: " + (v1 * v2));
 		});
+		
 		s3.dispatch("more complex", 3,3.4);
 	}
 	
+	public function testAdvanced()
+	{
+		var s = new Signal(this);
+		s.addAdvanced(function(info:Info) {
+			trace("** test with info");
+			trace("info");
+			trace("  current signal: " + info.signal);
+			trace("  current slot: " + info.slot);
+			trace("  signal's origin: " + info.target);
+		});
+		
+		s.dispatch();
+	}
+	
+	public function testVoid()
+	{
+		var s3 = new Signal3();
+		s3.add(function(s:String, v1:Int, v2:Float) {
+			trace("** test " + s +" signal: product of " + v1 + " and " + v1 + " is: " + (v1 * v2));
+		});
+		
+		s3.addVoid( function() {
+			trace("** test void: this is a signal3 calling a Void->Void");
+		});
+		
+		s3.dispatch("more complex", 3,3.4);
+	}
 	/*
 	
 	A signal can be muted, so that when 'dispatch' is called on it, none of the listeners are called. 
@@ -84,10 +115,10 @@ class Main extends Sprite
 	public function testMuteSignal()
 	{
 		var s1 = new Signal1();
-		s1.add(function(v:Int) {
-			trace("test muting step: " + v);
+		s1.addAdvanced(function(v:Int, info) {
+			trace("test muting signal - step: " + v);
 			
-			SignalInfo.muteCurrentSignal();
+			info.signal.mute();
 		});
 		
 		// first one will dispatch
@@ -109,17 +140,17 @@ class Main extends Sprite
 	This can be done via the SignalInfo statics, or via accessing muteListener(xx) and unmuteLister(xx) in the signal object
 	
 	*/
-	public function testMuteListener()
+	public function testMuteSlot()
 	{
 		var s1 = new Signal1();
-		var listener1 = function(v:Int) {
+		var listener1 = function(v:Int, info:Info) {
 			trace("listener 1, step:" + v);
 			
 			// mute this listener
-			SignalInfo.muteCurrentListener();
+			info.slot.mute();
 		}
 		
-		s1.add(listener1);
+		s1.addAdvanced(listener1);
 
 		s1.add(function(v:Int) {
 			trace("listener 2, step:" + v);
@@ -133,19 +164,19 @@ class Main extends Sprite
 		
 		trace("-");
 		// unmute it directly
-		s1.unmuteListener(listener1);
+		s1.unmuteSlot(listener1);
 		s1.dispatch(3);
 		
 	}
 	
 	/*
 	
-	Bubbling is not embedded into the event system as it is not needed. Signals can easily be bound together via a simple dispatch. 
+	Bubbling is not embedded into the event system as yet. Signals can easily be bound together via a simple dispatch. 
 	This gives you full flexability of mapping the arguments in which ever order you want, and between different numbers of arguments.
 	
 	For example we can map easily from a signal that takes 3 args to a signal that expects 2 - and use the 2nd and 3rd - as they are Ints (which is expected in this example)
 	
-	This might be changed - instead of 'add' you might call 'bubble' and these listeners will be treated differently. In perticular they will still fire when the signal is muted, as to make bubbling work with muted signals
+	In the future instead of 'add' you might call 'bubble' and these listeners will be treated differently. In perticular they will still fire when the signal is muted, as to make bubbling work with muted signals
 	
 	*/
 	public function testBubbling()

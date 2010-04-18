@@ -4,7 +4,7 @@
   <output>
     <movie disabled="False" />
     <movie input="" />
-    <movie path="bin\hxLoader.swf" />
+    <movie path="bin\hxs.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
@@ -46,7 +46,7 @@
   <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
   <options>
-    <option showHiddenPaths="False" />
+    <option showHiddenPaths="True" />
     <option testMovie="NewWindow" />
   </options>
 </project>

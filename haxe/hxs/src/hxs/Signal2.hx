@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ...
  * @author Tonypee
  */
@@ -7,9 +7,11 @@ package hxs;
 
 import hxs.core.SignalBase;
 import hxs.extras.Trigger;
-import hxs.extras.SignalInfo;
+import hxs.core.Info;
+import hxs.core.SignalType;
 
-class Signal2 <T1,T2> extends SignalBase<T1->T2->Void>
+
+class Signal2 <T1,T2> extends SignalBase<T1->T2->Void, T1->T2->Info->Void>
 {
 	public function new(?caller:Dynamic) 
 	{ 
@@ -22,9 +24,12 @@ class Signal2 <T1,T2> extends SignalBase<T1->T2->Void>
 		{
 			if (isMuted) return;
 			if (slot.isMuted) continue;
-			SignalInfo.currentSignal = this; 
-			SignalInfo.currentSlot = slot; 
-			slot.listener(a, b);
+			switch(slot.type)
+			{
+				case SignalType.NORMAL:slot.listener(a,b);
+				case SignalType.ADVANCED:slot.listener(a, b, new Info(this, slot));
+				case SignalType.VOID:slot.listener();
+			}
 			onFireSlot(slot);
 		}
 	}
