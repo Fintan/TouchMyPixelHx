@@ -1,9 +1,9 @@
-﻿/**
+/**
  * ...
  * @author Tonypee
  */
 
-package hxs.extras.as3Shortcuts;
+package hxs.shortcuts.as3;
 
 import flash.display.InteractiveObject;
 import flash.Lib;
@@ -14,7 +14,7 @@ import flash.events.MouseEvent;
 import flash.display.MovieClip;
 import hxs.Signal1;
 
-class InteractionShortcuts
+class Common
 {
 	public static var signalHoler:TypedDictionary < InteractiveObject, Hash < AS3Signal < Dynamic > >> = new flash.utils.TypedDictionary();
 	
@@ -36,29 +36,39 @@ class InteractionShortcuts
 		return cast getSignal(mc, Event.ENTER_FRAME);
 	}
 	
-	public static function onRollOver(mc:InteractiveObject):AS3Signal <MouseEvent>
+	public static inline function onRollOver(mc:InteractiveObject):AS3Signal <MouseEvent>
 	{
 		return cast getSignal(mc, MouseEvent.ROLL_OVER);
 	}
 	
-	public static function onRollOut(mc:InteractiveObject):AS3Signal <MouseEvent>
+	public static inline function onRollOut(mc:InteractiveObject):AS3Signal <MouseEvent>
 	{
 		return cast getSignal(mc, MouseEvent.ROLL_OUT);
 	}
 	
-	public static function onClick(mc:InteractiveObject):AS3Signal <MouseEvent>
+	public static inline function onClick(mc:InteractiveObject):AS3Signal <MouseEvent>
 	{
 		return cast getSignal(mc, MouseEvent.CLICK);
 	}
 	
-	public static function onMouseDown(mc:InteractiveObject):AS3Signal <MouseEvent>
+	public static inline function onDoubleClick(mc:InteractiveObject):AS3Signal <MouseEvent>
+	{
+		return cast getSignal(mc, MouseEvent.DOUBLE_CLICK);
+	}
+	
+	public static inline function onMouseDown(mc:InteractiveObject):AS3Signal <MouseEvent>
 	{
 		return cast getSignal(mc, MouseEvent.MOUSE_DOWN);
 	}
 	
-	public static function onMouseUp(mc:InteractiveObject):AS3Signal <MouseEvent>
+	public static inline function onMouseUp(mc:InteractiveObject):AS3Signal <MouseEvent>
 	{
 		return cast getSignal(mc, MouseEvent.MOUSE_UP);
+	}
+	
+	public static inline function onMouseWheel(mc:InteractiveObject):AS3Signal <MouseEvent>
+	{
+		return cast getSignal(mc, MouseEvent.MOUSE_WHEEL);
 	}
 	
 	public static function onReleaseOutside(mc:InteractiveObject):Signal1 <MouseEvent>

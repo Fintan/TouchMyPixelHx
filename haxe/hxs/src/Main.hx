@@ -22,7 +22,8 @@ import hxs.Signal3;
 import hxs.Signal4;
 import hxs.Signal5;
 
-using hxs.extras.as3Shortcuts.InteractionShortcuts;
+using hxs.shortcuts.as3.Common;
+
 
 class Main extends Sprite
 {
@@ -39,7 +40,7 @@ class Main extends Sprite
 	{
 		super();
 		
-		testSimple();
+		//testSimple();
 		//testAdvanced();
 		//testVoid();
 		//testMuteSignal();
@@ -47,7 +48,7 @@ class Main extends Sprite
 		//testBubbling();
 		//testAS3();
 		//testTriggers();
-		//testShortcuts();
+		testShortcuts();
 	}
 	
 	/*
@@ -281,6 +282,8 @@ class Main extends Sprite
 		box.onReleaseOutside().add(function(e) {
 			trace("** onReleaseOutside ** (HELL YEAH!)");
 		});
+		
+		
 	}
 	
 	
