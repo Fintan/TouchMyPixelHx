@@ -59,15 +59,6 @@ class PriorityQueue <T>
 				items.remove(i);
 	}
 	
-	public function update(item:T, priority:Int):Void
-	{
-		for (i in items)
-			if (i.item == item)
-				i.priority = priority;
-				
-		resort();
-	}
-	
 	public function getPriority(item:T):Int
 	{
 		for (i in items)

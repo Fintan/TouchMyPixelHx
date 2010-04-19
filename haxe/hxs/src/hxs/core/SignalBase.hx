@@ -11,8 +11,9 @@ import hxs.core.SignalType;
 class SignalBase < T, T2 >
 {
 	private var slots:PriorityQueue<Slot>;
-	public var isMuted:Bool;
+	
 	public var target:Dynamic;
+	public var isMuted:Bool;
 	
 	public function new(?caller:Dynamic) 
 	{

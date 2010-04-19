@@ -7,14 +7,7 @@
  
 package ;
 
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.events.MouseEvent;
-import flash.Lib;
-import flash.text.TextField;
 import hxs.core.Info;
-
-import hxs.extras.AS3Signal;
 import hxs.Signal;
 import hxs.Signal1;
 import hxs.Signal2;
@@ -22,14 +15,34 @@ import hxs.Signal3;
 import hxs.Signal4;
 import hxs.Signal5;
 
+
+#if flash
+
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.MouseEvent;
+import flash.Lib;
+import flash.text.TextField;
+import hxs.extras.AS3Signal;
+
 using hxs.shortcuts.as3.Common;
 
+#end
 
-class Main extends Sprite
+#if js
+using hxs.shortcuts.js.Common;
+#end
+
+class Main
+#if flash extends Sprite #end
 {
 	static function main() 
 	{
-		Lib.current.addChild(new Main());
+		var main = new Main();
+		
+		#if flash 
+		Lib.current.addChild(main);
+		#end
 	}	
 	/*
 	
@@ -38,7 +51,7 @@ class Main extends Sprite
 	*/
 	public function new()
 	{
-		super();
+		#if flash super(); #end
 		
 		//testSimple();
 		//testAdvanced();
@@ -46,9 +59,17 @@ class Main extends Sprite
 		//testMuteSignal();
 		//testMuteSlot();
 		//testBubbling();
-		//testAS3();
 		//testTriggers();
-		testShortcuts();
+		
+		#if flash
+		//testAS3();
+		//testAS3Shortcuts();
+		#end
+		
+		#if js
+		js.Lib.document.body.lastChild.test();
+		#end
+		
 	}
 	
 	/*
@@ -203,23 +224,6 @@ class Main extends Sprite
 	
 	/*
 	
-	An AS3 event expects to be bound to a listener which expects 1 argument (the native flash event). it is a simple way to use Signal style events with Native Flash events. 
-	
-	*/
-	public function testAS3()
-	{
-		var box = new Box(0xffff00);
-		addChild(box);
-		
-		var onClick = new AS3Signal(box, MouseEvent.CLICK);
-		
-		onClick.add(function(e){
-			trace("clicked");
-		});	
-	}
-	
-	/*
-	
 	A trigger is holds a closure, with the data you want to fire when dispatch is called. 
 	
 	*/
@@ -251,9 +255,25 @@ class Main extends Sprite
 		trigger2.dispatch();
 	}
 	
+	/*
 	
+	An AS3 event expects to be bound to a listener which expects 1 argument (the native flash event). it is a simple way to use Signal style events with Native Flash events. 
 	
-	public function testShortcuts()
+	*/
+	#if flash
+	public function testAS3()
+	{
+		var box = new Box(0xffff00);
+		addChild(box);
+		
+		var onClick = new AS3Signal(box, MouseEvent.CLICK);
+		
+		onClick.add(function(e){
+			trace("clicked");
+		});	
+	}
+	
+	public function testAS3Shortcuts()
 	{
 		var box = new Box(0xff0000);
 		box.x = 200;
@@ -282,13 +302,13 @@ class Main extends Sprite
 		box.onReleaseOutside().add(function(e) {
 			trace("** onReleaseOutside ** (HELL YEAH!)");
 		});
-		
-		
 	}
+	#end
 	
 	
 }
 
+#if flash
 class Box extends flash.display.Sprite
 {
 	public function new(color:Int)
@@ -304,3 +324,4 @@ class Box extends flash.display.Sprite
 		addChild(tf);
 	}
 }
+#end

@@ -2,13 +2,13 @@
 <project>
   <!-- Output SWF options -->
   <output>
-    <movie disabled="False" />
+    <movie disabled="True" />
     <movie input="" />
     <movie path="bin\hxs.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="9" />
+    <movie version="11" />
     <movie background="#FFFFFF" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
@@ -32,16 +32,12 @@
   <compileTargets>
     <compile path="src\Main.hx" />
   </compileTargets>
-  <!-- Assets to embed into the output SWF -->
-  <library>
-    <!-- example: <asset path="..." id="..." update="..." glyphs="..." mode="..." place="..." sharepoint="..." /> -->
-  </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
     <!-- example: <hidden path="..." /> -->
   </hiddenPaths>
   <!-- Executed before build -->
-  <preBuildCommand />
+  <preBuildCommand>haxe compile.hxml</preBuildCommand>
   <!-- Executed after build -->
   <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
