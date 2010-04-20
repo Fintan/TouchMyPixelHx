@@ -56,6 +56,21 @@ class Common
 		return cast getSignal(mc, MouseEvent.DOUBLE_CLICK);
 	}
 	
+	public static inline function onMouseMove(mc:InteractiveObject):AS3Signal <MouseEvent>
+	{
+		return cast getSignal(mc, MouseEvent.MOUSE_MOVE);
+	}
+	
+	public static inline function onMouseOver(mc:InteractiveObject):AS3Signal <MouseEvent>
+	{
+		return cast getSignal(mc, MouseEvent.MOUSE_OVER);
+	}
+	
+	public static inline function onMouseOut(mc:InteractiveObject):AS3Signal <MouseEvent>
+	{
+		return cast getSignal(mc, MouseEvent.MOUSE_OUT);
+	}
+	
 	public static inline function onMouseDown(mc:InteractiveObject):AS3Signal <MouseEvent>
 	{
 		return cast getSignal(mc, MouseEvent.MOUSE_DOWN);
