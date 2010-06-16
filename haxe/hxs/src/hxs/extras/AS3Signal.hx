@@ -73,7 +73,6 @@ class AS3Signal<EventType> extends SignalBase <EventType->Void, EventType->Info-
     {
 		var r = super.remove(listener);
 		
-		
 		if (slots.length == 0)
 		{
 			target.removeEventListener(event, dispatch);

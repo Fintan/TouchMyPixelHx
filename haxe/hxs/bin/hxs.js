@@ -338,14 +338,6 @@ js.Lib.setErrorHandler = function(f) {
 	js.Lib.onerror = f;
 }
 js.Lib.prototype.__class__ = js.Lib;
-if(!hxs.shortcuts) hxs.shortcuts = {}
-if(!hxs.shortcuts.js) hxs.shortcuts.js = {}
-hxs.shortcuts.js.Common = function() { }
-hxs.shortcuts.js.Common.__name__ = ["hxs","shortcuts","js","Common"];
-hxs.shortcuts.js.Common.test = function(dom) {
-	haxe.Log.trace("hi",{ fileName : "Common.hx", lineNumber : 14, className : "hxs.shortcuts.js.Common", methodName : "test"});
-}
-hxs.shortcuts.js.Common.prototype.__class__ = hxs.shortcuts.js.Common;
 if(!hxs.extras) hxs.extras = {}
 hxs.extras.Trigger = function(closure) { if( closure === $_ ) return; {
 	this.closure = closure;
@@ -366,44 +358,42 @@ haxe.Log.clear = function() {
 	js.Boot.__clear_trace();
 }
 haxe.Log.prototype.__class__ = haxe.Log;
-Main = function(p) { if( p === $_ ) return; {
-	haxe.Log.trace("hi",{ fileName : "Common.hx", lineNumber : 14, className : "hxs.shortcuts.js.Common", methodName : "test"});
+if(typeof test=='undefined') test = {}
+test.General = function(p) { if( p === $_ ) return; {
+	this.testSimple();
 }}
-Main.__name__ = ["Main"];
-Main.main = function() {
-	var main = new Main();
-}
-Main.prototype.testAdvanced = function() {
+test.General.__name__ = ["test","General"];
+test.General.prototype.testAdvanced = function() {
 	var s = new hxs.Signal(this);
 	s.addAdvanced(function(info) {
-		haxe.Log.trace("** test with info",{ fileName : "Main.hx", lineNumber : 109, className : "Main", methodName : "testAdvanced"});
-		haxe.Log.trace("info",{ fileName : "Main.hx", lineNumber : 110, className : "Main", methodName : "testAdvanced"});
-		haxe.Log.trace("  current signal: " + info.signal,{ fileName : "Main.hx", lineNumber : 111, className : "Main", methodName : "testAdvanced"});
-		haxe.Log.trace("  current slot: " + info.slot,{ fileName : "Main.hx", lineNumber : 112, className : "Main", methodName : "testAdvanced"});
-		haxe.Log.trace("  signal's origin: " + info.target,{ fileName : "Main.hx", lineNumber : 113, className : "Main", methodName : "testAdvanced"});
+		haxe.Log.trace("** test with info",{ fileName : "General.hx", lineNumber : 66, className : "test.General", methodName : "testAdvanced"});
+		haxe.Log.trace("info",{ fileName : "General.hx", lineNumber : 67, className : "test.General", methodName : "testAdvanced"});
+		haxe.Log.trace("  current signal: " + info.signal,{ fileName : "General.hx", lineNumber : 68, className : "test.General", methodName : "testAdvanced"});
+		haxe.Log.trace("  current slot: " + info.slot,{ fileName : "General.hx", lineNumber : 69, className : "test.General", methodName : "testAdvanced"});
+		haxe.Log.trace("  signal's origin: " + info.target,{ fileName : "General.hx", lineNumber : 70, className : "test.General", methodName : "testAdvanced"});
 	});
 	s.dispatch();
 }
-Main.prototype.testBubbling = function() {
+test.General.prototype.testBubbling = function() {
 	var s2 = new hxs.Signal2();
 	var s3 = new hxs.Signal3();
 	s2.add(function(a,b) {
 		var val = a * b;
-		haxe.Log.trace("signal 2 recieves bubbled event and calculates" + val,{ fileName : "Main.hx", lineNumber : 211, className : "Main", methodName : "testBubbling"});
+		haxe.Log.trace("signal 2 recieves bubbled event and calculates" + val,{ fileName : "General.hx", lineNumber : 168, className : "test.General", methodName : "testBubbling"});
 	});
 	s3.add(function(a,b,c) {
 		var val = b + c;
-		haxe.Log.trace((("signal 4 dispatches to say: " + a) + "and calculates: ") + val,{ fileName : "Main.hx", lineNumber : 215, className : "Main", methodName : "testBubbling"});
+		haxe.Log.trace((("signal 4 dispatches to say: " + a) + "and calculates: ") + val,{ fileName : "General.hx", lineNumber : 172, className : "test.General", methodName : "testBubbling"});
 	});
 	s3.add(function(a,b,c) {
 		s2.dispatch(b,c);
 	});
 	s3.dispatch("numbers",3,4);
 }
-Main.prototype.testMuteSignal = function() {
+test.General.prototype.testMuteSignal = function() {
 	var s1 = new hxs.Signal1();
 	s1.addAdvanced(function(v,info) {
-		haxe.Log.trace("test muting signal - step: " + v,{ fileName : "Main.hx", lineNumber : 141, className : "Main", methodName : "testMuteSignal"});
+		haxe.Log.trace("test muting signal - step: " + v,{ fileName : "General.hx", lineNumber : 98, className : "test.General", methodName : "testMuteSignal"});
 		info.signal.mute();
 	});
 	s1.dispatch(1);
@@ -411,60 +401,66 @@ Main.prototype.testMuteSignal = function() {
 	s1.unmute();
 	s1.dispatch(3);
 }
-Main.prototype.testMuteSlot = function() {
+test.General.prototype.testMuteSlot = function() {
 	var s1 = new hxs.Signal1();
 	var listener1 = function(v,info) {
-		haxe.Log.trace("listener 1, step:" + v,{ fileName : "Main.hx", lineNumber : 169, className : "Main", methodName : "testMuteSlot"});
+		haxe.Log.trace("listener 1, step:" + v,{ fileName : "General.hx", lineNumber : 126, className : "test.General", methodName : "testMuteSlot"});
 		info.slot.mute();
 	}
 	s1.addAdvanced(listener1);
 	s1.add(function(v) {
-		haxe.Log.trace("listener 2, step:" + v,{ fileName : "Main.hx", lineNumber : 178, className : "Main", methodName : "testMuteSlot"});
+		haxe.Log.trace("listener 2, step:" + v,{ fileName : "General.hx", lineNumber : 135, className : "test.General", methodName : "testMuteSlot"});
 	});
 	s1.dispatch(1);
-	haxe.Log.trace("-",{ fileName : "Main.hx", lineNumber : 183, className : "Main", methodName : "testMuteSlot"});
-	haxe.Log.trace("the first listener is muted so would be here.. but isnt here",{ fileName : "Main.hx", lineNumber : 184, className : "Main", methodName : "testMuteSlot"});
+	haxe.Log.trace("-",{ fileName : "General.hx", lineNumber : 140, className : "test.General", methodName : "testMuteSlot"});
+	haxe.Log.trace("the first listener is muted so would be here.. but isnt here",{ fileName : "General.hx", lineNumber : 141, className : "test.General", methodName : "testMuteSlot"});
 	s1.dispatch(2);
-	haxe.Log.trace("-",{ fileName : "Main.hx", lineNumber : 187, className : "Main", methodName : "testMuteSlot"});
+	haxe.Log.trace("-",{ fileName : "General.hx", lineNumber : 144, className : "test.General", methodName : "testMuteSlot"});
 	s1.unmuteSlot(listener1);
 	s1.dispatch(3);
 }
-Main.prototype.testSimple = function() {
+test.General.prototype.testSimple = function() {
 	var s = new hxs.Signal(this);
 	s.add(function() {
-		haxe.Log.trace("** test simple signal",{ fileName : "Main.hx", lineNumber : 88, className : "Main", methodName : "testSimple"});
+		haxe.Log.trace("** test simple signal",{ fileName : "General.hx", lineNumber : 45, className : "test.General", methodName : "testSimple"});
 	});
 	s.dispatch();
 	s.dispatch();
 	var s3 = new hxs.Signal3();
 	s3.add(function(s1,v1,v2) {
-		haxe.Log.trace((((((("** test " + s1) + " signal: product of ") + v1) + " and ") + v1) + " is: ") + (v1 * v2),{ fileName : "Main.hx", lineNumber : 99, className : "Main", methodName : "testSimple"});
+		haxe.Log.trace((((((("** test " + s1) + " signal: product of ") + v1) + " and ") + v2) + " is: ") + (v1 * v2),{ fileName : "General.hx", lineNumber : 56, className : "test.General", methodName : "testSimple"});
 	});
 	s3.dispatch("more complex",3,3.4);
 }
-Main.prototype.testTriggers = function() {
+test.General.prototype.testTriggers = function() {
 	var s2 = new hxs.Signal2();
 	s2.add(function(a,b) {
-		haxe.Log.trace("triggered sum " + (a + b),{ fileName : "Main.hx", lineNumber : 236, className : "Main", methodName : "testTriggers"});
+		haxe.Log.trace("triggered sum " + (a + b),{ fileName : "General.hx", lineNumber : 193, className : "test.General", methodName : "testTriggers"});
 	});
 	s2.add(function(a,b) {
-		haxe.Log.trace("triggered product " + (a * b),{ fileName : "Main.hx", lineNumber : 242, className : "Main", methodName : "testTriggers"});
+		haxe.Log.trace("triggered product " + (a * b),{ fileName : "General.hx", lineNumber : 199, className : "test.General", methodName : "testTriggers"});
 	});
 	var trigger = s2.getTrigger(2,3);
 	var trigger2 = s2.getTrigger(10,2);
 	trigger.dispatch();
-	haxe.Log.trace("--- and trigger 2",{ fileName : "Main.hx", lineNumber : 253, className : "Main", methodName : "testTriggers"});
+	haxe.Log.trace("--- and trigger 2",{ fileName : "General.hx", lineNumber : 210, className : "test.General", methodName : "testTriggers"});
 	trigger2.dispatch();
 }
-Main.prototype.testVoid = function() {
+test.General.prototype.testVoid = function() {
 	var s3 = new hxs.Signal3();
 	s3.add(function(s,v1,v2) {
-		haxe.Log.trace((((((("** test " + s) + " signal: product of ") + v1) + " and ") + v1) + " is: ") + (v1 * v2),{ fileName : "Main.hx", lineNumber : 123, className : "Main", methodName : "testVoid"});
+		haxe.Log.trace((((((("** test " + s) + " signal: product of ") + v1) + " and ") + v1) + " is: ") + (v1 * v2),{ fileName : "General.hx", lineNumber : 80, className : "test.General", methodName : "testVoid"});
 	});
 	s3.addVoid(function() {
-		haxe.Log.trace("** test void: this is a signal3 calling a Void->Void",{ fileName : "Main.hx", lineNumber : 127, className : "Main", methodName : "testVoid"});
+		haxe.Log.trace("** test void: this is a signal3 calling a Void->Void",{ fileName : "General.hx", lineNumber : 84, className : "test.General", methodName : "testVoid"});
 	});
 	s3.dispatch("more complex",3,3.4);
+}
+test.General.prototype.__class__ = test.General;
+Main = function() { }
+Main.__name__ = ["Main"];
+Main.main = function() {
+	null;
 }
 Main.prototype.__class__ = Main;
 Std = function() { }
