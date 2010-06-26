@@ -45,10 +45,10 @@ package hxloader;
 import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
 import flash.net.URLRequest;
-import hxsignals.AS3Signal;
-import hxsignals.Signal;
-import hxsignals.Signal1;
-import hxsignals.Signal2;
+import hxs.extras.AS3Signal;
+import hxs.Signal;
+import hxs.Signal1;
+import hxs.Signal2;
 
 class Loader 
 {

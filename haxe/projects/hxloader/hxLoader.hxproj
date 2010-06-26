@@ -2,13 +2,13 @@
 <project>
   <!-- Output SWF options -->
   <output>
-    <movie disabled="True" />
+    <movie disabled="False" />
     <movie input="" />
-    <movie path="bin\hxs.swf" />
+    <movie path="bin\hxLoader.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="10" />
+    <movie version="9" />
     <movie background="#FFFFFF" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
@@ -42,12 +42,12 @@
     <!-- example: <hidden path="..." /> -->
   </hiddenPaths>
   <!-- Executed before build -->
-  <preBuildCommand>haxe compile.hxml</preBuildCommand>
+  <preBuildCommand />
   <!-- Executed after build -->
   <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
   <options>
-    <option showHiddenPaths="True" />
-    <option testMovie="NewWindow" />
+    <option showHiddenPaths="False" />
+    <option testMovie="Default" />
   </options>
 </project>

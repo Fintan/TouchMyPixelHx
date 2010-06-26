@@ -15,9 +15,9 @@ import flash.net.URLRequest;
 import flash.net.URLVariables;
 import flash.system.LoaderContext;
 import flash.utils.ByteArray;
-import hxsignals.AS3Signal;
-import hxsignals.Signal;
-import hxsignals.Signal1;
+import hxs.extras.AS3Signal;
+import hxs.Signal;
+import hxs.Signal1;
 
 class Item
 {

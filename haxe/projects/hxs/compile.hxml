@@ -1,6 +1,6 @@
 -swf9 bin/hxs.swf
 -cp src
--cp ../src
+-cp ../../src
 -main Main
 
 --next 
@@ -8,4 +8,4 @@
 -js bin/hxs.js
 -main Main
 -cp src
--cp ../src
+-cp ../../src
