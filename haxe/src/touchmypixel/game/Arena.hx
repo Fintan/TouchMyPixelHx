@@ -3,7 +3,7 @@
  * @author Tony Polinelli
  */
 
-package peepee;
+package com.touchmypixel.game;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;

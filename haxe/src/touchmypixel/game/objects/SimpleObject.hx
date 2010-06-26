@@ -4,19 +4,16 @@
 * @version 0.1
 */
 
-package peepee;
+package com.touchmypixel.game.objects;
 
 import flash.display.MovieClip;
 import flash.geom.Point;
-import peepee.utils.MemoryTracker;
+import com.touchmypixel.utils.MemoryTracker;
 
-class MemberBase extends MovieClip  
+class SimpleObject extends Object  
 {
 	public var updated:Bool;
-	public var levelBase:LevelBase;
 	public var initialized:Bool;
-	
-	public var e_aabb:MovieClip;
 	
 	public var dampX:Float;
 	public var dampY:Float;
@@ -39,19 +36,7 @@ class MemberBase extends MovieClip
 		dampX = dampY = dampR = .1;
 	}
 	
-	public function init(level:LevelBase)
-	{
-		initialized = true;
-		levelBase = level;
-	}
-	
-	public function update(dt:Float):Void
-	{
-		applyForces(dt);
-		applyRestrictions(dt);
-	}
-	
-	public function applyRestrictions(dt:Float)
+	public inline function applyRestrictions(dt:Float)
 	{
 		if (rotation > 180) rotation = -180;
 		if (rotation < -180) rotation = 180;
@@ -62,7 +47,7 @@ class MemberBase extends MovieClip
 		if (vy < -maxVy) vy = -maxVy;
 	}
 	
-	public function applyForces(dt:Float)
+	public inline function applyForces(dt:Float)
 	{
 		var damp = .9;
 		
@@ -75,12 +60,10 @@ class MemberBase extends MovieClip
 		rotation += vr * dt;
 	}
 	
-	public function destroy():Void
+	override public function update(dt:Float):Void
 	{
-		stop();
-		
-		if (levelBase != null) 
-			levelBase.removeMember(this);
+		applyForces(dt);
+		applyRestrictions(dt);
 	}
 }
 
