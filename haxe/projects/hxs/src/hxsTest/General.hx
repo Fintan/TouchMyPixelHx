@@ -3,7 +3,7 @@
  * @author Tonypee
  */
 
-package test;
+package hxsTest;
 
 import hxs.core.Info;
 import hxs.Signal;
