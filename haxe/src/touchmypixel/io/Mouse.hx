@@ -1,4 +1,4 @@
-﻿package peepee.io
+package touchmypixel.io
 {
 	import flash.display.Stage;
 	import flash.events.MouseEvent;

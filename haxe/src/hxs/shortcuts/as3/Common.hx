@@ -8,11 +8,12 @@ package hxs.shortcuts.as3;
 import flash.display.InteractiveObject;
 import flash.Lib;
 import flash.utils.TypedDictionary;
-import hxs.extras.AS3Signal;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.display.MovieClip;
+
 import hxs.Signal1;
+import hxs.extras.AS3Signal;
 
 class Common
 {
@@ -29,6 +30,11 @@ class Common
 			hash.set(event, new hxs.extras.AS3Signal(object, event));
 		
 		return hash.get(event);
+	}
+	
+	public static inline function onAddedToStage(mc:InteractiveObject):AS3Signal <Event>
+	{
+		return cast getSignal(mc, Event.ADDED_TO_STAGE);
 	}
 	
 	public static inline function onEnterFrame(mc:InteractiveObject):AS3Signal <Event>

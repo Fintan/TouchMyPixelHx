@@ -3,8 +3,8 @@
  * @author Tonypee
  */
 
-package com.touchmypixel.game.utils;
-import com.touchmypixel.game.ds.WeightedSet;
+package touchmypixel.game.utils;
+import touchmypixel.game.ds.WeightedSet;
 import hxs.Signal1;
 
 #if cpp

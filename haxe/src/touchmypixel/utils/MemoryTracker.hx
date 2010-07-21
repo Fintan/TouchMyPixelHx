@@ -1,5 +1,5 @@
 
-package peepee.utils;
+package touchmypixel.utils;
 
 
 #if flash

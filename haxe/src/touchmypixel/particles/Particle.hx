@@ -3,8 +3,8 @@
  * @author Tony Polinelli
  */
 
-package peepee.particles;
-import peepee.particles.effectors.Effector;
+package touchmypixel.particles;
+import touchmypixel.particles.effectors.Effector;
 import flash.display.BitmapData;
 import flash.display.MovieClip;
 import flash.display.Sprite;

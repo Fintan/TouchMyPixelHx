@@ -1,5 +1,5 @@
 
-package com.touchmypixel.game;
+package touchmypixel.game;
 
 import flash.display.MovieClip;
 import flash.display.Sprite;
@@ -9,7 +9,7 @@ import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.Lib;
 import flash.ui.Keyboard;
-import com.touchmypixel.io.Keys;
+import touchmypixel.io.Keys;
 import haxe.FastList;
 
 class LevelBase extends Sprite

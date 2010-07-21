@@ -1,4 +1,4 @@
-package com.touchmypixel.utils 
+package touchmypixel.utils 
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;

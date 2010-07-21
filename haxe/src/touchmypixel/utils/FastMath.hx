@@ -1,5 +1,5 @@
 
-package com.touchmypixel.utils;
+package touchmypixel.utils;
 
 
 

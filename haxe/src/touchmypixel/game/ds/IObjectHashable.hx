@@ -3,7 +3,7 @@
  * @author Tonypee
  */
 
-package com.touchmypixel.game.ds;
+package touchmypixel.game.ds;
 
 interface IObjectHashable
 {

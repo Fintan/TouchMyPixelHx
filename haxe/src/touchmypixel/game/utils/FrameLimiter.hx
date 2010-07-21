@@ -3,7 +3,7 @@
  * @author Tonypee
  */
 
-package com.touchmypixel.game.utils;
+package touchmypixel.game.utils;
 import flash.events.Event;
 import haxe.Timer;
 import nme.Lib;

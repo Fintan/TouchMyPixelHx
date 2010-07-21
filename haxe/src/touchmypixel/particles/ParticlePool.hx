@@ -3,7 +3,7 @@
  * @author Tony Polinelli
  */
 
-package peepee.particles;
+package touchmypixel.particles;
 
 class ParticlePool
 {

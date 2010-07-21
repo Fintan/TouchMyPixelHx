@@ -3,8 +3,8 @@
  * @author Tonypee
  */
 
-package com.touchmypixel.game.geom;
-import com.touchmypixel.utils.Tools;
+package touchmypixel.game.geom;
+import touchmypixel.utils.Tools;
 
 class Line
 {

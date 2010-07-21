@@ -3,8 +3,9 @@
  * @author Tony Polinelli
  */
 
-package peepee.particles;
-import peepee.particles.Particle;
+package touchmypixel.particles;
+
+import touchmypixel.particles.Particle;
 import flash.display.Sprite;
 import flash.geom.Point;
 import flash.geom.Rectangle;

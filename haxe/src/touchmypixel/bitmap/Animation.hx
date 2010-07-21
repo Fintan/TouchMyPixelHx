@@ -1,4 +1,4 @@
-package peepee.utils;
+package touchmypixel.bitmap;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -15,7 +15,7 @@ class Animation extends Sprite
 	public var bitmap:Bitmap;
 	public var clip:MovieClip;
 	public var frames:Array<BitmapData>;
-	public var currentFrame:Int;
+	
 	private var cache:Bool;
 	
 	private var clipData:MovieClip;
@@ -24,11 +24,12 @@ class Animation extends Sprite
 	public var treatAsLoopedGraphic:Bool;
 	public var reverse:Bool;
 	public var onEnd:Void->Void;
+	
 	public var totalFrames(getTotalFrames, null):Int;
+	public var currentFrame:Int;
 	
 	private var _playing:Bool;
-	
-	
+		
 	public function new() 
 	{
 		super();
@@ -51,31 +52,39 @@ class Animation extends Sprite
 	
 	public function isPlaying():Bool { return _playing; }
 	
-	public function buildCacheFromLibrary(identifier:String):Void
+	public function buildCacheFromLibrary(identifier:String, ?rectangle:Rectangle=null):Void
 	{
+		var instance = Type.createInstance(Type.resolveClass(identifier), []);
+		
+		buildCacheFromClip(instance, rectangle);
+		
 		// Cant get identifiers in the cpp as afaik
 	}
 	
-	public function buildCacheFromClip(clip:MovieClip):Void
+	public function buildCacheFromClip(clip:MovieClip, ?rectangle:Rectangle=null):Void
 	{
 		trace("BUILDING FROM CLIP");
 		this.clip = clip;
-		
-		trace(clip);
+
 		
 		var rect:Rectangle; 
 		var bounds = Reflect.field(clip, "e_bounds");
-		if (bounds != null)
+		
+		if (rectangle == null)
 		{
-			rect = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
-			bounds.visible = false;
+			if (bounds != null)
+			{
+				rect = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+				bounds.visible = false;
+			} else {
+				rect = clip.getRect(clip);
+			}
 		} else {
-			rect = clip.getRect(clip);
+			rect = rectangle;
 		}
 		
-		
 		// Hard coded rect as rect's arnt supported in cpp yet
-		rect = new Rectangle(0, 0, 90, 90);
+		//rect = new Rectangle(0, 0, 90, 90);
 		
 		
 		for (i in 1...clip.totalFrames+1)

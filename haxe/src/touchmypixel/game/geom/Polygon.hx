@@ -5,7 +5,7 @@
  * Tarwin Stroh-Spijer - Touch My Pixel - http://www.touchmypixel.com/
  * */
 
-package com.touchmypixel.geom;
+package touchmypixel.geom;
 	
 class Polygon {
 	

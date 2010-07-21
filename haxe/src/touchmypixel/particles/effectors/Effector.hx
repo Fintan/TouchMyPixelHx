@@ -3,8 +3,8 @@
  * @author Tony Polinelli
  */
 
-package peepee.particles.effectors;
-import peepee.particles.Particle;
+package touchmypixel.particles.effectors;
+import touchmypixel.particles.Particle;
 
 interface Effector 
 {

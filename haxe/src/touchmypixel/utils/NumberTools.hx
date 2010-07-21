@@ -1,9 +1,9 @@
-﻿/**
+/**
  * ...
  * @author Tony Polinelli
  */
 
-package peepee.utils;
+package touchmypixel.utils;
 
 class NumberTools 
 {

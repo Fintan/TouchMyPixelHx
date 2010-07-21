@@ -3,9 +3,8 @@
  * @author Tonypee
  */
 
-package com.touchmypixel.game.ds;
-import com.touchmypixel.game.ds.IObjectHashable;
-import cashcompare.catch2.core.Object;
+package touchmypixel.game.ds;
+import touchmypixel.game.ds.IObjectHashable;
 
 #if flash
 

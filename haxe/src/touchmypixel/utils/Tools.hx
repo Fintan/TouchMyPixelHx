@@ -3,7 +3,7 @@
  * @author DefaultUser (Tools -> Custom Arguments...)
  */
 
-package peepee.utils;
+package touchmypixel.utils;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.geom.Point;

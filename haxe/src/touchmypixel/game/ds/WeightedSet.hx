@@ -1,9 +1,9 @@
-﻿/**
+/**
  * ...
  * @author Tonypee
  */
 
-package com.touchmypixel.game.ds;
+package touchmypixel.game.ds;
 
 class WeightedSet < T >
 {

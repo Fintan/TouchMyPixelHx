@@ -1,11 +1,9 @@
-package com.touchmypixel.game.box2d;
+package touchmypixel.game.box2d;
 
+//import touchmypixel.geom.Triangulator;
 import box2D.collision.shapes.B2CircleDef;
 import box2D.collision.shapes.B2PolygonDef;
-//import box2D.collision.shapes.B2ConcaveArcDef;
-//import box2D.collision.shapes.B2ConvexArcDef;
 import box2D.common.math.B2Vec2;
-//import com.touchmypixel.geom.Triangulator;
 import flash.geom.Point;
 
 /**
@@ -15,12 +13,6 @@ import flash.geom.Point;
 
 class ShapeTools 
 {
-	
-	public function ShapeTools() 
-	{
-		
-	}
-	
 	public static function polygon(worldScale:Float, points:Array<Array<Float>>, ?offsetX:Float = 0, ?offsetY:Float = 0, ?rotation:Float = 0, ?scaleX:Float = 1, ?scaleY:Float = 1):B2PolygonDef
 	{
 		// Rotate points around center if needed

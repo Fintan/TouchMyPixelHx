@@ -1,4 +1,4 @@
-package peepee.utils;
+package touchmypixel.utils;
 
 import flash.display.DisplayObject;
 import flash.geom.ColorTransform;

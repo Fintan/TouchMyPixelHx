@@ -3,7 +3,7 @@
  * @author Tonypee
  */
 
-package com.touchmypixel.game.geom;
+package touchmypixel.game.geom;
 
 class Vector 
 {

@@ -3,14 +3,17 @@
  * @author Tonypee
  */
 
-package com.touchmypixel.game.objects;
+package touchmypixel.game.objects;
 import flash.display.Sprite;
-import com.touchmypixel.game.ds.ObjectHash;
-import com.touchmypixel.game.ds.IObjectHashable;
+import haxe.xml.Fast;
+import touchmypixel.game.ds.ObjectHash;
+import touchmypixel.game.ds.IObjectHashable;
 
 class Object extends Sprite, implements IObjectHashable
 {
 	public var __objectId:Int;
+	
+	//public var builderInfo:Fast;
 	
 	public function new() 
 	{

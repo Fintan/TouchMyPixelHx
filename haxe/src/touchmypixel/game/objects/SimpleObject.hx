@@ -4,11 +4,11 @@
 * @version 0.1
 */
 
-package com.touchmypixel.game.objects;
+package touchmypixel.game.objects;
 
 import flash.display.MovieClip;
 import flash.geom.Point;
-import com.touchmypixel.utils.MemoryTracker;
+import touchmypixel.utils.MemoryTracker;
 
 class SimpleObject extends Object  
 {

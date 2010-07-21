@@ -1,4 +1,4 @@
-package peepee.io;
+package touchmypixel.io;
 
 import flash.display.Sprite;
 import flash.events.KeyboardEvent;

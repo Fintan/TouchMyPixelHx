@@ -1,11 +1,11 @@
 
-package peepee.utils;
+package touchmypixel.utils;
 
 import flash.display.Bitmap;
 import flash.display.MovieClip;
 import flash.Lib;
-import peepee.events.BitmapEvent;
-import peepee.events.ProcessEvent;
+import touchmypixel.events.BitmapEvent;
+import touchmypixel.events.ProcessEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 

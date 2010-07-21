@@ -3,7 +3,7 @@
  * @author Tonypee
  */
 
-package com.touchmypixel.game.box2d;
+package touchmypixel.game.box2d;
 /**
 * ...
 * @author Tony Polinelli <tonyp[AT]touchmypixel.com>
@@ -12,14 +12,15 @@ package com.touchmypixel.game.box2d;
 import box2D.collision.B2ContactPoint;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2ContactListener;
-import com.touchmypixel.game.objects.Box2dObject;
-import com.touchmypixel.game.ds.ObjectHash;
+import touchmypixel.game.objects.Box2dBodyObject;
+import touchmypixel.game.objects.Box2dObject;
+import touchmypixel.game.ds.ObjectHash;
 
 class ContactManager extends B2ContactListener
 {
-	public var clearList:Array<Box2dObject> ;
+	public var clearList:Array<Box2dBodyObject> ;
 		
-		public function new()
+	public function new()
 	{
 		super();
 		clearList = [];
@@ -43,18 +44,18 @@ class ContactManager extends B2ContactListener
 	
 	public function registerContact(type:String, point:B2ContactPoint)
 	{
-		var o1:Box2dObject = null;
-		if ( Std.is(point.shape1.GetBody().GetUserData(), Box2dObject)) o1 = cast point.shape1.GetBody().GetUserData();
+		var o1:Box2dBodyObject = null;
+		if ( Std.is(point.shape1.GetBody().GetUserData(), Box2dBodyObject)) o1 = cast point.shape1.GetBody().GetUserData();
 			
-		var o2:Box2dObject = null;
-		if ( Std.is(point.shape2.GetBody().GetUserData(), Box2dObject)) o2 = cast point.shape2.GetBody().GetUserData();
+		var o2:Box2dBodyObject = null;
+		if ( Std.is(point.shape2.GetBody().GetUserData(), Box2dBodyObject)) o2 = cast point.shape2.GetBody().GetUserData();
 			
 		var h:ObjectHash<Array<ContactPoint>>;
 			
 		var cp:ContactPoint = { object1:o1, 
 								object2:o2, 
-								body1:o1.body, 
-								body2:o2.body, 
+								body1:point.shape1.GetBody(), 
+								body2:point.shape2.GetBody(), 
 								shape1:point.shape1, 
 								shape2:point.shape2 };
 			

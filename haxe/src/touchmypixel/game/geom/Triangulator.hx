@@ -6,7 +6,7 @@
  * Tony Polinelli - Touch My Pixel - http://www.touchmypixel.com/
  * */
 
-package com.touchmypixel.game.geom;
+package touchmypixel.game.geom;
 
 import flash.geom.Point;
 

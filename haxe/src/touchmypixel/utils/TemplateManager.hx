@@ -5,7 +5,7 @@
 */
 
 
-package peepee.utils;
+package touchmypixel.utils;
 
 import flash.display.Loader;
 import flash.display.MovieClip;
@@ -15,7 +15,7 @@ import haxe.xml.Fast;
 import flash.events.Event;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
-import peepee.Member;
+import touchmypixel.Member;
 
 class TemplateManager extends EventDispatcher
 {
@@ -24,7 +24,7 @@ class TemplateManager extends EventDispatcher
 	
 	public var xmlLoader:URLLoader;
 	public var scope:MovieClip;
-	public var items:Array <peepee.Member>;
+	public var items:Array <touchmypixel.Member>;
 	public var classPrefix:String;
 	private var xml:Xml;
 	
