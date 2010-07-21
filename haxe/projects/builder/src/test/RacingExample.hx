@@ -131,6 +131,15 @@ class Level extends LevelBase
 		parallaxer.focus.x = car.x;
 		parallaxer.focus.y = car.y;
 		parallaxer.update();
+		
+		//hide objects far from screen (yes, using bounds would be better)
+		for (o in simulation.objects)
+		{
+			if (o.x - parallaxer.focus.x < -500 || o.x - parallaxer.focus.x > 800)
+				o.visible = false;
+			else 
+				o.visible = true;
+		}
 	}
 }
 
@@ -177,13 +186,6 @@ class Car extends BuilderGameObject
 	{
 		super.update(dt);
 		
-		for (o in simulation.objects)
-		{
-			if (o.x - Level.instance.parallaxer.focus.x < -500 || o.x - Level.instance.parallaxer.focus.x > 800)
-				o.visible = false;
-			else 
-				o.visible = true;
-		}
 		//stablizing
 		body.body.m_angularVelocity += -body.body.GetAngle()/1.5;
 	}
