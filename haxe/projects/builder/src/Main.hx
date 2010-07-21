@@ -26,7 +26,7 @@ class Main
 			//new RacingExample();
 			//new test_creator.TestXML();
 		#else
-			flash.Lib.create(function() { flash.Lib.current.addChild(new test.RacingExample()); }, 800, 600, 6000, 0xffffff, (1 * nme.Lib.HARDWARE) | nme.Lib.RESIZABLE);
+			flash.Lib.create(function() { flash.Lib.current.addChild(new test.RacingExample()); }, 800, 600, 100, 0xffffff, (1 * nme.Lib.HARDWARE) | nme.Lib.RESIZABLE);
 		#end
 	}	
 	

@@ -3,7 +3,7 @@
  * @author Tony Polinelli
  */
 
-package com.touchmypixel.game;
+package touchmypixel.game;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
