@@ -6,6 +6,7 @@
 package touchmypixel.game.ds;
 import touchmypixel.game.ds.IObjectHashable;
 
+/*
 #if flash
 
 import flash.utils.TypedDictionary;
@@ -13,6 +14,7 @@ import flash.utils.TypedDictionary;
 typedef ObjectHash<T> = TypedDictionary<Dynamic, T>
 
 #else
+*/
 
 class ObjectHash < T >
 {
@@ -59,7 +61,7 @@ class ObjectHash < T >
 	
 	private inline function check(object):Void
 	{
-		if (object.__objectId == null)
+		if (object.__objectId == -1)
 			throw "Object: " + object + " is not registered with the ObjectHash manager";
 	}
 	
@@ -124,4 +126,4 @@ class ObjectHashKeyIterator<T>
 	}
 }
 
-#end
+//#end

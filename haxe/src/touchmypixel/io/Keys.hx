@@ -6,7 +6,7 @@ import flash.Lib;
 
 class Keys
 {
-	static private var keycodes: IntHash<Bool> = new IntHash();
+	static public var keycodes: IntHash<Bool> = new IntHash();
 	static private var keyDownUsed: IntHash<Hash<Bool>> = new IntHash();
 	
 	static public function init():Void

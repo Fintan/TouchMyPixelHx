@@ -23,7 +23,21 @@ class LevelBase extends Sprite
 		
 		maxDT = 1 / 10;
 		
+		addEventListener(Event.ADDED_TO_STAGE, added);
+	}
+	
+	private function added(e:Event):Void 
+	{
+		removeEventListener(Event.ADDED_TO_STAGE, added);
+		
 		Keys.init();
+		
+		init();
+	}
+	
+	public function init()
+	{
+		//override
 	}
 	
 	public function find<T>(type:Class<T>):List<T>
@@ -53,7 +67,8 @@ class LevelBase extends Sprite
 	{
 		stop();
 			
-		if (parent != null) parent.removeChild(this);
+		if (parent != null) 
+			parent.removeChild(this);
 	}
 	
 	private function loop(e:Dynamic):Void

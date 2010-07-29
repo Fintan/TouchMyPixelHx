@@ -28,7 +28,7 @@ class Box2dObject extends Object
 		this.simulation = simulation;
 	}
 	
-	public function init()
+	override public function init()
 	{
 		// override
 	}

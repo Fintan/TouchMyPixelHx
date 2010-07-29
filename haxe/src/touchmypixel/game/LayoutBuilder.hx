@@ -8,6 +8,7 @@ package touchmypixel.game;
 import box2D.collision.shapes.B2ShapeDef;
 import box2D.dynamics.B2BodyDef;
 import box2D.dynamics.B2World;
+import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 import touchmypixel.game.box2d.ShapeTools;
 import haxe.xml.Fast;
@@ -25,21 +26,18 @@ class LayoutBuilder
 	public var layouts:Hash<Fast>;
 	public var simulation:Box2dSimulation;
 	
-	public var objects:Array<Object>;
-	public var gameObjects:Array<BuilderGameObject>;
-	
 	public function new(xml:String) 
 	{
-		objects = [];
-		gameObjects = [];
-		
 		this.xml = Xml.parse(xml);
 		fast = new Fast(this.xml);
+		
+		
 		
 		layouts = new Hash();
 		for (n in fast.nodes.layout)
 			layouts.set(n.att.name, n);
 	}
+	
 	
 	public function buildLayout(layout:Fast, simulation:Box2dSimulation)
 	{
@@ -48,24 +46,18 @@ class LayoutBuilder
 		if (layout == null)
 			throw "Layout does not exist";
 			
-		parseNode(layout);
-	}
-	
-	/***********/
-	
-	private function parseNode(node:Fast, ?parentObject:BuilderGameObject)
-	{
-		for (child in node.x.elements())
+		for (child in layout.x.elements())
 		{
 			switch(child.nodeName)
 			{
-				case "body": createBody(new Fast(child), parentObject);
+				case "body": createBody(new Fast(child));
 				case "object": createObject(new Fast(child));
 				case "gameObject": createGameObject(new Fast(child));
-				//case "bitmap": createBitmap(new Fast(child), cast parentObject);
+				case "bitmap": createBitmap(new Fast(child), cast simulation);
 			}
 		}
 	}
+	
 	
 	private function createGameObject(objectInfo:Fast)
 	{
@@ -86,8 +78,8 @@ class LayoutBuilder
 		object.scaleY = f(objectInfo.att.sy);
 		object.rotation = f(objectInfo.att.r);
 		
-		gameObjects.push(object);
-		
+		if (objectInfo.att.name != "")
+			simulation.namedObjects.set(objectInfo.att.name, object);
 		
 		simulation.objects.push(object);
 		simulation.addChild(object);
@@ -101,7 +93,7 @@ class LayoutBuilder
 		}
 	}
 	
-	private function createBitmap(objectInfo:Fast, ?bodyObject:BuilderBodyObject)
+	private function createBitmap(objectInfo:Fast, ?addToScope:DisplayObjectContainer)
 	{
 		var bmp = Loader.loadBitmap(objectInfo.att.file);
 		bmp.smoothing = true;
@@ -111,22 +103,43 @@ class LayoutBuilder
 		bmp.scaleY = f(objectInfo.att.sy);
 		bmp.rotation = f(objectInfo.att.r);
 		
-		if (bodyObject != null)
-			bodyObject.addChild(bmp);
+		if (addToScope != null)
+			addToScope.addChild(bmp);
+			
+		simulation.bitmaps.push(bmp);
 	}
 	
 	private function createObject(objectInfo:Fast)
 	{
-		//
+		var n = objectInfo.att.resolve("definition");
+		var c = Type.resolveClass(n);
+		
+		if (c == null)
+			throw "Class: " + n + " cannot be built, as it doesnt exist";
+		
+		var object:Object = Type.createInstance(c, []);
+		object.x = f(objectInfo.att.x);
+		object.y = f(objectInfo.att.y);
+		object.scaleX = f(objectInfo.att.sx);
+		object.scaleY = f(objectInfo.att.sy);
+		object.rotation = f(objectInfo.att.r);
+		simulation.addChild(object);
+		
+		simulation.objects.push(object);
 	}
 	
 	private function createBody(bodyInfo:Fast, ?gameObject:BuilderGameObject)
 	{ 
 		var body = new BuilderBodyObject(simulation);
 		body.info = bodyInfo;
+		body.gameObject = gameObject;
+		body.type = bodyInfo.att.type;
 		body.scaleX = f(bodyInfo.att.sx);
 		body.scaleY = f(bodyInfo.att.sy);
 			
+		if (bodyInfo.att.name != "")
+			simulation.namedObjects.set(bodyInfo.att.name, body);
+		
 		var bodyDef = new B2BodyDef();
 		if (gameObject != null)
 		{
@@ -144,7 +157,6 @@ class LayoutBuilder
 			bodyDef.position.y = (ny + gameObject.y) / simulation.scale;
 			bodyDef.angle = r + f(bodyInfo.att.r) * Math.PI / 180;
 			
-			
 		} else {
 			
 			/*
@@ -157,7 +169,7 @@ class LayoutBuilder
 		bodyDef.isBullet = true;
 		
 		var b2body = simulation.world.CreateBody(bodyDef);
-		
+		b2body.SetUserData(body);
 		/*
 		 * Build shapes that are inside the body
 		 */
@@ -171,8 +183,15 @@ class LayoutBuilder
 				case "shape": parseShape(new Fast(elementInfo), bodyInfo);
 				case "bitmap": createBitmap(new Fast(elementInfo),body); null;
 			}
-			if(shape != null)
+			
+			if (shape != null)
+			{
+				shape.filter.categoryBits = Std.parseInt(bodyInfo.att.categoryBits);
+				shape.filter.maskBits = Std.parseInt(bodyInfo.att.maskBits);
+				shape.filter.groupIndex = Std.parseInt(bodyInfo.att.groupIndex);
+				shape.isSensor = bodyInfo.att.sensor == "true";
 				b2body.CreateShape(shape);
+			}
 				
 			switch(elementInfo.nodeName)
 			{

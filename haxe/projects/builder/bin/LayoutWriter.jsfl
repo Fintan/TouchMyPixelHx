@@ -983,7 +983,7 @@ touchmypixel.game.LayoutWriter.prototype.parseElementPoly = function(s,scope) {
 		xml += ((((((((((((("<poly x=\"" + s.x) + "\" y=\"") + s.y) + "\" w=\"") + s.width) + "\"  h=\"") + s.height) + "\" r=\"") + s.rotation) + "\" sx=\"") + s.scaleX) + "\" sy=\"") + s.scaleY) + "\">\n";
 	}
 	else {
-		xml += "<poly x=\"0\" y=\"0\" rotation=\"0\" scaleX=\"1\" scaleY=\"1\" >\n";
+		xml += "<poly x=\"0\" y=\"0\" r=\"0\" scaleX=\"1\" scaleY=\"1\" >\n";
 	}
 	var points = [];
 	var lastPoint = null;
@@ -1039,7 +1039,7 @@ touchmypixel.game.LayoutWriter.prototype.parseElementPoly = function(s,scope) {
 			}
 		}
 	}
-	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace(((("WARNING: shape not closed: " + scope.name) + " [") + scope.libraryItem.linkageClassName) + "]",{ fileName : "LayoutWriter.hx", lineNumber : 267, className : "touchmypixel.game.LayoutWriter", methodName : "parseElementPoly"});
+	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace(((("WARNING: shape not closed: " + scope.name) + " [") + scope.libraryItem.linkageClassName) + "]",{ fileName : "LayoutWriter.hx", lineNumber : 264, className : "touchmypixel.game.LayoutWriter", methodName : "parseElementPoly"});
 	var p = null;
 	{
 		var _g1 = 0, _g = points.length;
@@ -1136,7 +1136,6 @@ touchmypixel.game.LayoutWriter.prototype.parseParameters = function(result) {
 	xml += (" sx=\"" + sc.scaleX) + "\"";
 	xml += (" sy=\"" + sc.scaleY) + "\"";
 	xml += (" r=\"" + sc.rotation) + "\"";
-	haxe.Log.trace("" + sc.rotation,{ fileName : "LayoutWriter.hx", lineNumber : 105, className : "touchmypixel.game.LayoutWriter", methodName : "parseParameters"});
 	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
 		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
 		{ var $it2 = def.keys();
@@ -1228,6 +1227,7 @@ touchmypixel.game.LayoutWriter.prototype.searchTimeline = function(inScope,store
 		while(_g < _g1.length) {
 			var el = _g1[_g];
 			++_g;
+			haxe.Log.trace(el,{ fileName : "LayoutWriter.hx", lineNumber : 291, className : "touchmypixel.game.LayoutWriter", methodName : "searchTimeline"});
 			if(touchmypixel.game.utils.JSFLTools.isInstance(el)) {
 				var el1 = el;
 				{

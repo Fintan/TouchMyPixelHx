@@ -24,6 +24,11 @@ class Object extends Sprite, implements IObjectHashable
 		#end
 	}
 	
+	public function init()
+	{
+		//override
+	}
+	
 	public function update(dt:Float)
 	{	
 		//Override

@@ -207,7 +207,7 @@ class LayoutWriter
 		{	
 			xml += '<poly x="'+s.x+'" y="'+s.y+'" w="'+s.width+'"  h="'+s.height+'" r="'+s.rotation+'" sx="'+s.scaleX+'" sy="'+s.scaleY+'">\n';
 		} else {
-			xml += '<poly x="0" y="0" rotation="0" scaleX="1" scaleY="1" >\n';
+			xml += '<poly x="0" y="0" r="0" scaleX="1" scaleY="1" >\n';
 		}
 		
 		var points = [];
@@ -301,7 +301,6 @@ class LayoutWriter
 						switch(el2.libraryItem.linkageClassName)
 						{
 							case "Def_Layout":
-								
 								results.push( { type:"layout", info:cast el2, scope:el, children:searchTimeline(el.getTimeline()) } );
 								
 							case "Def_Body":

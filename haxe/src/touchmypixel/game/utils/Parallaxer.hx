@@ -121,8 +121,8 @@ class Parallaxer
 	
 	private function updateLayerTarget(layer:ParallaxLayer, tx:Float, ty:Float)
 	{
-		layer.tx = (-tx * (layer.dimensions.width-window.width) + window.left)- layer.dimensions.left;
-		layer.ty = (-ty * (layer.dimensions.height-window.height) + window.left) - layer.dimensions.top;
+		layer.tx = (-tx * (layer.dimensions.width-window.width) + window.left)- layer.dimensions.left + layer.offset.x;
+		layer.ty = (-ty * (layer.dimensions.height-window.height) + window.left) - layer.dimensions.top + layer.offset.y;
 	}
 	
 } 
@@ -140,8 +140,8 @@ class ParallaxLayer
 	public function new(mc:DisplayObject, dimensions:Rectangle=null, offset:Point=null, canZoom:Bool = false)
 	{
 		this.mc = mc;
-		this.dimensions = dimensions != null ? new Rectangle(0, 0, mc.width, mc.height) : dimensions;
-		this.offset = offset != null ? new Point(0, 0) : offset;
+		this.dimensions = dimensions == null ? new Rectangle(0, 0, mc.width, mc.height) : dimensions;
+		this.offset = offset == null ? new Point(0, 0) : offset;
 		this.tx = 0;
 		this.ty = 0;
 		this.canZoom = canZoom;

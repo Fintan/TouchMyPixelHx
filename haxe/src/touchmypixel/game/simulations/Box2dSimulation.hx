@@ -10,6 +10,7 @@ import box2D.common.math.B2Vec2;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2DebugDraw;	
 import box2D.dynamics.B2World;
+import flash.display.Bitmap;
 import touchmypixel.game.box2d.ContactManager;
 import touchmypixel.game.LevelBase;
 import flash.display.DisplayObject;
@@ -34,8 +35,10 @@ class Box2dSimulation extends Sprite
 	public var debug:Bool;
 	
 	public var contactManager:ContactManager;
-	
+
 	public var objects:Array<Object>;
+	public var namedObjects:Hash<Object>;
+	public var bitmaps:Array<Bitmap>;
 	
 	public var autoUpdateObjects:Bool;
 	
@@ -63,6 +66,8 @@ class Box2dSimulation extends Sprite
 		debugDrawScope = this;	
 		
 		objects = [];
+		namedObjects = new Hash();
+		bitmaps = [];
 	}
 	
 	public function init()
@@ -70,7 +75,7 @@ class Box2dSimulation extends Sprite
 		world = new B2World(initAABB, initGravity, initDoSleep);
 		
 		contactManager = new ContactManager();
-		//world.SetContactListener(contactManager);
+		world.SetContactListener(contactManager);
 		
 		dbgDraw = new B2DebugDraw();
 		dbgDraw.m_sprite = debugDrawScope;
@@ -88,7 +93,7 @@ class Box2dSimulation extends Sprite
 		if (running) 
 		{	contactManager.clear();
 		
-			world.Step(dt, iterations);
+			world.Step(1/38, iterations);
 			
 			if(autoUpdateObjects)
 			for (o in objects)

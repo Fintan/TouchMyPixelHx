@@ -12,20 +12,25 @@ import flash.net.URLRequest;
 
 class Loader 
 {
+	public static var loaded:Hash<Dynamic> = new Hash();
+	
 	public static function loadBitmap(src:String):Bitmap
 	{
-		#if cpp
-			
-			var bd:BitmapData = BitmapData.load(src);
-			var bmp = new Bitmap(bd, PixelSnapping.NEVER,true);
-			return bmp;
-			
-		#else
+		if (loaded.exists(src))
+		{
+			return new Bitmap(loaded.get(src), PixelSnapping.AUTO, true);
+		}
 		
-			var bd = Type.createInstance(Type.resolveClass(src), [50,50]);
-			var bmp = new Bitmap(bd);
-			
-			return bmp;
+		var bd:BitmapData = null;
+		
+		#if cpp
+			bd = BitmapData.load(src);
+		#else
+			bd = Type.createInstance(Type.resolveClass(src), [50, 50]);
 		#end
+		
+		loaded.set(src, bd);
+		
+		return new Bitmap(bd);
 	}
 }

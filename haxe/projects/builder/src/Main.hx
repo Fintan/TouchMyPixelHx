@@ -4,6 +4,7 @@ package ;
 import touchmypixel.game.LayoutWriter;
 #else 
 import flash.Lib;
+import test.BitmapExample;
 import test.RacingExample;
 import test.SimpleExample;
 #end
@@ -22,7 +23,7 @@ class Main
 		#if js
 			new touchmypixel.game.LayoutWriter();
 		#elseif flash
-			new RacingExample();
+			new BitmapExample();
 			//new RacingExample();
 			//new test_creator.TestXML();
 		#else

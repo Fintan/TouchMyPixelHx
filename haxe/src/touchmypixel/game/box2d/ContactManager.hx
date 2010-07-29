@@ -47,6 +47,7 @@ class ContactManager extends B2ContactListener
 		var o1:Box2dBodyObject = null;
 		if ( Std.is(point.shape1.GetBody().GetUserData(), Box2dBodyObject)) o1 = cast point.shape1.GetBody().GetUserData();
 			
+		
 		var o2:Box2dBodyObject = null;
 		if ( Std.is(point.shape2.GetBody().GetUserData(), Box2dBodyObject)) o2 = cast point.shape2.GetBody().GetUserData();
 			
@@ -60,8 +61,6 @@ class ContactManager extends B2ContactListener
 								shape2:point.shape2 };
 			
 		/***/
-		
-		if (o1 == null || o2 == null)  return;
 		
 		if(o1.cacheContacts)
 		{	

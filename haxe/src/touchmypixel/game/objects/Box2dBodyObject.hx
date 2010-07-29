@@ -13,7 +13,10 @@ import touchmypixel.game.box2d.ContactPoint;
 
 class Box2dBodyObject extends Object
 {
+	public var type:String;
 	public var simulation:Box2dSimulation;
+	
+	public var gameObject:Box2dObject;
 	
 	public var body:B2Body;
 	
