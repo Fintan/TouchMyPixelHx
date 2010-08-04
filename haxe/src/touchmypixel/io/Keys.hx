@@ -31,16 +31,26 @@ class Keys
 		return(false);
 	}
 	
-	static private function onKeyDown( event: KeyboardEvent ):Void
+	private static function onKeyDown( event: KeyboardEvent ):Void
 	{
 		keycodes.set(event.keyCode, true);
 		if(!keyDownUsed.exists(event.keyCode)) keyDownUsed.set(event.keyCode, new Hash());
 	}
 	
-	static private function onKeyUp( event: KeyboardEvent ):Void
+	private static function onKeyUp( event: KeyboardEvent ):Void
 	{
 		keycodes.set(event.keyCode, false);
 		keyDownUsed.remove(event.keyCode);
 	}
 	
+	public static function forceKeyDown( key:Int )
+	{
+		 keycodes.set(key, true);
+	}
+	
+	public static function forceKeyUp( key:Int )
+	{
+		keycodes.set(key, false);
+		keyDownUsed.remove(key);
+	}
 }

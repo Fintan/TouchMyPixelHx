@@ -4,6 +4,7 @@
  */
 
 package touchmypixel.particles.effectors;
+
 import touchmypixel.particles.Particle;
 
 interface Effector 

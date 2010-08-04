@@ -3,12 +3,14 @@
  * @author Tony Polinelli
  */
 
-package touchmypixel.game;
+package touchmypixel.game.core;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.display.Sprite;
 import flash.geom.Rectangle;
 import flash.geom.Point;
+
 
 #if flash
 
@@ -22,14 +24,52 @@ class Arena extends Bitmap
    {
       bitmapData.fillRect(new Rectangle(0,0,320,480), 0);	
    }
-   public function addSprite(gfx:BitmapData,point:Point)
+   public function addSprite(gfx:BitmapData,point:Point, ?alpha=1.)
    {
       bitmapData.copyPixels(gfx,gfx.rect, point, null, null, true);
    }
-}
+} 
 
 #else
 
+import nme.display.Graphics;
+
+class Arena extends Sprite
+{
+	public var i:Int;
+	public var xy:Array <Float>;
+	public var colors:Array <Int>;
+	
+	public function new()
+	{
+		super();
+		xy = [];
+		colors = [];
+	}
+	
+	public function clear()
+	{
+		graphics.clear();
+		i = 0;
+	}
+	
+	public function addParticle(x,y,color,alpha)
+	{
+		xy[i * 2] =  x;
+		xy[i * 2 + 1] = y;
+		colors[i] = Graphics.RGBA(0x000000,0xff);
+		i++;
+	}
+	
+	public function render()
+	{
+		trace("render" + xy[0] + " " + xy[1] + " " + colors[0]);
+		graphics.clear();
+		graphics.drawPoints(xy,colors);
+	}
+}
+#end
+/*
 class Arena extends neash.display.DisplayObject
 {
    var mColour:Int;
@@ -86,3 +126,4 @@ class Arena extends neash.display.DisplayObject
 
 
 #end
+*/

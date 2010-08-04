@@ -4,7 +4,6 @@
  */
 
 package touchmypixel.particles;
-
 import touchmypixel.particles.Particle;
 import flash.display.Sprite;
 import flash.geom.Point;
@@ -50,13 +49,14 @@ class Emitter
 				p.emitter = this;
 				p.x = x;
 				p.y = y;
-				emit(p, dt);
+				initParticle(p, dt);
 			}
 			num = num % 1;
 		}
 	}
 	
-	public dynamic function emit(particle:Particle, dt:Float):Void
+	public function initParticle(particle:Particle, dt:Float):Void
 	{
+		//override
 	}
 }

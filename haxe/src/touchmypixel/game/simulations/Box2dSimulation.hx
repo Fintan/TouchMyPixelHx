@@ -96,8 +96,8 @@ class Box2dSimulation extends Sprite
 			world.Step(1/38, iterations);
 			
 			if(autoUpdateObjects)
-			for (o in objects)
-				o.update(dt);
+				for (o in objects)
+					o.update(dt);
 		}
 	}
 	

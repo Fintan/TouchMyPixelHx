@@ -18,6 +18,9 @@ class Pool
 	
 	public static inline function get(c:Class<Dynamic>, ?args)
 	{
+		
+		
+		
 		if (args == null) args = [];
 		
 		var p:List<Dynamic> = getPool(c);

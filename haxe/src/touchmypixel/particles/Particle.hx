@@ -4,6 +4,7 @@
  */
 
 package touchmypixel.particles;
+
 import touchmypixel.particles.effectors.Effector;
 import flash.display.BitmapData;
 import flash.display.MovieClip;
@@ -12,15 +13,16 @@ import flash.events.Event;
 import flash.geom.Point;
 
 
-#if flash
+//#if flash
 
 typedef ParticleSprite = BitmapData;
 
+/*
 #else
 
 typedef ParticleSprite = nme.TileRenderer;
 
-#end
+#end*/
 
 
 class Particle
@@ -48,7 +50,7 @@ class Particle
 	public function new() 
 	{
 		reset();
-		lifespan = 200;
+		lifespan = 80;
 		mass = 1;
 		num = Particle.pnum++;
 	}
@@ -77,7 +79,7 @@ class Particle
 	 * Apply all of the effectors to the particle
 	**/
 	public inline function update(dt:Float) 
-	{
+	{ 
 		for (effector in effectors) 
 			effector.apply(this, dt);
 		
@@ -90,10 +92,10 @@ class Particle
 
 	public static function createSprite(data:BitmapData) : ParticleSprite
 	{
-		#if flash
+		//#if flash
 		return data;
-		#else
-		return new nme.TileRenderer(data,0,0,data.width,data.height,0,0);
-		#end
+		//#else
+		//return new nme.TileRenderer(data,0,0,data.width,data.height,0,0);
+		//#end
 	}
 }
