@@ -91,7 +91,9 @@ class Item
 		var ext = request.url.substr(request.url.lastIndexOf('.') + 1);
 		
 		if (options != null)
-			if (options.asBinary)
+			if (Reflect.hasField(options, "ext"))
+				ext = options.ext;
+			else if (options.asBinary)
 				return new URLLoaderItem(ItemType.BINARY, request, id, options);
 				
 		return untyped switch(ext.toUpperCase())
