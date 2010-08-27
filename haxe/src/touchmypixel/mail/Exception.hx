@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  */
-package com.touchmypixel.mail;
+package touchmypixel.mail;
 
 enum Exception {
 	AlreadyConnected;

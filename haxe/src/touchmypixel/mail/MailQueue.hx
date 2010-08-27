@@ -3,7 +3,7 @@
  * @author Tarwin Stroh-Spijer
  */
 
-package com.touchmypixel.mail;
+package touchmypixel.mail;
 import poko.Db;
 
 class MailQueue 

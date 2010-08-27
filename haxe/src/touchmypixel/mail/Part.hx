@@ -22,10 +22,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  */
-package com.touchmypixel.mail;
+package touchmypixel.mail;
 
 import php.Utf8;
-import com.touchmypixel.DateFormat;
+import touchmypixel.DateFormat;
 
 class Part extends MetaPart<Part> {
 	public static function parseString( str : String ) : Part {

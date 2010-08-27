@@ -1,4 +1,6 @@
-package com.touchmypixel;
+/* based on motion-twin date format which had some problems*/
+
+package touchmypixel;
 
 class DateFormat {
 	static var REG_STD = ~/([0-9]{4})-([0-9]{2})-([0-9]{2})/;
