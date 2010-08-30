@@ -10,26 +10,90 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.geom.Rectangle;
 import flash.geom.Point;
+import touchmypixel.game.utils.Loader;
 
 
-#if flash
+//#if flash
 
 class Arena extends Bitmap
 {
+	private var alphaBitmap:BitmapData;
    public function new()
    {
-	super(new BitmapData(320, 480, true, 0x00000000));
+		super(new BitmapData(320, 480, true, 0x0000000));
+		
+		alphaBitmap = new BitmapData(320, 480, true, 0x11000000);
+   }
+   
+   public function fade(gfx:BitmapData)
+   {
+		bitmapData.copyPixels(gfx, gfx.rect, new Point(0, 0), alphaBitmap, null, true);
    }
    public function clear()
    {
-      bitmapData.fillRect(new Rectangle(0,0,320,480), 0);	
+      bitmapData.fillRect(new Rectangle(0,0,320,480), 0xff000000);	
    }
-   public function addSprite(gfx:BitmapData,point:Point, ?alpha=1.)
+   public inline function addSprite(gfx:BitmapData,point:Point, ?alpha=1.)
    {
-      bitmapData.copyPixels(gfx,gfx.rect, point, null, null, true);
+	   bitmapData.copyPixels(gfx,gfx.rect, point, null, null, true);
    }
-} 
+}
+/*
+#else 
 
+
+class Arena extends Sprite
+{
+	public var c:Int;
+	public var textures:Array<Bitmap>;
+	public var xy:Array<Float>;
+	
+	public function new()
+	{
+		super();
+		
+		c = 0;
+		textures = [];
+		xy = [];
+		
+		var b = BitmapData.load("dot_blue.png");
+		
+		for (i in 0...100)
+		{
+			var b = new Bitmap(b, null, false);
+			addChild(b);
+			
+			xy[i] = 0;
+			xy[i + 1] = 0;
+			
+			textures.push(b);
+		}
+	}
+	public function clear()
+	{
+	   c = 0;
+	}
+	public function addSprite(gfx:BitmapData,point:Point, ?alpha=1.)
+	{
+	   xy[c*2] = point.x;
+	   xy[c*2 + 1] = point.y;
+	   c++;
+	}
+
+	public function render()
+	{
+		for (i in 0...100)
+		{
+			var b = textures[i];
+			b.x = xy[i*2];
+			b.y = xy[i*2+1];
+		}
+	}
+}
+
+#end
+
+/*
 #else
 
 import nme.display.Graphics;
@@ -63,7 +127,7 @@ class Arena extends Sprite
 	
 	public function render()
 	{
-		trace("render" + xy[0] + " " + xy[1] + " " + colors[0]);
+		//trace("render" + xy[0] + " " + xy[1] + " " + colors[0]);
 		graphics.clear();
 		graphics.drawPoints(xy,colors);
 	}

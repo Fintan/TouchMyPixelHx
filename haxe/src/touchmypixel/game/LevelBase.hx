@@ -40,6 +40,7 @@ class LevelBase extends Sprite
 		//override
 	}
 	
+	
 	public function find<T>(type:Class<T>):List<T>
 	{
 		var items = new List();

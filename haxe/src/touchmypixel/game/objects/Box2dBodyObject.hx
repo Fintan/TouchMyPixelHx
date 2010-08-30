@@ -49,6 +49,12 @@ class Box2dBodyObject extends Object
 	{
 		super.destroy();
 		
+		contacts_add = null;
+		contacts_persist = null;
+		contacts_remove = null;
+		
+		body.SetUserData(null);
+		
 		simulation.world.DestroyBody(body);
 	}
 }

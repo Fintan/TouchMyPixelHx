@@ -29,17 +29,8 @@ class GravityWell implements Effector
 		var dy = particle.y - y;
 		var d = Math.sqrt(dx * dx + dy * dy);
 		//var d = FastMath.sqrt(dx * dx + dy * dy);
-		/*
-		var hw = 100;
-		var hh = 100;
-		if (particle.x > x - hw
-			&& particle.x < x + hw
-			&& particle.y > y - hh
-			&& particle.y < y + hh)
-		{
-		*/
-		//trace(d);
-		if(d < 100){
+		
+		if(d < 70){
 			var dx = x - particle.x;
 			var dy = y - particle.y;
 			var len = dx * dx + dy * dy;
@@ -55,5 +46,4 @@ class GravityWell implements Effector
 			particle.vy += forceY * dt;
 		}
 	}
-	
 }

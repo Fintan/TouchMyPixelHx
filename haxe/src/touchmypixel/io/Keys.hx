@@ -6,13 +6,18 @@ import flash.Lib;
 
 class Keys
 {
-	static public var keycodes: IntHash<Bool> = new IntHash();
-	static private var keyDownUsed: IntHash<Hash<Bool>> = new IntHash();
+	public static var inited:Bool = false;
+	public static var keycodes: IntHash<Bool> = new IntHash();
+	private static var keyDownUsed: IntHash<Hash<Bool>> = new IntHash();
 	
 	static public function init():Void
 	{
-		Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDown );
-		Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyUp );
+		if (!inited)
+		{
+			Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyDown );
+			Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyUp );
+		}
+		inited = true;
 	}
 	
 	static public function isDown( key:Int):Bool

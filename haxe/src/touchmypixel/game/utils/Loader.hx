@@ -26,11 +26,14 @@ class Loader
 		#if cpp
 			bd = BitmapData.load(src);
 		#else
-			bd = Type.createInstance(Type.resolveClass(src), [50, 50]);
+			var cl = Type.resolveClass(src);
+			if (cl == null)
+				throw "Cannot Attach Bitmap: " + src;
+			bd = Type.createInstance(cl, [50, 50]);
 		#end
 		
 		loaded.set(src, bd);
 		
-		return new Bitmap(bd);
+		return new Bitmap(loaded.get(src), PixelSnapping.AUTO, true);
 	}
 }

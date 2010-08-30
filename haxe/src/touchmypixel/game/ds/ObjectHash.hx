@@ -80,8 +80,8 @@ class ObjectHash < T >
 	public static inline function deregister(object:IObjectHashable)
 	{
 		registeredObjects.remove(object.__objectId);
-	
 	}
+	
 	public static inline function getObject(id:Int):IObjectHashable
 	{
 		return registeredObjects.get(id);

@@ -93,7 +93,7 @@ class Box2dSimulation extends Sprite
 		if (running) 
 		{	contactManager.clear();
 		
-			world.Step(1/38, iterations);
+			world.Step(1/50, iterations);
 			
 			if(autoUpdateObjects)
 				for (o in objects)
@@ -104,7 +104,7 @@ class Box2dSimulation extends Sprite
 	public function sync(gfx:DisplayObject, body:B2Body, ?bodyOffset:{ x:Float, y:Float, rotation:Float })
 	{
 		var position:B2Vec2 = body.GetPosition();
-		gfx.x = position.x * scale;
+		gfx.x = position.x * scale;            
 		gfx.y = position.y * scale;
 		gfx.rotation = body.GetXForm().R.GetAngle() * 180 / Math.PI;
 		
@@ -126,6 +126,24 @@ class Box2dSimulation extends Sprite
 	public function start()
 	{
 		running = true;
+	}
+	
+	public function destroy()
+	{
+		stop();
+		
+		if (objects != null)
+		{
+			for (o in objects)
+				o.destroy();
+		}
+			
+		world = null;
+		objects = null;
+		namedObjects = null;
+		bitmaps = null;
+		
+		contactManager.clear();
 	}
 	
 }

@@ -8,7 +8,7 @@ import flash.utils.Dictionary;
 import flash.utils.Timer;
 import flash.events.TimerEvent;
 
-class MemoryTracker 
+class GcTracker 
 {
     /// This is a facility to track the lifetime of specific objects
     static private var dict : Dictionary;
@@ -90,19 +90,13 @@ class MemoryTracker
 }
 #else 
 
-class MemoryTracker 
+class GcTracker 
 {
-	static public function track(obj, key) : Void 
-	{
-    }
+	static public function track(obj, key) : Void {}
 	
-    static function initTrackerIfNecessary() 
-	{
-    }
+    static function initTrackerIfNecessary() {}
 	
-    static function onTimer(event) : Void 
-	{
-    }
+    static function onTimer(event) : Void {}
 }
 
 #end
