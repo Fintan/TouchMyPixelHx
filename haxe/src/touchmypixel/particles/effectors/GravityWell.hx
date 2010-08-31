@@ -5,6 +5,8 @@
 
 package touchmypixel.particles.effectors;
 
+import deadsun.Deadsun;
+import touchmypixel.game.geom.AABB;
 import touchmypixel.particles.Particle;
 import touchmypixel.utils.FastMath;
 
@@ -14,33 +16,32 @@ class GravityWell implements Effector
 	public var y:Float;
 	public var force:Float;
 	public var effect:Float;
+	public var size:Float;
 	
-	public function new(x:Float,y:Float,?force:Float=10, ?effect:Float=1000) 
+	
+	public var aabb:AABB;
+	
+	public function new(x:Float,y:Float,?force:Float=10, ?effect:Float=1000, ?size:Float=70) 
 	{	
 		this.x = x;
 		this.y = y;
 		this.force = force;
 		this.effect = effect;
+		this.size = size;
 	}
 	
 	public function apply(particle:Particle, dt:Float):Void
 	{
-		var dx = particle.x - x;
-		var dy = particle.y - y;
-		var d = Math.sqrt(dx * dx + dy * dy);
-		//var d = FastMath.sqrt(dx * dx + dy * dy);
+		var dx = x - particle.x;
+		var dy = y - particle.y;
+		var lenM = dx * dx + dy * dy;
 		
-		if(d < 70){
-			var dx = x - particle.x;
-			var dy = y - particle.y;
-			var len = dx * dx + dy * dy;
-			var distance = Math.sqrt(len);
-			//var distance = FastMath.sqrt(len);
-			
+		if(lenM < size*size){
+			var len = Math.sqrt(lenM);
 			var e = effect/len;
 			e = Math.min(e, .7);
-			var forceX = e * dx / distance / particle.mass*force*(1-d/100);
-			var forceY = e * dy / distance / particle.mass*force*(1-d/100);
+			var forceX = e * dx / len / particle.mass*force*(1-len/size);
+			var forceY = e * dy / len / particle.mass*force*(1-len/size);
 			
 			particle.vx += forceX * dt;
 			particle.vy += forceY * dt;

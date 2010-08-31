@@ -16,15 +16,19 @@ class Loader
 	
 	public static function loadBitmap(src:String):Bitmap
 	{
+		// already loaded
 		if (loaded.exists(src))
 		{
 			return new Bitmap(loaded.get(src), PixelSnapping.AUTO, true);
 		}
 		
+		// load bitmap
 		var bd:BitmapData = null;
 		
-		#if cpp
+		#if iphone
 			bd = BitmapData.load(src);
+		#elseif cpp
+			bd = BitmapData.load("assets/"+src);
 		#else
 			var cl = Type.resolveClass(src);
 			if (cl == null)

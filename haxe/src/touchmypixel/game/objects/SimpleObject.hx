@@ -27,6 +27,8 @@ class SimpleObject extends Object
 	public var vy:Float;
 	public var vr:Float;
 	
+	public var autoMove:Bool;
+	
 	public function new() 
 	{
 		super();
@@ -37,6 +39,8 @@ class SimpleObject extends Object
 		maxVx = maxVy = 999999;
 		minVx = minVy = -999999;
 		dampX = dampY = dampR = .1;
+		 
+		autoMove = false;
 	}
 	
 	public inline function applyRestrictions(dt:Float)
@@ -65,8 +69,11 @@ class SimpleObject extends Object
 	
 	override public function update(dt:Float):Void
 	{
-		applyForces(dt);
-		applyRestrictions(dt);
+		if (autoMove)
+		{
+			applyForces(dt);
+			applyRestrictions(dt);
+		}
 	}
 }
 

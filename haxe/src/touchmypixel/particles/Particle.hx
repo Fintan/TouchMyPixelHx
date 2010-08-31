@@ -80,13 +80,13 @@ class Particle
 	**/
 	public inline function update(dt:Float) 
 	{ 
+		x += vx * dt;
+		y += vy * dt;
+		age += dt;
+		
 		for (effector in effectors) 
 			effector.apply(this, dt);
 		
-		x += vx * dt;
-		y += vy * dt;
-		
-		age += dt;
 		if (age > lifespan) isAlive = false;
 	}
 

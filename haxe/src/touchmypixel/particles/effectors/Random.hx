@@ -18,7 +18,7 @@ class Random implements Effector
 		this.amountY = amountY;
 	}
 
-	public function apply(p:Particle, dt:Float):Void
+	public inline function apply(p:Particle, dt:Float):Void
 	{
 		var r = Math.random()-.5;
 		p.vx += amountX*r*dt;

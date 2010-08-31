@@ -54,7 +54,6 @@ class Line
 		normal = Vector.getLeftNormal(tangent);
 	}
 	
-	
 	// draw the line + normals
 	#if flash
 	public function debugDraw(s:flash.display.Sprite)

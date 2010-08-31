@@ -3,14 +3,15 @@
  * @author waneck
  */
 
-package cmtc.ds.hash;
+package;
+
 import haxe.Serializer;
 import haxe.Unserializer;
 #if flash9
 typedef ObjectHash<Key, Val> = flash.utils.TypedDictionary<Key, Val>;
 #else
 
-class ObjectHash<Key, Val> 
+class ObjectHash <Key, Val> 
 {
 	private static inline var SAFE_NUM = #if neko 1073741823 #else 2147483647 #end;
 	private static var clsId:Int = 0;

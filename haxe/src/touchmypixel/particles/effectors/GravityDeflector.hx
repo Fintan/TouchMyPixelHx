@@ -21,9 +21,6 @@ class GravityDeflector extends GravityWell
 		var dy = y - particle.y;
 		var distSq = dx * dx + dy * dy;
 		
-		
-		
-		
 		if ( distSq == 0 )
 			return;
 			
@@ -38,5 +35,4 @@ class GravityDeflector extends GravityWell
 		particle.vx += dx * factor;
 		particle.vy += dy * factor;
 	}
-	
 }
