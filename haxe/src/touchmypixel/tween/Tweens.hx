@@ -44,11 +44,11 @@ class Tweens
 	{
 		var tweens = Tween.getActiveTweens();
 		for (t in tweens)
-			if (t.obj == object)
+			if (untyped t.obj == object)
 				t.stop();
 		
 		for (k in delayedTweens.keys())
-			if (delayedTweens.get(k).obj == object)
+			if (untyped delayedTweens.get(k).obj == object)
 				k.stop();
 	}
 	
