@@ -18,7 +18,6 @@ class GravityWell implements Effector
 	public var effect:Float;
 	public var size:Float;
 	
-	
 	public var aabb:AABB;
 	
 	public function new(x:Float,y:Float,?force:Float=10, ?effect:Float=1000, ?size:Float=70) 
@@ -27,24 +26,35 @@ class GravityWell implements Effector
 		this.y = y;
 		this.force = force;
 		this.effect = effect;
-		this.size = size;
+		this.size = size * 1.2;
+		
+		aabb = new AABB();
+		aabb.fromCircle(x, y, this.size);
+	}
+	
+	public function update()
+	{
+		aabb.fromCircle(x, y, this.size);
 	}
 	
 	public function apply(particle:Particle, dt:Float):Void
 	{
-		var dx = x - particle.x;
-		var dy = y - particle.y;
-		var lenM = dx * dx + dy * dy;
-		
-		if(lenM < size*size){
+		if (aabb.contains(particle.x, particle.y))
+		{
+			var dx = x - particle.x;
+			var dy = y - particle.y;
+			var lenM = dx * dx + dy * dy;
 			var len = Math.sqrt(lenM);
-			var e = effect/len;
-			e = Math.min(e, .7);
-			var forceX = e * dx / len / particle.mass*force*(1-len/size);
-			var forceY = e * dy / len / particle.mass*force*(1-len/size);
-			
-			particle.vx += forceX * dt;
-			particle.vy += forceY * dt;
+				
+			if(lenM < size*size*1){
+				var e = (effect*size)/len;
+				e = Math.min(e, .7);
+				var forceX = e * dx / len / particle.mass*force*(1-len/size);
+				var forceY = e * dy / len / particle.mass*force*(1-len/size);
+				
+				particle.vx += forceX * dt;
+				particle.vy += forceY * dt;
+			}
 		}
 	}
 }

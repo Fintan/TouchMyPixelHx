@@ -7,6 +7,7 @@ package;
 
 import haxe.Serializer;
 import haxe.Unserializer;
+
 #if flash9
 typedef ObjectHash<Key, Val> = flash.utils.TypedDictionary<Key, Val>;
 #else

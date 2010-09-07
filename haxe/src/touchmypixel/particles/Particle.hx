@@ -79,7 +79,7 @@ class Particle
 	 * Apply all of the effectors to the particle
 	**/
 	public inline function update(dt:Float) 
-	{ 
+	{
 		x += vx * dt;
 		y += vy * dt;
 		age += dt;
