@@ -187,15 +187,13 @@ StringTools.replace = function(s,sub,by) {
 StringTools.hex = function(n,digits) {
 	$s.push("StringTools::hex");
 	var $spos = $s.length;
-	var neg = false;
-	if(n < 0) {
-		neg = true;
-		n = -n;
-	}
-	var s = n.toString(16);
-	s = s.toUpperCase();
+	var s = "";
+	var hexChars = "0123456789ABCDEF";
+	do {
+		s = hexChars.charAt(n & 15) + s;
+		n >>>= 4;
+	} while(n > 0);
 	if(digits != null) while(s.length < digits) s = "0" + s;
-	if(neg) s = "-" + s;
 	{
 		$s.pop();
 		return s;
@@ -333,8 +331,9 @@ Std.parseInt = function(x) {
 		return null;
 	}
 	{
+		var $tmp = v;
 		$s.pop();
-		return v;
+		return $tmp;
 	}
 	$s.pop();
 }
@@ -424,23 +423,21 @@ touchmypixel.game.utils.JSFLTools.getChildren = function(timeline,includeGuideLa
 		return $tmp;
 	}
 	var els = new Array();
-	{
-		var _g = 0, _g1 = timeline.layers;
-		while(_g < _g1.length) {
-			var l = _g1[_g];
-			++_g;
-			if(l.layerType != "guide" || includeGuideLayers) {
-				var f = l.frames[0];
-				{
-					var _g2 = 0, _g3 = f.elements;
-					while(_g2 < _g3.length) {
-						var el = _g3[_g2];
-						++_g2;
-						els.push(el);
-					}
+	var i = timeline.layers.length - 1;
+	while(i >= 0) {
+		var l = timeline.layers[i];
+		if(l.layerType != "guide" || includeGuideLayers) {
+			var f = l.frames[0];
+			{
+				var _g = 0, _g1 = f.elements;
+				while(_g < _g1.length) {
+					var el = _g1[_g];
+					++_g;
+					els.unshift(el);
 				}
 			}
 		}
+		i--;
 	}
 	{
 		$s.pop();
@@ -747,9 +744,9 @@ js.Boot.__instanceof = function(o,cl) {
 			return true;
 		}
 	}
-	catch( $e1 ) {
+	catch( $e0 ) {
 		{
-			var e = $e1;
+			var e = $e0;
 			{
 				$e = [];
 				while($s.length >= $spos) $e.unshift($s.pop());
@@ -1138,8 +1135,8 @@ touchmypixel.game.LayoutWriter.prototype.parseParameters = function(result) {
 	xml += (" r=\"" + sc.rotation) + "\"";
 	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
 		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
-		{ var $it2 = def.keys();
-		while( $it2.hasNext() ) { var v = $it2.next();
+		{ var $it0 = def.keys();
+		while( $it0.hasNext() ) { var v = $it0.next();
 		{
 			xml += (((" " + v) + "=\"") + def.get(v)) + "\"";
 		}
@@ -1227,7 +1224,6 @@ touchmypixel.game.LayoutWriter.prototype.searchTimeline = function(inScope,store
 		while(_g < _g1.length) {
 			var el = _g1[_g];
 			++_g;
-			haxe.Log.trace(el,{ fileName : "LayoutWriter.hx", lineNumber : 291, className : "touchmypixel.game.LayoutWriter", methodName : "searchTimeline"});
 			if(touchmypixel.game.utils.JSFLTools.isInstance(el)) {
 				var el1 = el;
 				{
@@ -1239,26 +1235,26 @@ touchmypixel.game.LayoutWriter.prototype.searchTimeline = function(inScope,store
 						if(touchmypixel.game.utils.JSFLTools.isComponent(el21)) {
 							switch(el21.libraryItem.linkageClassName) {
 							case "Def_Layout":{
-								results.push({ type : "layout", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
+								results.unshift({ type : "layout", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
 							}break;
 							case "Def_Body":{
-								results.push({ type : "body", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
+								results.unshift({ type : "body", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
 							}break;
 							case "Def_Shape":{
-								results.push({ type : "shape", info : el21, scope : el1, children : null});
+								results.unshift({ type : "shape", info : el21, scope : el1, children : null});
 							}break;
 							case "Def_Object":{
-								results.push({ type : "object", info : el21, scope : el1, children : null});
+								results.unshift({ type : "object", info : el21, scope : el1, children : null});
 							}break;
 							case "Def_GameObject":{
-								results.push({ type : "gameObject", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
+								results.unshift({ type : "gameObject", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
 							}break;
 							}
 						}
 					}
 				}
 				if(touchmypixel.game.utils.JSFLTools.isBitmap(el1)) {
-					results.push({ type : "bitmap", info : el1, scope : el1, children : null});
+					results.unshift({ type : "bitmap", info : el1, scope : el1, children : null});
 				}
 			}
 		}
@@ -1293,9 +1289,9 @@ Hash.prototype.exists = function(key) {
 			return $tmp;
 		}
 	}
-	catch( $e3 ) {
+	catch( $e0 ) {
 		{
-			var e = $e3;
+			var e = $e0;
 			{
 				$e = [];
 				while($s.length >= $spos) $e.unshift($s.pop());
@@ -1329,7 +1325,7 @@ Hash.prototype.iterator = function() {
 	var $spos = $s.length;
 	{
 		var $tmp = { ref : this.h, it : this.keys(), hasNext : function() {
-			$s.push("Hash::iterator@214");
+			$s.push("Hash::iterator@81");
 			var $spos = $s.length;
 			{
 				var $tmp = this.it.hasNext();
@@ -1338,7 +1334,7 @@ Hash.prototype.iterator = function() {
 			}
 			$s.pop();
 		}, next : function() {
-			$s.push("Hash::iterator@215");
+			$s.push("Hash::iterator@82");
 			var $spos = $s.length;
 			var i = this.it.next();
 			{
@@ -1394,8 +1390,8 @@ Hash.prototype.toString = function() {
 	var s = new StringBuf();
 	s.b[s.b.length] = "{";
 	var it = this.keys();
-	{ var $it4 = it;
-	while( $it4.hasNext() ) { var i = $it4.next();
+	{ var $it0 = it;
+	while( $it0.hasNext() ) { var i = $it0.next();
 	{
 		s.b[s.b.length] = i;
 		s.b[s.b.length] = " => ";
@@ -1455,8 +1451,9 @@ js.Boot.__init();
 	}
 }
 {
-	Date.now = function() {
-		$s.push("@Main::new@124");
+	var d = Date;
+	d.now = function() {
+		$s.push("@Main::new@117");
 		var $spos = $s.length;
 		{
 			var $tmp = new Date();
@@ -1465,31 +1462,31 @@ js.Boot.__init();
 		}
 		$s.pop();
 	}
-	Date.fromTime = function(t) {
-		$s.push("@Main::new@127");
+	d.fromTime = function(t) {
+		$s.push("@Main::new@120");
 		var $spos = $s.length;
-		var d = new Date();
-		d["setTime"](t);
+		var d1 = new Date();
+		d1["setTime"](t);
 		{
 			$s.pop();
-			return d;
+			return d1;
 		}
 		$s.pop();
 	}
-	Date.fromString = function(s) {
-		$s.push("@Main::new@136");
+	d.fromString = function(s) {
+		$s.push("@Main::new@129");
 		var $spos = $s.length;
 		switch(s.length) {
 		case 8:{
 			var k = s.split(":");
-			var d = new Date();
-			d["setTime"](0);
-			d["setUTCHours"](k[0]);
-			d["setUTCMinutes"](k[1]);
-			d["setUTCSeconds"](k[2]);
+			var d1 = new Date();
+			d1["setTime"](0);
+			d1["setUTCHours"](k[0]);
+			d1["setUTCMinutes"](k[1]);
+			d1["setUTCSeconds"](k[2]);
 			{
 				$s.pop();
-				return d;
+				return d1;
 			}
 		}break;
 		case 10:{
@@ -1516,24 +1513,24 @@ js.Boot.__init();
 		}
 		$s.pop();
 	}
-	Date.prototype["toString"] = function() {
-		$s.push("@Main::new@165");
+	d.prototype["toString"] = function() {
+		$s.push("@Main::new@158");
 		var $spos = $s.length;
 		var date = this;
 		var m = date.getMonth() + 1;
-		var d = date.getDate();
+		var d1 = date.getDate();
 		var h = date.getHours();
 		var mi = date.getMinutes();
 		var s = date.getSeconds();
 		{
-			var $tmp = (((((((((date.getFullYear() + "-") + ((m < 10?"0" + m:"" + m))) + "-") + ((d < 10?"0" + d:"" + d))) + " ") + ((h < 10?"0" + h:"" + h))) + ":") + ((mi < 10?"0" + mi:"" + mi))) + ":") + ((s < 10?"0" + s:"" + s));
+			var $tmp = (((((((((date.getFullYear() + "-") + ((m < 10?"0" + m:"" + m))) + "-") + ((d1 < 10?"0" + d1:"" + d1))) + " ") + ((h < 10?"0" + h:"" + h))) + ":") + ((mi < 10?"0" + mi:"" + mi))) + ":") + ((s < 10?"0" + s:"" + s));
 			$s.pop();
 			return $tmp;
 		}
 		$s.pop();
 	}
-	Date.prototype.__class__ = Date;
-	Date.__name__ = ["Date"];
+	d.prototype.__class__ = d;
+	d.__name__ = ["Date"];
 }
 {
 	String.prototype.__class__ = String;
@@ -1550,11 +1547,12 @@ js.Boot.__init();
 	Void = { __ename__ : ["Void"]}
 }
 {
+	Math.__name__ = ["Math"];
 	Math.NaN = Number["NaN"];
 	Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
 	Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
 	Math.isFinite = function(i) {
-		$s.push("@Main::new@73");
+		$s.push("@Main::new@69");
 		var $spos = $s.length;
 		{
 			var $tmp = isFinite(i);
@@ -1564,7 +1562,7 @@ js.Boot.__init();
 		$s.pop();
 	}
 	Math.isNaN = function(i) {
-		$s.push("@Main::new@85");
+		$s.push("@Main::new@81");
 		var $spos = $s.length;
 		{
 			var $tmp = isNaN(i);
@@ -1573,7 +1571,6 @@ js.Boot.__init();
 		}
 		$s.pop();
 	}
-	Math.__name__ = ["Math"];
 }
 {
 	js.Lib.document = document;

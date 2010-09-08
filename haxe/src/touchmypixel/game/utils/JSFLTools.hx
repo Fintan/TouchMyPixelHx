@@ -57,14 +57,17 @@ class JSFLTools
 			return [];
 		
 		var els = new Array();
-		for (l in timeline.layers)
-		{	
+		
+		var i = timeline.layers.length - 1;
+		while (i >= 0) { 
+			var l = timeline.layers[i];
 			if (l.layerType != "guide" || includeGuideLayers)
 			{
 				var f = l.frames[0];
 				for (el in f.elements)
-					els.push(el); 
+					els.unshift(el);
 			}
+			i--;
 		}
 		return els;
 	}

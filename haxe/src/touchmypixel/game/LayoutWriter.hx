@@ -301,20 +301,20 @@ class LayoutWriter
 						switch(el2.libraryItem.linkageClassName)
 						{
 							case "Def_Layout":
-								results.push( { type:"layout", info:cast el2, scope:el, children:searchTimeline(el.getTimeline()) } );
+								results.unshift( { type:"layout", info:cast el2, scope:el, children:searchTimeline(el.getTimeline()) } );
 								
 							case "Def_Body":
 								
-								results.push( { type:"body", info:cast el2, scope:el, children:searchTimeline(el.getTimeline()) } );
+								results.unshift( { type:"body", info:cast el2, scope:el, children:searchTimeline(el.getTimeline()) } );
 							
 							case "Def_Shape":
-								results.push( { type:"shape", info:cast el2, scope:el, children:null } );
+								results.unshift( { type:"shape", info:cast el2, scope:el, children:null } );
 								
 							case "Def_Object":
-								results.push( { type:"object", info:cast el2, scope:el, children:null } );
+								results.unshift( { type:"object", info:cast el2, scope:el, children:null } );
 								
 							case "Def_GameObject":
-								results.push( { type:"gameObject", info:cast el2, scope:el, children:searchTimeline(el.getTimeline()) } );	
+								results.unshift( { type:"gameObject", info:cast el2, scope:el, children:searchTimeline(el.getTimeline()) } );	
 						}
 					}
 						
@@ -322,7 +322,7 @@ class LayoutWriter
 				}
 				if (el.isBitmap())
 				{
-					results.push( { type:"bitmap", info:cast el, scope:el, children:null } );	
+					results.unshift( { type:"bitmap", info:cast el, scope:el, children:null } );	
 				}
 			}
 		}
