@@ -56,6 +56,7 @@ class LayoutWriter
 		path = path.substr(0, path.lastIndexOf("."));
 		path += ".xml";
 		
+		
 		trace('EXPORTED: ' +path);
 		
 		FLfile.write(path, xml);

@@ -79,7 +79,7 @@ class Level extends LevelBase
 		 * A simulation holds the boxd2 world, and is used as the scope to draw draphics into. 
 		 * There is functionality to sync the transforms of bodies and graphics.
 		 */
-		simulation = new Box2dSimulation(false);
+		simulation = new Box2dSimulation(true);
 		simulation.initGravity.y = 250/simulation.scale;
 		simulation.initAABB.upperBound.x = 10000;
 		simulation.autoUpdateObjects = true;

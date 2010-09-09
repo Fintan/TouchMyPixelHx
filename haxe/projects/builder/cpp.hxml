@@ -1,7 +1,7 @@
 -cp ../../src
 -cp src
--cp C:/ALL/DEVELOPMENT/_REPOS/nme/version2/
 -cpp cpp
 -resource bin/layouts.xml@layouts
+-lib nme
 -main Main
 --remap flash:nme 

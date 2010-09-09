@@ -11,25 +11,22 @@ class Tweens
 {
 	public static var delayedTweens:ObjectHash<Timer,Tween> = new ObjectHash();
 	
-	public static var get:Dynamic->String->Dynamic = Reflect.field;
-	public static var set:Dynamic->String->Dynamic->Void = Reflect.setField;
-	
 	public static function addTweens(object:Dynamic, properties:Dynamic, settings:Dynamic):Void
 	{
-		var time = get(settings, "time") != null ? get(settings, "time") : 1000;
-		var easing = get(settings, "easing") != null ? get(settings, "easing") : Cubic.easeOut;
-		var delay = get(settings, "delay");
+		var time = Reflect.field(settings, "time") != null ? Reflect.field(settings, "time") : 1;
+		var easing = Reflect.field(settings, "easing") != null ? Reflect.field(settings, "easing") : Cubic.easeOut;
+		var delay:Dynamic =Reflect.field(settings, "delay");
 		
 		var isFirst:Bool = true;
 		var propertyFields = Reflect.fields(properties);
 		for (p in propertyFields)
 		{
-			var init = get(object, p);
+			var init = Reflect.field(object, p);
 			
-			var tween:Tween = new Tween(init, get(properties, p), time, object, p, easing);	
+			var tween:Tween = new Tween(init, Reflect.field(properties, p), time*1000, object, p, easing);	
 			
 			if(isFirst)
-				tween.setTweenHandlers(get(settings, "onUpdate"), get(settings, "onEnd"));
+				tween.setTweenHandlers(Reflect.field(settings, "onUpdate"), Reflect.field(settings, "onEnd"));
 			
 			if (delay == null)
 				tween.start();
@@ -57,7 +54,7 @@ class Tweens
 		var timer = new Timer(time);
 		timer.run = function()
 		{
-			delayedTweens.remove(timer);
+			delayedTweens.delete(timer);
 			
 			tween.start();
 			

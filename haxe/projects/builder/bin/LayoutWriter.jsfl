@@ -1036,7 +1036,7 @@ touchmypixel.game.LayoutWriter.prototype.parseElementPoly = function(s,scope) {
 			}
 		}
 	}
-	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace(((("WARNING: shape not closed: " + scope.name) + " [") + scope.libraryItem.linkageClassName) + "]",{ fileName : "LayoutWriter.hx", lineNumber : 264, className : "touchmypixel.game.LayoutWriter", methodName : "parseElementPoly"});
+	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace(((("WARNING: shape not closed: " + scope.name) + " [") + scope.libraryItem.linkageClassName) + "]",{ fileName : "LayoutWriter.hx", lineNumber : 265, className : "touchmypixel.game.LayoutWriter", methodName : "parseElementPoly"});
 	var p = null;
 	{
 		var _g1 = 0, _g = points.length;
@@ -1211,7 +1211,7 @@ touchmypixel.game.LayoutWriter.prototype.saveXml = function(xml) {
 	var path = this.doc.pathURI;
 	path = path.substr(0,path.lastIndexOf("."));
 	path += ".xml";
-	haxe.Log.trace("EXPORTED: " + path,{ fileName : "LayoutWriter.hx", lineNumber : 59, className : "touchmypixel.game.LayoutWriter", methodName : "saveXml"});
+	haxe.Log.trace("EXPORTED: " + path,{ fileName : "LayoutWriter.hx", lineNumber : 60, className : "touchmypixel.game.LayoutWriter", methodName : "saveXml"});
 	jsfl.FLfile.write(path,xml);
 	$s.pop();
 }

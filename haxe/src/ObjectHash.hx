@@ -170,7 +170,7 @@ class ObjectHash <Key, Val>
 		return false;
 	}
 	
-	public function remove(k:Key):Bool
+	public function delete(k:Key):Bool
 	{
 		var oid = getObjectId(k);
 		

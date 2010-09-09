@@ -90,6 +90,7 @@ extern class Fl {
 	public static var xmlui:XMLUI;
 	
 	//CS4
+	#if cs4
 	public static var externalLibraryPath:String;
 	public static var flexSDKPath:String;
 	public static function isFontInstalled(fontName:String):Bool;
@@ -97,6 +98,7 @@ extern class Fl {
 	public static var presetPanel(default, null):PresetPanel;
 	public static var sourcePath:String;
 	public static var swfPanels(default, null):Array<SwfPanel>;
+	#end
 	
 	public static function __init__():Void{
 		//generate package object
