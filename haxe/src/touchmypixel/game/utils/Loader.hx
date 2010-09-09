@@ -8,7 +8,9 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.events.Event;
-import flash.net.URLRequest;
+import flash.media.Sound;
+import flash.media.Sound;
+import flash.net.URLRequest; 
 
 class Loader 
 {
@@ -39,5 +41,28 @@ class Loader
 		loaded.set(src, bd);
 		
 		return new Bitmap(loaded.get(src), PixelSnapping.AUTO, true);
+	}
+	
+	public static function loadSound(url:String):Sound
+	{
+		if (loaded.exists(url))
+			return cast(loaded.get(url), Sound);
+		
+		var sound:Sound = null;
+		
+		#if iphone
+			sound = new Sound(new URLRequest(url));
+		#elseif cpp
+			sound = new Sound(new URLRequest("assets/" + url));
+		#else
+			var cl = Type.resolveClass(url);
+			if (cl == null)
+				throw "Cannot Attach Sound: " + url;
+			sound = Type.createInstance(cl, [url]);
+		#end
+		
+		loaded.set(url, sound);
+		
+		return sound;
 	}
 }

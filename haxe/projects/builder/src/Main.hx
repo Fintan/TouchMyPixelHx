@@ -23,8 +23,9 @@ class Main
 		#if js
 			new touchmypixel.game.LayoutWriter();
 		#elseif flash
-			new BitmapExample();
-			//new RacingExample();
+			//new SimpleExample();
+			//new BitmapExample();
+			new RacingExample();
 			//new test_creator.TestXML();
 		#else
 			flash.Lib.create(function() { flash.Lib.current.addChild(new test.RacingExample()); }, 800, 600, 100, 0xffffff, (1 * nme.Lib.HARDWARE) | nme.Lib.RESIZABLE);

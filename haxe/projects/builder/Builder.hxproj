@@ -6,8 +6,8 @@
     <movie input="" />
     <movie path="bin\Box2dBuilder.swf" />
     <movie fps="120" />
-    <movie width="480" />
-    <movie height="320" />
+    <movie width="800" />
+    <movie height="600" />
     <movie version="9" />
     <movie background="#FFFFFF" />
   </output>
@@ -21,8 +21,7 @@
     <option directives="" />
     <option flashStrict="False" />
     <option mainClass="Main" />
-    <option override="False" />
-    <option verbose="False" />
+    <option enabledebug="False" />
     <option additional="-resource bin/layouts.xml@layouts&#xA;-swf-lib bin/layouts.swf" />
   </build>
   <!-- haxelib libraries -->

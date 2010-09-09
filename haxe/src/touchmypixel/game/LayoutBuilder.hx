@@ -186,9 +186,12 @@ class LayoutBuilder
 			
 			if (shape != null)
 			{
-				shape.filter.categoryBits = Std.parseInt(bodyInfo.att.categoryBits);
-				shape.filter.maskBits = Std.parseInt(bodyInfo.att.maskBits);
-				shape.filter.groupIndex = Std.parseInt(bodyInfo.att.groupIndex);
+				if (bodyInfo.has.categoryBits)
+					shape.filter.categoryBits = Std.parseInt(bodyInfo.att.categoryBits);
+				if (bodyInfo.has.maskBits)
+					shape.filter.maskBits = Std.parseInt(bodyInfo.att.maskBits);
+				if (bodyInfo.has.groupIndex)
+					shape.filter.groupIndex = Std.parseInt(bodyInfo.att.groupIndex);
 				if(bodyInfo.x.exists("sensor"))
 					shape.isSensor = bodyInfo.att.sensor == "true";
 				b2body.CreateShape(shape);

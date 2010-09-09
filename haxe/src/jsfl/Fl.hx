@@ -1,9 +1,5 @@
 package jsfl;
 
-#if jsfl
-#else error
-#end
-
 typedef JSFLPoint = {
 	x:Float,
 	y:Float

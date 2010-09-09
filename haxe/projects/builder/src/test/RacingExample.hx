@@ -93,8 +93,8 @@ class Level extends LevelBase
 		 * The builder creates the scene from the an xml layout file 
 		 */
 		builder = new LayoutBuilder(Resource.getString("layouts"));
-		builder.buildLayout(builder.layo  uts.get("racing"), simulation);
-		car = cast simulation.objects[0];
+		builder.buildLayout(builder.layouts.get("racing"), simulation);
+		car = cast simulation.namedObjects.get("test1");
 		
 		for (o in simulation.objects)
 			o.init();

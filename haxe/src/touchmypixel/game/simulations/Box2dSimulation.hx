@@ -6,6 +6,7 @@
 package touchmypixel.game.simulations;
 
 import box2D.collision.B2AABB;
+import box2D.collision.shapes.B2Shape;
 import box2D.common.math.B2Vec2;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2DebugDraw;	
@@ -42,6 +43,8 @@ class Box2dSimulation extends Sprite
 	
 	public var autoUpdateObjects:Bool;
 	
+	public var mousePos:B2Vec2;
+	
 	public function new(?debug:Bool=true) 
 	{
 		super();
@@ -68,6 +71,8 @@ class Box2dSimulation extends Sprite
 		objects = [];
 		namedObjects = new Hash();
 		bitmaps = [];
+		
+		mousePos = new B2Vec2();
 	}
 	
 	public function init()
@@ -146,4 +151,33 @@ class Box2dSimulation extends Sprite
 		contactManager.clear();
 	}
 	
+	public function getBodyAtMouse( ?includeStatic : Bool = false) : B2Body 
+	{
+		var mx = mouseX / scale;
+		var my = mouseY / scale;
+		mousePos.Set( mx, my );
+		
+		var aabb = new B2AABB();
+		aabb.lowerBound.Set( mx - 0.005, my - 0.005 );
+		aabb.upperBound.Set( mx + 0.005, mx + 0.005 );
+		var maxCount = 10;
+		var shapes = new Array<Dynamic>();
+		var count = world.Query( aabb, shapes, maxCount );
+		var body = null;
+		
+		for ( i in 0 ... count ) 
+		{
+			if ( shapes[i].GetBody().IsStatic() == false || includeStatic ) 
+			{
+				var tShape = cast( shapes[i], B2Shape );
+				var inside = tShape.TestPoint( tShape.GetBody().GetXForm(), mousePos );
+				if ( inside ) 
+				{
+					body = tShape.GetBody();
+					break;
+				}
+			}
+		}
+		return body;
+	}
 }
