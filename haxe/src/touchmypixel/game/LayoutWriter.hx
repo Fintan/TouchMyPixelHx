@@ -263,7 +263,10 @@ class LayoutWriter
 		// give a warning for non closed shapes
 		if (lastPoint.x != points[0].x || lastPoint.y != points[0].y)
 			trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]");
+		else
+			points.shift();
 		
+		//if (lastPoint.x == points[0].x && lastPoint.y == points[0].y)
 		
 		var p = null;
 		//for (p in points){

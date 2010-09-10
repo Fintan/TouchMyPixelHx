@@ -35,7 +35,7 @@ class ShapeTools
 		var i = points.length-1;
 		for(c in 0...points.length)
 		{
-			s.vertices[c].Set((points[i][0]* scaleX + offsetX)/ worldScale , (points[i][1]* scaleY + offsetY)/ worldScale );
+			s.vertices[c].Set((points[i][0] * scaleX + offsetX) / worldScale , (points[i][1] * scaleY + offsetY) / worldScale );
 			i--;
 		}
 			

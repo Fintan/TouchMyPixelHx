@@ -181,7 +181,7 @@ class LayoutBuilder
 				case "circle": parseCircle(new Fast(elementInfo), bodyInfo);
 				case "rect": parsePoly(new Fast(elementInfo), bodyInfo);
 				case "shape": parseShape(new Fast(elementInfo), bodyInfo);
-				case "bitmap": createBitmap(new Fast(elementInfo),body); null;
+				case "bitmap": null;
 			}
 			
 			if (shape != null)

@@ -1037,6 +1037,7 @@ touchmypixel.game.LayoutWriter.prototype.parseElementPoly = function(s,scope) {
 		}
 	}
 	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace(((("WARNING: shape not closed: " + scope.name) + " [") + scope.libraryItem.linkageClassName) + "]",{ fileName : "LayoutWriter.hx", lineNumber : 265, className : "touchmypixel.game.LayoutWriter", methodName : "parseElementPoly"});
+	else points.shift();
 	var p = null;
 	{
 		var _g1 = 0, _g = points.length;
