@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<layout name="blah">
+	<component def="gameObject" name="player"
+	<body name="" x="0" y="0">
+	</body>
+</layout>

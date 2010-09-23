@@ -8,6 +8,7 @@ package touchmypixel.game;
 import box2D.collision.shapes.B2ShapeDef;
 import box2D.dynamics.B2BodyDef;
 import box2D.dynamics.B2World;
+import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 import touchmypixel.game.box2d.ShapeTools;
@@ -18,6 +19,12 @@ import touchmypixel.game.objects.BuilderGameObject;
 import touchmypixel.game.objects.Object;
 import touchmypixel.game.simulations.Box2dSimulation;
 import touchmypixel.game.utils.Loader;
+
+typedef LayoutInfo = 
+{
+	var width : Float;
+	var height : Float;
+}
 
 class LayoutBuilder
 {
@@ -38,6 +45,14 @@ class LayoutBuilder
 			layouts.set(n.att.name, n);
 	}
 	
+	public function getLayoutInfo(name:String) : LayoutInfo
+	{
+		if ( !layouts.exists(name) )
+			return null;
+		
+		var lo = layouts.get(name);
+		return { width:Std.parseFloat(lo.att.w), height:Std.parseFloat(lo.att.h) };
+	}
 	
 	public function buildLayout(layout:Fast, simulation:Box2dSimulation)
 	{
@@ -118,6 +133,7 @@ class LayoutBuilder
 			throw "Class: " + n + " cannot be built, as it doesnt exist";
 		
 		var object:Object = Type.createInstance(c, []);
+		//var object:DisplayObject = Type.createInstance(c, []);
 		object.x = f(objectInfo.att.x);
 		object.y = f(objectInfo.att.y);
 		object.scaleX = f(objectInfo.att.sx);
@@ -174,27 +190,33 @@ class LayoutBuilder
 		 * Build shapes that are inside the body
 		 */
 		for (elementInfo in bodyInfo.x.elements())
-		{
-			var shape:B2ShapeDef = switch(elementInfo.nodeName)
+		{			
+			var shapes:Array<B2ShapeDef> = switch(elementInfo.nodeName)
 			{
-				case "poly": parsePoly(new Fast(elementInfo), bodyInfo);
-				case "circle": parseCircle(new Fast(elementInfo), bodyInfo);
-				case "rect": parsePoly(new Fast(elementInfo), bodyInfo);
+				case "poly": [parsePoly(new Fast(elementInfo), bodyInfo)];
+				case "circle": [parseCircle(new Fast(elementInfo), bodyInfo)];
+				case "rect": [parsePoly(new Fast(elementInfo), bodyInfo)];
 				case "shape": parseShape(new Fast(elementInfo), bodyInfo);
 				case "bitmap": null;
 			}
 			
-			if (shape != null)
+			if ( shapes != null )
 			{
-				if (bodyInfo.has.categoryBits)
-					shape.filter.categoryBits = Std.parseInt(bodyInfo.att.categoryBits);
-				if (bodyInfo.has.maskBits)
-					shape.filter.maskBits = Std.parseInt(bodyInfo.att.maskBits);
-				if (bodyInfo.has.groupIndex)
-					shape.filter.groupIndex = Std.parseInt(bodyInfo.att.groupIndex);
-				if(bodyInfo.x.exists("sensor"))
-					shape.isSensor = bodyInfo.att.sensor == "true";
-				b2body.CreateShape(shape);
+				for ( shape in shapes )
+				{
+					if (shape != null)
+					{
+						if (bodyInfo.has.categoryBits)
+							shape.filter.categoryBits = Std.parseInt(bodyInfo.att.categoryBits);
+						if (bodyInfo.has.maskBits)
+							shape.filter.maskBits = Std.parseInt(bodyInfo.att.maskBits);
+						if (bodyInfo.has.groupIndex)
+							shape.filter.groupIndex = Std.parseInt(bodyInfo.att.groupIndex);
+						if(bodyInfo.x.exists("sensor"))
+							shape.isSensor = bodyInfo.att.sensor == "true";
+						b2body.CreateShape(shape);
+					}
+				}
 			}
 				
 			switch(elementInfo.nodeName)
@@ -284,10 +306,30 @@ class LayoutBuilder
 		return shape;
 	}
 	
-	private function parseShape(el:Fast, body:Fast):B2ShapeDef
+	private function parseShape(shapeInfo:Fast, bodyInfo:Fast):Array<B2ShapeDef>
 	{
 		// implement
-		return null;
+		//trace("parseShape bitches");
+		var shapes = new Array<B2ShapeDef>();
+		for (childInfo in shapeInfo.x.elements())
+		{
+			var shape:B2ShapeDef = switch(childInfo.nodeName)
+			{
+				case "poly": parsePoly(new Fast(childInfo), bodyInfo);
+				case "circle": parseCircle(new Fast(childInfo), bodyInfo);
+				case "rect": parsePoly(new Fast(childInfo), bodyInfo);
+			}
+			
+			if (shape != null)
+			{
+				shape.userData = { name232:"Yo Mamma!" };
+				//trace("SHAPE DATA!@!" + shapeInfo.x);
+				shape.isSensor = (shapeInfo.att.isSensor == "true");
+				shapes.push(shape);
+			}
+		}
+		
+		return shapes;
 	}
 	
 	public inline function f(v:String)

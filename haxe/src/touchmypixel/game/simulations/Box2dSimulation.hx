@@ -30,7 +30,7 @@ class Box2dSimulation extends Sprite
 	public var initDoSleep:Bool;
 	
 	private var dbgDraw:B2DebugDraw;
-	public var debugDrawScope:Box2dSimulation;
+	public var debugDrawScope:Sprite;
 	
 	public var running:Bool;
 	public var debug:Bool;
@@ -80,7 +80,7 @@ class Box2dSimulation extends Sprite
 		world = new B2World(initAABB, initGravity, initDoSleep);
 		
 		contactManager = new ContactManager();
-		world.SetContactListener(contactManager);
+		//world.SetContactListener(contactManager);
 		
 		dbgDraw = new B2DebugDraw();
 		dbgDraw.m_sprite = debugDrawScope;
@@ -96,7 +96,8 @@ class Box2dSimulation extends Sprite
 	public function update(dt:Float)
 	{
 		if (running) 
-		{	contactManager.clear();
+		{	
+			//contactManager.clear();
 		
 			world.Step(1/50, iterations);
 			

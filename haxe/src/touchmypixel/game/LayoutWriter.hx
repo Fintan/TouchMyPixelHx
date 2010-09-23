@@ -20,6 +20,8 @@ import jsfl.SymbolInstance;
 import jsfl.SymbolItem;
 import jsfl.Timeline;
 
+import touchmypixel.geom.Triangulator;
+
 import touchmypixel.game.utils.JSFLTools;
 
 using touchmypixel.game.utils.JSFLTools;
@@ -41,11 +43,15 @@ class LayoutWriter
 		lib = doc.library;
 		root = doc.timelines[0];
 		
+		Fl.outputPanel.clear();
+		
 		var results = searchTimeline(root);
 		
 		var xml = parseResults(results);
 		
 		//trace(xml);
+		
+		
 		
 		saveXml(xml);
 	}
@@ -83,7 +89,9 @@ class LayoutWriter
 	private function parseLayout(result:Result):String
 	{
 		
-		var xml = '<layout ' + parseParameters(result) + '>\n';
+		var xml = '<layout ' + parseParameters(result);
+		xml += ' w="' + result.scope.width + '" h="' + result.scope.height + '"';
+		xml += '>\n';
 		
 		xml += parseResults(result.children);
 		
@@ -189,7 +197,7 @@ class LayoutWriter
 	
 	public function parseElementCircle(s:Shape):String
 	{
-		var xml  = '<circle x="'+s.x+'" y="'+s.y+'" w="'+s.width+'"  h="'+s.height+'" r="'+s.rotation+'" sx="'+s.scaleX+'" sy="'+s.scaleY+'" />\n';
+		var xml  = '\t<circle x="'+s.x+'" y="'+s.y+'" w="'+s.width+'"  h="'+s.height+'" r="'+s.rotation+'" sx="'+s.scaleX+'" sy="'+s.scaleY+'" />\n';
 		return xml;
 	}
 	
@@ -199,7 +207,8 @@ class LayoutWriter
 		return xml;
 	}
 	
-	public function parseElementPoly(s:Shape, scope:SymbolInstance):String
+	/*
+	 * public function parseElementPoly(s:Shape, scope:SymbolInstance):String
 	{
 		var xml  = "";
 		
@@ -211,7 +220,7 @@ class LayoutWriter
 			xml += '<poly x="0" y="0" r="0" scaleX="1" scaleY="1" >\n';
 		}
 		
-		var points = [];
+		var points = new Array<JSFLPoint>();
 		var lastPoint = null; 
 					
 		// Put the edges into order as they are in random order
@@ -260,11 +269,19 @@ class LayoutWriter
 			}
 		}
 		
+		if ( !Triangulator.isWindingDirectionCCW(points) )
+			points.reverse();
+		
 		// give a warning for non closed shapes
 		if (lastPoint.x != points[0].x || lastPoint.y != points[0].y)
 			trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]");
 		else
 			points.shift();
+			
+		var triangles = Triangulator.triangulate(points);
+		//trace(triangles);
+		var polys = Triangulator.polygonizeTriangles(triangles);
+		//trace(polys);
 		
 		//if (lastPoint.x == points[0].x && lastPoint.y == points[0].y)
 		
@@ -280,6 +297,173 @@ class LayoutWriter
 		}
 		
 		xml += '</poly>\n';
+		
+		return xml;
+	}
+	*/
+	
+	public function parseElementPoly(s:Shape, scope:SymbolInstance):String
+	{
+		var xml  = "";
+		
+		//if (s.isGroup)
+		//{
+			//s.beginEdit();
+			//var e = s.edges[0];
+			//var p = e.getControl(0);
+			//var px = p.x;
+			//var py = p.y;
+			//e.setControl(0, 1000, 1000);
+			//s.endEdit();
+			//
+			//s.beginEdit();
+			//e.setControl(0, px, py);
+			//s.endEdit();			
+		//}
+		
+		// only save shape transform info if the shape is in a group (or primitive)
+		//if (s.isGroup)
+		//{	
+			//xml += '<poly x="'+s.x+'" y="'+s.y+'" w="'+s.width+'"  h="'+s.height+'" r="'+s.rotation+'" sx="'+s.scaleX+'" sy="'+s.scaleY+'">\n';
+		//} else {
+			//xml += '<poly x="0" y="0" r="0" scaleX="1" scaleY="1" >\n';
+		//}
+		
+		var points = new Array<JSFLPoint>();
+		var lastPoint = null; 
+					
+		// Put the edges into order as they are in random order
+		for (e in s.edges)
+		{
+			var p1 = e.getControl(0);
+			var p2 = e.getControl(2);
+			
+			if (points.length == 0)
+			{
+				points.push(e.getControl(0));
+				points.push(e.getControl(2));
+				lastPoint = e.getControl(2);
+			} else {
+				for (e2 in s.edges)
+				{
+					var p1 = e2.getControl(0);
+					var p2 = e2.getControl(2);
+					if (p1.x == lastPoint.x && p1.y == lastPoint.y)
+					{
+						points.push(p2);
+						lastPoint = p2;
+						break;
+					}
+				}
+			}
+		}
+		
+		if ( s.isGroup )
+		{
+			if ( points.length == 0 )
+				throw "No points for bounding box";
+				
+			// Calculate bounding box coordinates based on point values
+			var left = points[0].x;
+			var top = points[0].y;
+			var right = points[0].x;
+			var bottom = points[0].y;
+			
+			for ( i in 1 ... points.length )
+			{
+				if ( points[i].x < left )
+					left = points[i].x;
+				if ( points[i].x > right )
+					right = points[i].x;
+				if ( points[i].y < top )
+					top = points[i].y;
+				if ( points[i].y > bottom )
+					bottom = points[i].y;
+			}
+			
+			// Calculate the center of the bounding box
+			var cx = (right + left) / 2;
+			var cy = (bottom + top) / 2;
+			
+			//trace("center: " + cx + "," + cy );
+			
+			// Offset all points from center position
+			for ( i in 0 ... points.length )
+			{
+				points[i].x -= cx;
+				points[i].y -= cy;
+			}
+		}
+		//
+		//if (s.isGroup)
+		//{			
+			//for (i in 0...points.length)
+			//{
+				//points[i].x -= s.x;
+				//points[i].y -= s.y;
+			//}
+		//}
+		
+		if ( !Triangulator.isWindingDirectionCCW(points) )
+			points.reverse();
+		
+		// give a warning for non closed shapes
+		if (lastPoint.x != points[0].x || lastPoint.y != points[0].y)
+			trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]");
+		else
+			points.pop();
+			
+		var triangles = Triangulator.triangulate(points);
+		//trace(triangles);
+		var polys = Triangulator.polygonizeTriangles(triangles);
+		//trace(polys);
+		
+		for ( p in polys )
+		{
+			p.x.reverse();
+			p.y.reverse();
+			// only save shape transform info if the shape is in a group (or primitive)
+			
+			if (s.isGroup || true)
+			{	
+				//xml += '<poly x="'+s.x+'" y="'+s.y+'" w="'+s.width+'"  h="'+s.height+'" r="'+s.rotation+'" sx="'+s.scaleX+'" sy="'+s.scaleY+'">\n';
+				//xml += '\t<poly x="'+(s.x - s.width/2)+'" y="'+(s.y - s.height/2)+'" w="'+s.width+'"  h="'+s.height+'" r="'+s.rotation+'" sx="'+s.scaleX+'" sy="'+s.scaleY+'">\n';
+				
+				//xml += '\t<poly x="'+s.x+'" y="'+s.y+'" w="'+s.width+'"  h="'+s.height+'" r="'+s.rotation+'" sx="'+s.scaleX+'" sy="'+s.scaleY+'">\n';
+				
+				var sx = s.x;
+				//var sx = s.x - s.width / 2;
+				var sy = s.y;
+				//var sy = s.y - s.height / 2;
+				var sw = s.x - s.width / 2;
+				var sh = s.height / 2;
+				
+				sw = sh = 0;
+				//sx = sy = 0;
+				 
+				xml += '\t<poly x="'+sx+'" y="'+sy+'" w="'+sw+'"  h="'+sh+'" r="'+s.rotation+'" sx="'+s.scaleX+'" sy="'+s.scaleY+'">\n';
+			} else {
+				xml += '\t<poly x="0" y="0" r="0" sx="1" sy="1" >\n';
+			}
+			for ( i in 0 ... p.nVertices )
+				xml += '\t\t<vert x="' + p.x[i] + '" y="' + p.y[i] + '" />\n';
+			xml += '\t</poly>\n';
+		}
+		
+		//if (lastPoint.x == points[0].x && lastPoint.y == points[0].y)
+		//
+		//var p = null;
+		//for (p in points){
+		//for (i in 0...points.length)
+		//{
+			//if (s.isRectangleObject)
+				//p = points[points.length - 1 - i];
+			//else 
+				//p = points[i];
+			//xml += '<vert x="' + p.x + '" y="' + p.y + '" />\n';
+		//}
+		//
+		//xml += '</poly>\n';
 		
 		return xml;
 	}

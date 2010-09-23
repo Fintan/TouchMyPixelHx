@@ -38,6 +38,7 @@ class Keys
 	
 	private static function onKeyDown( event: KeyboardEvent ):Void
 	{
+		//trace(event.keyCode);
 		keycodes.set(event.keyCode, true);
 		if(!keyDownUsed.exists(event.keyCode)) keyDownUsed.set(event.keyCode, new Hash());
 	}
