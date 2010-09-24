@@ -5,6 +5,7 @@
  * */
 
 package touchmypixel.game;
+import box2D.collision.shapes.B2Shape;
 import box2D.collision.shapes.B2ShapeDef;
 import box2D.dynamics.B2BodyDef;
 import box2D.dynamics.B2World;
@@ -16,6 +17,7 @@ import haxe.xml.Fast;
 import touchmypixel.game.objects.Box2dObject;
 import touchmypixel.game.objects.BuilderBodyObject;
 import touchmypixel.game.objects.BuilderGameObject;
+import touchmypixel.game.objects.LBGeometry;
 import touchmypixel.game.objects.Object;
 import touchmypixel.game.simulations.Box2dSimulation;
 import touchmypixel.game.utils.Loader;
@@ -152,7 +154,7 @@ class LayoutBuilder
 		body.type = bodyInfo.att.type;
 		body.scaleX = f(bodyInfo.att.sx);
 		body.scaleY = f(bodyInfo.att.sy);
-			
+		
 		if (bodyInfo.att.name != "")
 			simulation.namedObjects.set(bodyInfo.att.name, body);
 		
@@ -190,18 +192,31 @@ class LayoutBuilder
 		 * Build shapes that are inside the body
 		 */
 		for (elementInfo in bodyInfo.x.elements())
-		{			
+		{	
+			var fastEl = new Fast(elementInfo);
 			var shapes:Array<B2ShapeDef> = switch(elementInfo.nodeName)
 			{
-				case "poly": [parsePoly(new Fast(elementInfo), bodyInfo)];
-				case "circle": [parseCircle(new Fast(elementInfo), bodyInfo)];
-				case "rect": [parsePoly(new Fast(elementInfo), bodyInfo)];
-				case "shape": parseShape(new Fast(elementInfo), bodyInfo);
+				case "poly": [parsePoly(fastEl, bodyInfo)];
+				case "circle": [parseCircle(fastEl, bodyInfo)];
+				case "rect": [parsePoly(fastEl, bodyInfo)];
+				case "shape": parseShape(fastEl, bodyInfo);
 				case "bitmap": null;
 			}
 			
 			if ( shapes != null )
 			{
+				var geom = new LBGeometry();
+				geom.body = body;
+				geom.shapes = new Array<B2Shape>();
+				
+				if ( fastEl.has.name )
+				{
+					geom.name = fastEl.att.name;				
+					body.namedGeometry.set(geom.name, geom);
+				}
+				
+				geom.cacheContacts = fastEl.has.cacheContacts && (fastEl.att.cacheContacts == "true");
+				
 				for ( shape in shapes )
 				{
 					if (shape != null)
@@ -214,9 +229,13 @@ class LayoutBuilder
 							shape.filter.groupIndex = Std.parseInt(bodyInfo.att.groupIndex);
 						if(bodyInfo.x.exists("sensor"))
 							shape.isSensor = bodyInfo.att.sensor == "true";
-						b2body.CreateShape(shape);
+						var s = b2body.CreateShape(shape);
+						s.m_userData = geom;
+						geom.shapes.push(s);
 					}
 				}
+				
+				body.geometry.push(geom);
 			}
 				
 			switch(elementInfo.nodeName)
@@ -235,6 +254,8 @@ class LayoutBuilder
 		if (gameObject != null)
 		{
 			gameObject.bodies.push(body);
+			
+			//body.
 			
 			if(bodyInfo.att.name != null && bodyInfo.att.name != "")
 			{
@@ -322,8 +343,12 @@ class LayoutBuilder
 			
 			if (shape != null)
 			{
-				shape.userData = { name232:"Yo Mamma!" };
-				//trace("SHAPE DATA!@!" + shapeInfo.x);
+				//shape.userData = { name232:"Yo Mamma!" };
+				if ( shapeInfo.att.name != "" )
+				{
+					//trace("SHAPE DATA!@!" + shapeInfo.x);
+					//trace("bodyInfo: " + bodyInfo.x);
+				}
 				shape.isSensor = (shapeInfo.att.isSensor == "true");
 				shapes.push(shape);
 			}
