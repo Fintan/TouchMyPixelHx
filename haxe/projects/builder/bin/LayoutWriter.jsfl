@@ -1,575 +1,6 @@
 $estr = function() { return js.Boot.__string_rec(this,''); }
 if(typeof touchmypixel=='undefined') touchmypixel = {}
 if(!touchmypixel.geom) touchmypixel.geom = {}
-touchmypixel.geom.Triangle = function(x1,y1,x2,y2,x3,y3) { if( x1 === $_ ) return; {
-	$s.push("touchmypixel.geom.Triangle::new");
-	var $spos = $s.length;
-	this.x = new Array();
-	this.y = new Array();
-	var dx1 = x2 - x1;
-	var dx2 = x3 - x1;
-	var dy1 = y2 - y1;
-	var dy2 = y3 - y1;
-	var cross = (dx1 * dy2) - (dx2 * dy1);
-	var ccw = (cross > 0);
-	if(ccw) {
-		this.x[0] = x1;
-		this.x[1] = x2;
-		this.x[2] = x3;
-		this.y[0] = y1;
-		this.y[1] = y2;
-		this.y[2] = y3;
-	}
-	else {
-		this.x[0] = x1;
-		this.x[1] = x3;
-		this.x[2] = x2;
-		this.y[0] = y1;
-		this.y[1] = y3;
-		this.y[2] = y2;
-	}
-	$s.pop();
-}}
-touchmypixel.geom.Triangle.__name__ = ["touchmypixel","geom","Triangle"];
-touchmypixel.geom.Triangle.prototype.isInside = function(px,py) {
-	$s.push("touchmypixel.geom.Triangle::isInside");
-	var $spos = $s.length;
-	var vx2 = px - this.x[0];
-	var vy2 = py - this.y[0];
-	var vx1 = this.x[1] - this.x[0];
-	var vy1 = this.y[1] - this.y[0];
-	var vx0 = this.x[2] - this.x[0];
-	var vy0 = this.y[2] - this.y[0];
-	var dot00 = (vx0 * vx0 + vy0) + vy0;
-	var dot01 = vx0 * vx1 + vy0 * vy1;
-	var dot02 = vx0 * vx2 + vy0 * vy2;
-	var dot11 = vx1 * vx1 + vy1 * vy1;
-	var dot12 = vx1 * vx2 + vy1 * vy2;
-	var invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
-	var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-	var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-	{
-		var $tmp = ((u > 0) && (v > 0) && (u + v < 1));
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-touchmypixel.geom.Triangle.prototype.x = null;
-touchmypixel.geom.Triangle.prototype.y = null;
-touchmypixel.geom.Triangle.prototype.__class__ = touchmypixel.geom.Triangle;
-if(!touchmypixel.game) touchmypixel.game = {}
-touchmypixel.game.LayoutWriter = function(p) { if( p === $_ ) return; {
-	$s.push("touchmypixel.game.LayoutWriter::new");
-	var $spos = $s.length;
-	this.doc = jsfl.Fl.getDocumentDOM();
-	this.lib = this.doc.library;
-	this.root = this.doc.timelines[0];
-	jsfl.Fl.outputPanel.clear();
-	var results = this.searchTimeline(this.root);
-	var xml = this.parseResults(results);
-	this.saveXml(xml);
-	$s.pop();
-}}
-touchmypixel.game.LayoutWriter.__name__ = ["touchmypixel","game","LayoutWriter"];
-touchmypixel.game.LayoutWriter.prototype.doc = null;
-touchmypixel.game.LayoutWriter.prototype.lib = null;
-touchmypixel.game.LayoutWriter.prototype.parseBitmap = function(result) {
-	$s.push("touchmypixel.game.LayoutWriter::parseBitmap");
-	var $spos = $s.length;
-	var xml = ((("<bitmap " + this.parseParameters(result)) + " file=\"") + StringTools.replace(result.scope.libraryItem.name,"-","/")) + "\" />\n";
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseBody = function(result) {
-	$s.push("touchmypixel.game.LayoutWriter::parseBody");
-	var $spos = $s.length;
-	var xml = ("<body " + this.parseParameters(result)) + ">\n";
-	xml += this.parseElements(result.scope);
-	xml += this.parseResults(result.children);
-	xml += "</body>\n";
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseElementCircle = function(s) {
-	$s.push("touchmypixel.game.LayoutWriter::parseElementCircle");
-	var $spos = $s.length;
-	var xml = ((((((((((((("\t<circle x=\"" + s.x) + "\" y=\"") + s.y) + "\" w=\"") + s.width) + "\"  h=\"") + s.height) + "\" r=\"") + s.rotation) + "\" sx=\"") + s.scaleX) + "\" sy=\"") + s.scaleY) + "\" />\n";
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseElementPoly = function(s,scope) {
-	$s.push("touchmypixel.game.LayoutWriter::parseElementPoly");
-	var $spos = $s.length;
-	var xml = "";
-	var points = new Array();
-	var lastPoint = null;
-	{
-		var _g = 0, _g1 = s.edges;
-		while(_g < _g1.length) {
-			var e = _g1[_g];
-			++_g;
-			var p1 = e.getControl(0);
-			var p2 = e.getControl(2);
-			if(points.length == 0) {
-				points.push(e.getControl(0));
-				points.push(e.getControl(2));
-				lastPoint = e.getControl(2);
-			}
-			else {
-				{
-					var _g2 = 0, _g3 = s.edges;
-					while(_g2 < _g3.length) {
-						var e2 = _g3[_g2];
-						++_g2;
-						var p11 = e2.getControl(0);
-						var p21 = e2.getControl(2);
-						if(p11.x == lastPoint.x && p11.y == lastPoint.y) {
-							points.push(p21);
-							lastPoint = p21;
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-	if(s.isGroup) {
-		if(points.length == 0) throw "No points for bounding box";
-		var left = points[0].x;
-		var top = points[0].y;
-		var right = points[0].x;
-		var bottom = points[0].y;
-		{
-			var _g1 = 1, _g = points.length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				if(points[i].x < left) left = points[i].x;
-				if(points[i].x > right) right = points[i].x;
-				if(points[i].y < top) top = points[i].y;
-				if(points[i].y > bottom) bottom = points[i].y;
-			}
-		}
-		var cx = (right + left) / 2;
-		var cy = (bottom + top) / 2;
-		{
-			var _g1 = 0, _g = points.length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				points[i].x -= cx;
-				points[i].y -= cy;
-			}
-		}
-	}
-	if(!touchmypixel.geom.Triangulator.isWindingDirectionCCW(points)) points.reverse();
-	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace(((("WARNING: shape not closed: " + scope.name) + " [") + scope.libraryItem.linkageClassName) + "]",{ fileName : "LayoutWriter.hx", lineNumber : 412, className : "touchmypixel.game.LayoutWriter", methodName : "parseElementPoly"});
-	else points.pop();
-	var triangles = touchmypixel.geom.Triangulator.triangulate(points);
-	var polys = touchmypixel.geom.Triangulator.polygonizeTriangles(triangles);
-	{
-		var _g = 0;
-		while(_g < polys.length) {
-			var p = polys[_g];
-			++_g;
-			p.x.reverse();
-			p.y.reverse();
-			if(s.isGroup || true) {
-				var sx = s.x;
-				var sy = s.y;
-				var sw = s.x - s.width / 2;
-				var sh = s.height / 2;
-				sw = sh = 0;
-				xml += ((((((((((((("\t<poly x=\"" + sx) + "\" y=\"") + sy) + "\" w=\"") + sw) + "\"  h=\"") + sh) + "\" r=\"") + s.rotation) + "\" sx=\"") + s.scaleX) + "\" sy=\"") + s.scaleY) + "\">\n";
-			}
-			else {
-				xml += "\t<poly x=\"0\" y=\"0\" r=\"0\" sx=\"1\" sy=\"1\" >\n";
-			}
-			{
-				var _g2 = 0, _g1 = p.nVertices;
-				while(_g2 < _g1) {
-					var i = _g2++;
-					xml += ((("\t\t<vert x=\"" + p.x[i]) + "\" y=\"") + p.y[i]) + "\" />\n";
-				}
-			}
-			xml += "\t</poly>\n";
-		}
-	}
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseElementRect = function(s) {
-	$s.push("touchmypixel.game.LayoutWriter::parseElementRect");
-	var $spos = $s.length;
-	var xml = this.parseElementPoly(s,null);
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseElements = function(scope) {
-	$s.push("touchmypixel.game.LayoutWriter::parseElements");
-	var $spos = $s.length;
-	var xml = "";
-	{
-		var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(scope));
-		while(_g < _g1.length) {
-			var child = _g1[_g];
-			++_g;
-			if(touchmypixel.game.utils.JSFLTools.isShape(child)) {
-				var s = child;
-				if(s.isRectangleObject) xml += this.parseElementRect(child);
-				else if(s.isOvalObject) xml += this.parseElementCircle(child);
-				else xml += this.parseElementPoly(child,scope);
-			}
-		}
-	}
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseGameObject = function(result) {
-	$s.push("touchmypixel.game.LayoutWriter::parseGameObject");
-	var $spos = $s.length;
-	var xml = ("<gameObject " + this.parseParameters(result)) + ">\n";
-	xml += this.parseResults(result.children);
-	xml += "</gameObject>\n";
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseLayout = function(result) {
-	$s.push("touchmypixel.game.LayoutWriter::parseLayout");
-	var $spos = $s.length;
-	var xml = "<layout " + this.parseParameters(result);
-	xml += (((" w=\"" + result.scope.width) + "\" h=\"") + result.scope.height) + "\"";
-	xml += ">\n";
-	xml += this.parseResults(result.children);
-	xml += "</layout>\n";
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseObject = function(result) {
-	$s.push("touchmypixel.game.LayoutWriter::parseObject");
-	var $spos = $s.length;
-	var xml = ("<object " + this.parseParameters(result)) + ">\n";
-	xml += "</object>\n";
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseParameters = function(result) {
-	$s.push("touchmypixel.game.LayoutWriter::parseParameters");
-	var $spos = $s.length;
-	var sc = result.scope;
-	var xml = "";
-	xml += (" name=\"" + sc.name) + "\"";
-	xml += (" x=\"" + sc.x) + "\"";
-	xml += (" y=\"" + sc.y) + "\"";
-	xml += (" sx=\"" + sc.scaleX) + "\"";
-	xml += (" sy=\"" + sc.scaleY) + "\"";
-	xml += (" r=\"" + sc.rotation) + "\"";
-	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
-		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
-		{ var $it0 = def.keys();
-		while( $it0.hasNext() ) { var v = $it0.next();
-		{
-			xml += (((" " + v) + "=\"") + def.get(v)) + "\"";
-		}
-		}}
-	}
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseResults = function(results) {
-	$s.push("touchmypixel.game.LayoutWriter::parseResults");
-	var $spos = $s.length;
-	var xml = "";
-	{
-		var _g = 0;
-		while(_g < results.length) {
-			var r = results[_g];
-			++_g;
-			xml += (function($this) {
-				var $r;
-				switch(r.type) {
-				case "layout":{
-					$r = $this.parseLayout(r);
-				}break;
-				case "body":{
-					$r = $this.parseBody(r);
-				}break;
-				case "shape":{
-					$r = $this.parseShape(r);
-				}break;
-				case "object":{
-					$r = $this.parseObject(r);
-				}break;
-				case "gameObject":{
-					$r = $this.parseGameObject(r);
-				}break;
-				case "bitmap":{
-					$r = $this.parseBitmap(r);
-				}break;
-				default:{
-					$r = null;
-				}break;
-				}
-				return $r;
-			}(this));
-		}
-	}
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.parseShape = function(result) {
-	$s.push("touchmypixel.game.LayoutWriter::parseShape");
-	var $spos = $s.length;
-	var xml = ("<shape " + this.parseParameters(result)) + ">\n";
-	xml += this.parseElements(result.scope);
-	xml += "</shape>\n";
-	{
-		$s.pop();
-		return xml;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.root = null;
-touchmypixel.game.LayoutWriter.prototype.saveXml = function(xml) {
-	$s.push("touchmypixel.game.LayoutWriter::saveXml");
-	var $spos = $s.length;
-	var path = this.doc.pathURI;
-	path = path.substr(0,path.lastIndexOf("."));
-	path += ".xml";
-	haxe.Log.trace("EXPORTED: " + path,{ fileName : "LayoutWriter.hx", lineNumber : 66, className : "touchmypixel.game.LayoutWriter", methodName : "saveXml"});
-	jsfl.FLfile.write(path,xml);
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.searchTimeline = function(inScope,store) {
-	$s.push("touchmypixel.game.LayoutWriter::searchTimeline");
-	var $spos = $s.length;
-	var results = [];
-	{
-		var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(inScope);
-		while(_g < _g1.length) {
-			var el = _g1[_g];
-			++_g;
-			if(touchmypixel.game.utils.JSFLTools.isInstance(el)) {
-				var el1 = el;
-				{
-					var _g2 = 0, _g3 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(el1));
-					while(_g2 < _g3.length) {
-						var el2 = _g3[_g2];
-						++_g2;
-						var el21 = el2;
-						if(touchmypixel.game.utils.JSFLTools.isComponent(el21)) {
-							switch(el21.libraryItem.linkageClassName) {
-							case "Def_Layout":{
-								results.unshift({ type : "layout", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
-							}break;
-							case "Def_Body":{
-								results.unshift({ type : "body", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
-							}break;
-							case "Def_Shape":{
-								results.unshift({ type : "shape", info : el21, scope : el1, children : null});
-							}break;
-							case "Def_Object":{
-								results.unshift({ type : "object", info : el21, scope : el1, children : null});
-							}break;
-							case "Def_GameObject":{
-								results.unshift({ type : "gameObject", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
-							}break;
-							}
-						}
-					}
-				}
-				if(touchmypixel.game.utils.JSFLTools.isBitmap(el1)) {
-					results.unshift({ type : "bitmap", info : el1, scope : el1, children : null});
-				}
-			}
-		}
-	}
-	{
-		$s.pop();
-		return results;
-	}
-	$s.pop();
-}
-touchmypixel.game.LayoutWriter.prototype.__class__ = touchmypixel.game.LayoutWriter;
-touchmypixel.geom.Polygon = function(_x,_y) { if( _x === $_ ) return; {
-	$s.push("touchmypixel.geom.Polygon::new");
-	var $spos = $s.length;
-	this.x = new Array();
-	this.y = new Array();
-	this.nVertices = _x.length;
-	{
-		var _g1 = 0, _g = this.nVertices;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this.x[i] = _x[i];
-			this.y[i] = _y[i];
-		}
-	}
-	$s.pop();
-}}
-touchmypixel.geom.Polygon.__name__ = ["touchmypixel","geom","Polygon"];
-touchmypixel.geom.Polygon.prototype.add = function(t) {
-	$s.push("touchmypixel.geom.Polygon::add");
-	var $spos = $s.length;
-	var firstP = -1;
-	var firstT = -1;
-	var secondP = -1;
-	var secondT = -1;
-	{
-		var _g1 = 0, _g = this.nVertices;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(t.x[0] == this.x[i] && t.y[0] == this.y[i]) {
-				if(firstP == -1) {
-					firstP = i;
-					firstT = 0;
-				}
-				else {
-					secondP = i;
-					secondT = 0;
-				}
-			}
-			else if(t.x[1] == this.x[i] && t.y[1] == this.y[i]) {
-				if(firstP == -1) {
-					firstP = i;
-					firstT = 1;
-				}
-				else {
-					secondP = i;
-					secondT = 1;
-				}
-			}
-			else if(t.x[2] == this.x[i] && t.y[2] == this.y[i]) {
-				if(firstP == -1) {
-					firstP = i;
-					firstT = 2;
-				}
-				else {
-					secondP = i;
-					secondT = 2;
-				}
-			}
-			else null;
-		}
-	}
-	if(firstP == 0 && secondP == this.nVertices - 1) {
-		firstP = this.nVertices - 1;
-		secondP = 0;
-	}
-	if(secondP == -1) {
-		$s.pop();
-		return null;
-	}
-	var tipT = 0;
-	if(tipT == firstT || tipT == secondT) tipT = 1;
-	if(tipT == firstT || tipT == secondT) tipT = 2;
-	var newx = new Array();
-	var newy = new Array();
-	var currOut = 0;
-	{
-		var _g1 = 0, _g = this.nVertices;
-		while(_g1 < _g) {
-			var i = _g1++;
-			newx[currOut] = this.x[i];
-			newy[currOut] = this.y[i];
-			if(i == firstP) {
-				++currOut;
-				newx[currOut] = t.x[tipT];
-				newy[currOut] = t.y[tipT];
-			}
-			++currOut;
-		}
-	}
-	{
-		var $tmp = new touchmypixel.geom.Polygon(newx,newy);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-touchmypixel.geom.Polygon.prototype.isConvex = function() {
-	$s.push("touchmypixel.geom.Polygon::isConvex");
-	var $spos = $s.length;
-	var isPositive = false;
-	{
-		var _g1 = 0, _g = this.nVertices;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var lower = ((i == 0)?(this.nVertices - 1):(i - 1));
-			var middle = i;
-			var upper = ((i == this.nVertices - 1)?0:(i + 1));
-			var dx0 = this.x[middle] - this.x[lower];
-			var dy0 = this.y[middle] - this.y[lower];
-			var dx1 = this.x[upper] - this.x[middle];
-			var dy1 = this.y[upper] - this.y[middle];
-			var cross = dx0 * dy1 - dx1 * dy0;
-			var newIsP = (cross > 0);
-			if(i == 0) isPositive = newIsP;
-			else if(isPositive != newIsP) {
-				$s.pop();
-				return false;
-			}
-		}
-	}
-	{
-		$s.pop();
-		return true;
-	}
-	$s.pop();
-}
-touchmypixel.geom.Polygon.prototype.nVertices = null;
-touchmypixel.geom.Polygon.prototype.set = function(p) {
-	$s.push("touchmypixel.geom.Polygon::set");
-	var $spos = $s.length;
-	this.nVertices = p.nVertices;
-	this.x = new Array();
-	this.y = new Array();
-	var i = 0;
-	{
-		var _g1 = 0, _g = this.nVertices;
-		while(_g1 < _g) {
-			var i1 = _g1++;
-			this.x[i1] = p.x[i1];
-			this.y[i1] = p.y[i1];
-		}
-	}
-	$s.pop();
-}
-touchmypixel.geom.Polygon.prototype.x = null;
-touchmypixel.geom.Polygon.prototype.y = null;
-touchmypixel.geom.Polygon.prototype.__class__ = touchmypixel.geom.Polygon;
 touchmypixel.geom.Triangulator = function() { }
 touchmypixel.geom.Triangulator.__name__ = ["touchmypixel","geom","Triangulator"];
 touchmypixel.geom.Triangulator.triangulate = function(vertices) {
@@ -826,6 +257,302 @@ touchmypixel.geom.Triangulator.isWindingDirectionCCW = function(vertices) {
 	$s.pop();
 }
 touchmypixel.geom.Triangulator.prototype.__class__ = touchmypixel.geom.Triangulator;
+StringTools = function() { }
+StringTools.__name__ = ["StringTools"];
+StringTools.urlEncode = function(s) {
+	$s.push("StringTools::urlEncode");
+	var $spos = $s.length;
+	{
+		var $tmp = encodeURIComponent(s);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.urlDecode = function(s) {
+	$s.push("StringTools::urlDecode");
+	var $spos = $s.length;
+	{
+		var $tmp = decodeURIComponent(s.split("+").join(" "));
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.htmlEscape = function(s) {
+	$s.push("StringTools::htmlEscape");
+	var $spos = $s.length;
+	{
+		var $tmp = s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.htmlUnescape = function(s) {
+	$s.push("StringTools::htmlUnescape");
+	var $spos = $s.length;
+	{
+		var $tmp = s.split("&gt;").join(">").split("&lt;").join("<").split("&amp;").join("&");
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.startsWith = function(s,start) {
+	$s.push("StringTools::startsWith");
+	var $spos = $s.length;
+	{
+		var $tmp = (s.length >= start.length && s.substr(0,start.length) == start);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.endsWith = function(s,end) {
+	$s.push("StringTools::endsWith");
+	var $spos = $s.length;
+	var elen = end.length;
+	var slen = s.length;
+	{
+		var $tmp = (slen >= elen && s.substr(slen - elen,elen) == end);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.isSpace = function(s,pos) {
+	$s.push("StringTools::isSpace");
+	var $spos = $s.length;
+	var c = s.charCodeAt(pos);
+	{
+		var $tmp = (c >= 9 && c <= 13) || c == 32;
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.ltrim = function(s) {
+	$s.push("StringTools::ltrim");
+	var $spos = $s.length;
+	var l = s.length;
+	var r = 0;
+	while(r < l && StringTools.isSpace(s,r)) {
+		r++;
+	}
+	if(r > 0) {
+		var $tmp = s.substr(r,l - r);
+		$s.pop();
+		return $tmp;
+	}
+	else {
+		$s.pop();
+		return s;
+	}
+	$s.pop();
+}
+StringTools.rtrim = function(s) {
+	$s.push("StringTools::rtrim");
+	var $spos = $s.length;
+	var l = s.length;
+	var r = 0;
+	while(r < l && StringTools.isSpace(s,(l - r) - 1)) {
+		r++;
+	}
+	if(r > 0) {
+		{
+			var $tmp = s.substr(0,l - r);
+			$s.pop();
+			return $tmp;
+		}
+	}
+	else {
+		{
+			$s.pop();
+			return s;
+		}
+	}
+	$s.pop();
+}
+StringTools.trim = function(s) {
+	$s.push("StringTools::trim");
+	var $spos = $s.length;
+	{
+		var $tmp = StringTools.ltrim(StringTools.rtrim(s));
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.rpad = function(s,c,l) {
+	$s.push("StringTools::rpad");
+	var $spos = $s.length;
+	var sl = s.length;
+	var cl = c.length;
+	while(sl < l) {
+		if(l - sl < cl) {
+			s += c.substr(0,l - sl);
+			sl = l;
+		}
+		else {
+			s += c;
+			sl += cl;
+		}
+	}
+	{
+		$s.pop();
+		return s;
+	}
+	$s.pop();
+}
+StringTools.lpad = function(s,c,l) {
+	$s.push("StringTools::lpad");
+	var $spos = $s.length;
+	var ns = "";
+	var sl = s.length;
+	if(sl >= l) {
+		$s.pop();
+		return s;
+	}
+	var cl = c.length;
+	while(sl < l) {
+		if(l - sl < cl) {
+			ns += c.substr(0,l - sl);
+			sl = l;
+		}
+		else {
+			ns += c;
+			sl += cl;
+		}
+	}
+	{
+		var $tmp = ns + s;
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.replace = function(s,sub,by) {
+	$s.push("StringTools::replace");
+	var $spos = $s.length;
+	{
+		var $tmp = s.split(sub).join(by);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringTools.hex = function(n,digits) {
+	$s.push("StringTools::hex");
+	var $spos = $s.length;
+	var s = "";
+	var hexChars = "0123456789ABCDEF";
+	do {
+		s = hexChars.charAt(n & 15) + s;
+		n >>>= 4;
+	} while(n > 0);
+	if(digits != null) while(s.length < digits) s = "0" + s;
+	{
+		$s.pop();
+		return s;
+	}
+	$s.pop();
+}
+StringTools.prototype.__class__ = StringTools;
+StringBuf = function(p) { if( p === $_ ) return; {
+	$s.push("StringBuf::new");
+	var $spos = $s.length;
+	this.b = new Array();
+	$s.pop();
+}}
+StringBuf.__name__ = ["StringBuf"];
+StringBuf.prototype.add = function(x) {
+	$s.push("StringBuf::add");
+	var $spos = $s.length;
+	this.b[this.b.length] = x;
+	$s.pop();
+}
+StringBuf.prototype.addChar = function(c) {
+	$s.push("StringBuf::addChar");
+	var $spos = $s.length;
+	this.b[this.b.length] = String.fromCharCode(c);
+	$s.pop();
+}
+StringBuf.prototype.addSub = function(s,pos,len) {
+	$s.push("StringBuf::addSub");
+	var $spos = $s.length;
+	this.b[this.b.length] = s.substr(pos,len);
+	$s.pop();
+}
+StringBuf.prototype.b = null;
+StringBuf.prototype.toString = function() {
+	$s.push("StringBuf::toString");
+	var $spos = $s.length;
+	{
+		var $tmp = this.b.join("");
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+StringBuf.prototype.__class__ = StringBuf;
+touchmypixel.geom.Triangle = function(x1,y1,x2,y2,x3,y3) { if( x1 === $_ ) return; {
+	$s.push("touchmypixel.geom.Triangle::new");
+	var $spos = $s.length;
+	this.x = new Array();
+	this.y = new Array();
+	var dx1 = x2 - x1;
+	var dx2 = x3 - x1;
+	var dy1 = y2 - y1;
+	var dy2 = y3 - y1;
+	var cross = (dx1 * dy2) - (dx2 * dy1);
+	var ccw = (cross > 0);
+	if(ccw) {
+		this.x[0] = x1;
+		this.x[1] = x2;
+		this.x[2] = x3;
+		this.y[0] = y1;
+		this.y[1] = y2;
+		this.y[2] = y3;
+	}
+	else {
+		this.x[0] = x1;
+		this.x[1] = x3;
+		this.x[2] = x2;
+		this.y[0] = y1;
+		this.y[1] = y3;
+		this.y[2] = y2;
+	}
+	$s.pop();
+}}
+touchmypixel.geom.Triangle.__name__ = ["touchmypixel","geom","Triangle"];
+touchmypixel.geom.Triangle.prototype.isInside = function(px,py) {
+	$s.push("touchmypixel.geom.Triangle::isInside");
+	var $spos = $s.length;
+	var vx2 = px - this.x[0];
+	var vy2 = py - this.y[0];
+	var vx1 = this.x[1] - this.x[0];
+	var vy1 = this.y[1] - this.y[0];
+	var vx0 = this.x[2] - this.x[0];
+	var vy0 = this.y[2] - this.y[0];
+	var dot00 = (vx0 * vx0 + vy0) + vy0;
+	var dot01 = vx0 * vx1 + vy0 * vy1;
+	var dot02 = vx0 * vx2 + vy0 * vy2;
+	var dot11 = vx1 * vx1 + vy1 * vy1;
+	var dot12 = vx1 * vx2 + vy1 * vy2;
+	var invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+	var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+	var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+	{
+		var $tmp = ((u > 0) && (v > 0) && (u + v < 1));
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+touchmypixel.geom.Triangle.prototype.x = null;
+touchmypixel.geom.Triangle.prototype.y = null;
+touchmypixel.geom.Triangle.prototype.__class__ = touchmypixel.geom.Triangle;
 IntIter = function(min,max) { if( min === $_ ) return; {
 	$s.push("IntIter::new");
 	var $spos = $s.length;
@@ -857,7 +584,390 @@ IntIter.prototype.next = function() {
 	$s.pop();
 }
 IntIter.prototype.__class__ = IntIter;
+Std = function() { }
+Std.__name__ = ["Std"];
+Std["is"] = function(v,t) {
+	$s.push("Std::is");
+	var $spos = $s.length;
+	{
+		var $tmp = js.Boot.__instanceof(v,t);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+Std.string = function(s) {
+	$s.push("Std::string");
+	var $spos = $s.length;
+	{
+		var $tmp = js.Boot.__string_rec(s,"");
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+Std["int"] = function(x) {
+	$s.push("Std::int");
+	var $spos = $s.length;
+	if(x < 0) {
+		var $tmp = Math.ceil(x);
+		$s.pop();
+		return $tmp;
+	}
+	{
+		var $tmp = Math.floor(x);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+Std.parseInt = function(x) {
+	$s.push("Std::parseInt");
+	var $spos = $s.length;
+	var v = parseInt(x);
+	if(Math.isNaN(v)) {
+		$s.pop();
+		return null;
+	}
+	{
+		var $tmp = v;
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+Std.parseFloat = function(x) {
+	$s.push("Std::parseFloat");
+	var $spos = $s.length;
+	{
+		var $tmp = parseFloat(x);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+Std.random = function(x) {
+	$s.push("Std::random");
+	var $spos = $s.length;
+	{
+		var $tmp = Math.floor(Math.random() * x);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+Std.prototype.__class__ = Std;
+if(!touchmypixel.game) touchmypixel.game = {}
+if(!touchmypixel.game.utils) touchmypixel.game.utils = {}
+touchmypixel.game.utils.JSFLTools = function() { }
+touchmypixel.game.utils.JSFLTools.__name__ = ["touchmypixel","game","utils","JSFLTools"];
+touchmypixel.game.utils.JSFLTools.isShape = function(el) {
+	$s.push("touchmypixel.game.utils.JSFLTools::isShape");
+	var $spos = $s.length;
+	{
+		var $tmp = el.elementType == "shape";
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+touchmypixel.game.utils.JSFLTools.isInstance = function(el) {
+	$s.push("touchmypixel.game.utils.JSFLTools::isInstance");
+	var $spos = $s.length;
+	{
+		var $tmp = el.elementType == "instance";
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+touchmypixel.game.utils.JSFLTools.isBitmap = function(el) {
+	$s.push("touchmypixel.game.utils.JSFLTools::isBitmap");
+	var $spos = $s.length;
+	if(!touchmypixel.game.utils.JSFLTools.isInstance(el)) {
+		$s.pop();
+		return false;
+	}
+	{
+		var $tmp = el.libraryItem.itemType == "bitmap";
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+touchmypixel.game.utils.JSFLTools.isComponent = function(el) {
+	$s.push("touchmypixel.game.utils.JSFLTools::isComponent");
+	var $spos = $s.length;
+	if(!touchmypixel.game.utils.JSFLTools.isInstance(el)) {
+		$s.pop();
+		return false;
+	}
+	var c = el;
+	var isComponent = c.libraryItem.itemType == "component";
+	if(isComponent && (el.parameters) == null) throw ((("COMPONENT DIRTY: You need to refresh " + c.name) + " [") + c.libraryItem.name) + "]";
+	{
+		$s.pop();
+		return isComponent;
+	}
+	$s.pop();
+}
+touchmypixel.game.utils.JSFLTools.getChildren = function(timeline,includeGuideLayers) {
+	$s.push("touchmypixel.game.utils.JSFLTools::getChildren");
+	var $spos = $s.length;
+	if(includeGuideLayers == null) includeGuideLayers = false;
+	if(timeline == null) {
+		var $tmp = [];
+		$s.pop();
+		return $tmp;
+	}
+	var els = new Array();
+	var i = timeline.layers.length - 1;
+	while(i >= 0) {
+		var l = timeline.layers[i];
+		if(l.layerType != "guide" || includeGuideLayers) {
+			var f = l.frames[0];
+			{
+				var _g = 0, _g1 = f.elements;
+				while(_g < _g1.length) {
+					var el = _g1[_g];
+					++_g;
+					els.unshift(el);
+				}
+			}
+		}
+		i--;
+	}
+	{
+		$s.pop();
+		return els;
+	}
+	$s.pop();
+}
+touchmypixel.game.utils.JSFLTools.getTimeline = function(symbol) {
+	$s.push("touchmypixel.game.utils.JSFLTools::getTimeline");
+	var $spos = $s.length;
+	{
+		var $tmp = symbol.libraryItem.timeline;
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+touchmypixel.game.utils.JSFLTools.getInstanceChildren = function(symbol) {
+	$s.push("touchmypixel.game.utils.JSFLTools::getInstanceChildren");
+	var $spos = $s.length;
+	{
+		var $tmp = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(symbol));
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+touchmypixel.game.utils.JSFLTools.getDefinitionValues = function(el) {
+	$s.push("touchmypixel.game.utils.JSFLTools::getDefinitionValues");
+	var $spos = $s.length;
+	if(el == null) {
+		$s.pop();
+		return null;
+	}
+	var def = new Hash();
+	if(!touchmypixel.game.utils.JSFLTools.isComponent(el)) {
+		$s.pop();
+		return null;
+	}
+	var el1 = el;
+	{
+		var _g = 0, _g1 = el1.parameters;
+		while(_g < _g1.length) {
+			var p = _g1[_g];
+			++_g;
+			def.set(p.name,p.value);
+		}
+	}
+	{
+		$s.pop();
+		return def;
+	}
+	$s.pop();
+}
+touchmypixel.game.utils.JSFLTools.prototype.__class__ = touchmypixel.game.utils.JSFLTools;
+touchmypixel.geom.Polygon = function(_x,_y) { if( _x === $_ ) return; {
+	$s.push("touchmypixel.geom.Polygon::new");
+	var $spos = $s.length;
+	this.x = new Array();
+	this.y = new Array();
+	this.nVertices = _x.length;
+	{
+		var _g1 = 0, _g = this.nVertices;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.x[i] = _x[i];
+			this.y[i] = _y[i];
+		}
+	}
+	$s.pop();
+}}
+touchmypixel.geom.Polygon.__name__ = ["touchmypixel","geom","Polygon"];
+touchmypixel.geom.Polygon.prototype.add = function(t) {
+	$s.push("touchmypixel.geom.Polygon::add");
+	var $spos = $s.length;
+	var firstP = -1;
+	var firstT = -1;
+	var secondP = -1;
+	var secondT = -1;
+	{
+		var _g1 = 0, _g = this.nVertices;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(t.x[0] == this.x[i] && t.y[0] == this.y[i]) {
+				if(firstP == -1) {
+					firstP = i;
+					firstT = 0;
+				}
+				else {
+					secondP = i;
+					secondT = 0;
+				}
+			}
+			else if(t.x[1] == this.x[i] && t.y[1] == this.y[i]) {
+				if(firstP == -1) {
+					firstP = i;
+					firstT = 1;
+				}
+				else {
+					secondP = i;
+					secondT = 1;
+				}
+			}
+			else if(t.x[2] == this.x[i] && t.y[2] == this.y[i]) {
+				if(firstP == -1) {
+					firstP = i;
+					firstT = 2;
+				}
+				else {
+					secondP = i;
+					secondT = 2;
+				}
+			}
+			else null;
+		}
+	}
+	if(firstP == 0 && secondP == this.nVertices - 1) {
+		firstP = this.nVertices - 1;
+		secondP = 0;
+	}
+	if(secondP == -1) {
+		$s.pop();
+		return null;
+	}
+	var tipT = 0;
+	if(tipT == firstT || tipT == secondT) tipT = 1;
+	if(tipT == firstT || tipT == secondT) tipT = 2;
+	var newx = new Array();
+	var newy = new Array();
+	var currOut = 0;
+	{
+		var _g1 = 0, _g = this.nVertices;
+		while(_g1 < _g) {
+			var i = _g1++;
+			newx[currOut] = this.x[i];
+			newy[currOut] = this.y[i];
+			if(i == firstP) {
+				++currOut;
+				newx[currOut] = t.x[tipT];
+				newy[currOut] = t.y[tipT];
+			}
+			++currOut;
+		}
+	}
+	{
+		var $tmp = new touchmypixel.geom.Polygon(newx,newy);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+touchmypixel.geom.Polygon.prototype.isConvex = function() {
+	$s.push("touchmypixel.geom.Polygon::isConvex");
+	var $spos = $s.length;
+	var isPositive = false;
+	{
+		var _g1 = 0, _g = this.nVertices;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var lower = ((i == 0)?(this.nVertices - 1):(i - 1));
+			var middle = i;
+			var upper = ((i == this.nVertices - 1)?0:(i + 1));
+			var dx0 = this.x[middle] - this.x[lower];
+			var dy0 = this.y[middle] - this.y[lower];
+			var dx1 = this.x[upper] - this.x[middle];
+			var dy1 = this.y[upper] - this.y[middle];
+			var cross = dx0 * dy1 - dx1 * dy0;
+			var newIsP = (cross > 0);
+			if(i == 0) isPositive = newIsP;
+			else if(isPositive != newIsP) {
+				$s.pop();
+				return false;
+			}
+		}
+	}
+	{
+		$s.pop();
+		return true;
+	}
+	$s.pop();
+}
+touchmypixel.geom.Polygon.prototype.nVertices = null;
+touchmypixel.geom.Polygon.prototype.set = function(p) {
+	$s.push("touchmypixel.geom.Polygon::set");
+	var $spos = $s.length;
+	this.nVertices = p.nVertices;
+	this.x = new Array();
+	this.y = new Array();
+	var i = 0;
+	{
+		var _g1 = 0, _g = this.nVertices;
+		while(_g1 < _g) {
+			var i1 = _g1++;
+			this.x[i1] = p.x[i1];
+			this.y[i1] = p.y[i1];
+		}
+	}
+	$s.pop();
+}
+touchmypixel.geom.Polygon.prototype.x = null;
+touchmypixel.geom.Polygon.prototype.y = null;
+touchmypixel.geom.Polygon.prototype.__class__ = touchmypixel.geom.Polygon;
 if(typeof js=='undefined') js = {}
+js.Lib = function() { }
+js.Lib.__name__ = ["js","Lib"];
+js.Lib.isIE = null;
+js.Lib.isOpera = null;
+js.Lib.document = null;
+js.Lib.window = null;
+js.Lib.alert = function(v) {
+	$s.push("js.Lib::alert");
+	var $spos = $s.length;
+	alert(js.Boot.__string_rec(v,""));
+	$s.pop();
+}
+js.Lib.eval = function(code) {
+	$s.push("js.Lib::eval");
+	var $spos = $s.length;
+	{
+		var $tmp = eval(code);
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+js.Lib.setErrorHandler = function(f) {
+	$s.push("js.Lib::setErrorHandler");
+	var $spos = $s.length;
+	js.Lib.onerror = f;
+	$s.pop();
+}
+js.Lib.prototype.__class__ = js.Lib;
 js.Boot = function() { }
 js.Boot.__name__ = ["js","Boot"];
 js.Boot.__unhtml = function(s) {
@@ -1260,59 +1370,429 @@ js.Boot.__init = function() {
 	$s.pop();
 }
 js.Boot.prototype.__class__ = js.Boot;
-StringBuf = function(p) { if( p === $_ ) return; {
-	$s.push("StringBuf::new");
+touchmypixel.game.LayoutWriter = function(p) { if( p === $_ ) return; {
+	$s.push("touchmypixel.game.LayoutWriter::new");
 	var $spos = $s.length;
-	this.b = new Array();
+	this.mainStatus = "OK!";
 	$s.pop();
 }}
-StringBuf.__name__ = ["StringBuf"];
-StringBuf.prototype.add = function(x) {
-	$s.push("StringBuf::add");
+touchmypixel.game.LayoutWriter.__name__ = ["touchmypixel","game","LayoutWriter"];
+touchmypixel.game.LayoutWriter.prototype.doc = null;
+touchmypixel.game.LayoutWriter.prototype.failed = null;
+touchmypixel.game.LayoutWriter.prototype.lib = null;
+touchmypixel.game.LayoutWriter.prototype.log = function(v) {
+	$s.push("touchmypixel.game.LayoutWriter::log");
 	var $spos = $s.length;
-	this.b[this.b.length] = x;
+	this.logXml += ("<log>" + v) + "</log>";
 	$s.pop();
 }
-StringBuf.prototype.addChar = function(c) {
-	$s.push("StringBuf::addChar");
+touchmypixel.game.LayoutWriter.prototype.logXml = null;
+touchmypixel.game.LayoutWriter.prototype.mainStatus = null;
+touchmypixel.game.LayoutWriter.prototype.new2 = function() {
+	$s.push("touchmypixel.game.LayoutWriter::new2");
 	var $spos = $s.length;
-	this.b[this.b.length] = String.fromCharCode(c);
-	$s.pop();
-}
-StringBuf.prototype.addSub = function(s,pos,len) {
-	$s.push("StringBuf::addSub");
-	var $spos = $s.length;
-	this.b[this.b.length] = s.substr(pos,len);
-	$s.pop();
-}
-StringBuf.prototype.b = null;
-StringBuf.prototype.toString = function() {
-	$s.push("StringBuf::toString");
-	var $spos = $s.length;
+	this.doc = jsfl.Fl.getDocumentDOM();
+	this.lib = this.doc.library;
+	this.root = this.doc.timelines[0];
+	this.logXml = "";
+	this.failed = false;
+	this.startTime = Date.now().getTime();
+	var results = this.searchTimeline(this.root);
+	var xml = this.parseResults(results);
+	if(!this.failed) this.saveXml(xml);
+	var totalTime = Date.now().getTime() - this.startTime;
+	this.log(("Executed in " + totalTime) + "ms");
+	var xmlStr = ((((("<result success=\"" + Std.string(!this.failed)) + "\" time=\"") + totalTime) + "\">") + this.logXml) + "</result>";
 	{
-		var $tmp = this.b.join("");
 		$s.pop();
-		return $tmp;
+		return xmlStr;
 	}
 	$s.pop();
 }
-StringBuf.prototype.__class__ = StringBuf;
-if(typeof haxe=='undefined') haxe = {}
-haxe.Log = function() { }
-haxe.Log.__name__ = ["haxe","Log"];
-haxe.Log.trace = function(v,infos) {
-	$s.push("haxe.Log::trace");
+touchmypixel.game.LayoutWriter.prototype.parseBitmap = function(result) {
+	$s.push("touchmypixel.game.LayoutWriter::parseBitmap");
 	var $spos = $s.length;
-	js.Boot.__trace(v,infos);
+	var file = result.scope.libraryItem.linkageClassName;
+	if(file != "undefined" && file != null) {
+		var $tmp = ((("<bitmap " + this.parseParameters(result)) + " file=\"") + result.scope.libraryItem.linkageClassName) + "\" />\n";
+		$s.pop();
+		return $tmp;
+	}
+	{
+		$s.pop();
+		return "";
+	}
 	$s.pop();
 }
-haxe.Log.clear = function() {
-	$s.push("haxe.Log::clear");
+touchmypixel.game.LayoutWriter.prototype.parseBody = function(result) {
+	$s.push("touchmypixel.game.LayoutWriter::parseBody");
 	var $spos = $s.length;
-	js.Boot.__clear_trace();
+	var xml = ("<body " + this.parseParameters(result)) + ">\n";
+	xml += this.parseElements(result.scope);
+	xml += this.parseResults(result.children);
+	xml += "</body>\n";
+	{
+		$s.pop();
+		return xml;
+	}
 	$s.pop();
 }
-haxe.Log.prototype.__class__ = haxe.Log;
+touchmypixel.game.LayoutWriter.prototype.parseElementCircle = function(s) {
+	$s.push("touchmypixel.game.LayoutWriter::parseElementCircle");
+	var $spos = $s.length;
+	var xml = ((((((((((((("\t<circle x=\"" + s.x) + "\" y=\"") + s.y) + "\" w=\"") + s.width) + "\"  h=\"") + s.height) + "\" r=\"") + s.rotation) + "\" sx=\"") + s.scaleX) + "\" sy=\"") + s.scaleY) + "\" />\n";
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseElementPoly = function(s,scope) {
+	$s.push("touchmypixel.game.LayoutWriter::parseElementPoly");
+	var $spos = $s.length;
+	var xml = "";
+	var points = new Array();
+	var lastPoint = null;
+	{
+		var _g = 0, _g1 = s.edges;
+		while(_g < _g1.length) {
+			var e = _g1[_g];
+			++_g;
+			var p1 = e.getControl(0);
+			var p2 = e.getControl(2);
+			if(points.length == 0) {
+				points.push(e.getControl(0));
+				points.push(e.getControl(2));
+				lastPoint = e.getControl(2);
+			}
+			else {
+				{
+					var _g2 = 0, _g3 = s.edges;
+					while(_g2 < _g3.length) {
+						var e2 = _g3[_g2];
+						++_g2;
+						var p11 = e2.getControl(0);
+						var p21 = e2.getControl(2);
+						if(p11.x == lastPoint.x && p11.y == lastPoint.y) {
+							points.push(p21);
+							lastPoint = p21;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	if(s.isGroup) {
+		if(points.length == 0) {
+			this.log("No points for bounding box");
+			this.failed = true;
+			{
+				$s.pop();
+				return "";
+			}
+		}
+		var left = points[0].x;
+		var top = points[0].y;
+		var right = points[0].x;
+		var bottom = points[0].y;
+		{
+			var _g1 = 1, _g = points.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				if(points[i].x < left) left = points[i].x;
+				if(points[i].x > right) right = points[i].x;
+				if(points[i].y < top) top = points[i].y;
+				if(points[i].y > bottom) bottom = points[i].y;
+			}
+		}
+		var cx = (right + left) / 2;
+		var cy = (bottom + top) / 2;
+		{
+			var _g1 = 0, _g = points.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				points[i].x -= cx;
+				points[i].y -= cy;
+			}
+		}
+	}
+	if(!touchmypixel.geom.Triangulator.isWindingDirectionCCW(points)) points.reverse();
+	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) {
+		this.log(((("WARNING: shape not closed: " + scope.name) + " [") + scope.libraryItem.linkageClassName) + "]");
+		this.failed = true;
+	}
+	else points.pop();
+	var triangles = null;
+	try {
+		triangles = touchmypixel.geom.Triangulator.triangulate(points);
+	}
+	catch( $e0 ) {
+		if( js.Boot.__instanceof($e0,String) ) {
+			var e = $e0;
+			{
+				$e = [];
+				while($s.length >= $spos) $e.unshift($s.pop());
+				$s.push($e[0]);
+				this.log(e);
+				this.failed = true;
+				{
+					$s.pop();
+					return "";
+				}
+			}
+		} else throw($e0);
+	}
+	var polys = touchmypixel.geom.Triangulator.polygonizeTriangles(triangles);
+	{
+		var _g = 0;
+		while(_g < polys.length) {
+			var p = polys[_g];
+			++_g;
+			p.x.reverse();
+			p.y.reverse();
+			if(s.isGroup || true) {
+				var sx = s.x;
+				var sy = s.y;
+				var sw = s.x - s.width / 2;
+				var sh = s.height / 2;
+				sw = sh = 0;
+				xml += ((((((((((((("\t<poly x=\"" + sx) + "\" y=\"") + sy) + "\" w=\"") + sw) + "\"  h=\"") + sh) + "\" r=\"") + s.rotation) + "\" sx=\"") + s.scaleX) + "\" sy=\"") + s.scaleY) + "\">\n";
+			}
+			else {
+				xml += "\t<poly x=\"0\" y=\"0\" r=\"0\" sx=\"1\" sy=\"1\" >\n";
+			}
+			{
+				var _g2 = 0, _g1 = p.nVertices;
+				while(_g2 < _g1) {
+					var i = _g2++;
+					xml += ((("\t\t<vert x=\"" + p.x[i]) + "\" y=\"") + p.y[i]) + "\" />\n";
+				}
+			}
+			xml += "\t</poly>\n";
+		}
+	}
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseElementRect = function(s) {
+	$s.push("touchmypixel.game.LayoutWriter::parseElementRect");
+	var $spos = $s.length;
+	var xml = this.parseElementPoly(s,null);
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseElements = function(scope) {
+	$s.push("touchmypixel.game.LayoutWriter::parseElements");
+	var $spos = $s.length;
+	var xml = "";
+	{
+		var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(scope));
+		while(_g < _g1.length) {
+			var child = _g1[_g];
+			++_g;
+			if(touchmypixel.game.utils.JSFLTools.isShape(child)) {
+				var s = child;
+				if(s.isRectangleObject) xml += this.parseElementRect(child);
+				else if(s.isOvalObject) xml += this.parseElementCircle(child);
+				else xml += this.parseElementPoly(child,scope);
+			}
+		}
+	}
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseGameObject = function(result) {
+	$s.push("touchmypixel.game.LayoutWriter::parseGameObject");
+	var $spos = $s.length;
+	var xml = ("<gameObject " + this.parseParameters(result)) + ">\n";
+	xml += this.parseResults(result.children);
+	xml += "</gameObject>\n";
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseLayout = function(result) {
+	$s.push("touchmypixel.game.LayoutWriter::parseLayout");
+	var $spos = $s.length;
+	var xml = "<layout " + this.parseParameters(result);
+	xml += (((" w=\"" + result.scope.width) + "\" h=\"") + result.scope.height) + "\"";
+	xml += ">\n";
+	xml += this.parseResults(result.children);
+	xml += "</layout>\n";
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseObject = function(result) {
+	$s.push("touchmypixel.game.LayoutWriter::parseObject");
+	var $spos = $s.length;
+	var xml = ("<object " + this.parseParameters(result)) + ">\n";
+	xml += "</object>\n";
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseParameters = function(result) {
+	$s.push("touchmypixel.game.LayoutWriter::parseParameters");
+	var $spos = $s.length;
+	var sc = result.scope;
+	var xml = "";
+	xml += (" name=\"" + sc.name) + "\"";
+	xml += (" x=\"" + sc.x) + "\"";
+	xml += (" y=\"" + sc.y) + "\"";
+	xml += (" sx=\"" + sc.scaleX) + "\"";
+	xml += (" sy=\"" + sc.scaleY) + "\"";
+	xml += (" r=\"" + sc.rotation) + "\"";
+	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
+		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
+		{ var $it0 = def.keys();
+		while( $it0.hasNext() ) { var v = $it0.next();
+		{
+			xml += (((" " + v) + "=\"") + def.get(v)) + "\"";
+		}
+		}}
+	}
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseResults = function(results) {
+	$s.push("touchmypixel.game.LayoutWriter::parseResults");
+	var $spos = $s.length;
+	var xml = "";
+	{
+		var _g = 0;
+		while(_g < results.length) {
+			var r = results[_g];
+			++_g;
+			xml += (function($this) {
+				var $r;
+				switch(r.type) {
+				case "layout":{
+					$r = $this.parseLayout(r);
+				}break;
+				case "body":{
+					$r = $this.parseBody(r);
+				}break;
+				case "shape":{
+					$r = $this.parseShape(r);
+				}break;
+				case "object":{
+					$r = $this.parseObject(r);
+				}break;
+				case "gameObject":{
+					$r = $this.parseGameObject(r);
+				}break;
+				case "bitmap":{
+					$r = $this.parseBitmap(r);
+				}break;
+				default:{
+					$r = null;
+				}break;
+				}
+				return $r;
+			}(this));
+		}
+	}
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.parseShape = function(result) {
+	$s.push("touchmypixel.game.LayoutWriter::parseShape");
+	var $spos = $s.length;
+	var xml = ("<shape " + this.parseParameters(result)) + ">\n";
+	xml += this.parseElements(result.scope);
+	xml += "</shape>\n";
+	{
+		$s.pop();
+		return xml;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.root = null;
+touchmypixel.game.LayoutWriter.prototype.saveXml = function(xml) {
+	$s.push("touchmypixel.game.LayoutWriter::saveXml");
+	var $spos = $s.length;
+	var path = this.doc.pathURI;
+	path = path.substr(0,path.lastIndexOf("."));
+	path += ".xml";
+	this.log("EXPORTED: " + path);
+	jsfl.FLfile.write(path,xml);
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.searchTimeline = function(inScope,store) {
+	$s.push("touchmypixel.game.LayoutWriter::searchTimeline");
+	var $spos = $s.length;
+	var results = [];
+	{
+		var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(inScope);
+		while(_g < _g1.length) {
+			var el = _g1[_g];
+			++_g;
+			if(touchmypixel.game.utils.JSFLTools.isInstance(el)) {
+				var el1 = el;
+				{
+					var _g2 = 0, _g3 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(el1));
+					while(_g2 < _g3.length) {
+						var el2 = _g3[_g2];
+						++_g2;
+						var el21 = el2;
+						if(touchmypixel.game.utils.JSFLTools.isComponent(el21)) {
+							switch(el21.libraryItem.linkageClassName) {
+							case "Def_Layout":{
+								results.unshift({ type : "layout", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
+							}break;
+							case "Def_Body":{
+								results.unshift({ type : "body", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
+							}break;
+							case "Def_Shape":{
+								results.unshift({ type : "shape", info : el21, scope : el1, children : null});
+							}break;
+							case "Def_Object":{
+								results.unshift({ type : "object", info : el21, scope : el1, children : null});
+							}break;
+							case "Def_GameObject":{
+								results.unshift({ type : "gameObject", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
+							}break;
+							}
+						}
+					}
+				}
+				if(touchmypixel.game.utils.JSFLTools.isBitmap(el1)) {
+					results.unshift({ type : "bitmap", info : el1, scope : el1, children : null});
+				}
+			}
+		}
+	}
+	{
+		$s.pop();
+		return results;
+	}
+	$s.pop();
+}
+touchmypixel.game.LayoutWriter.prototype.startTime = null;
+touchmypixel.game.LayoutWriter.prototype.__class__ = touchmypixel.game.LayoutWriter;
 Hash = function(p) { if( p === $_ ) return; {
 	$s.push("Hash::new");
 	var $spos = $s.length;
@@ -1455,79 +1935,6 @@ Hash.prototype.toString = function() {
 	$s.pop();
 }
 Hash.prototype.__class__ = Hash;
-Std = function() { }
-Std.__name__ = ["Std"];
-Std["is"] = function(v,t) {
-	$s.push("Std::is");
-	var $spos = $s.length;
-	{
-		var $tmp = js.Boot.__instanceof(v,t);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Std.string = function(s) {
-	$s.push("Std::string");
-	var $spos = $s.length;
-	{
-		var $tmp = js.Boot.__string_rec(s,"");
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Std["int"] = function(x) {
-	$s.push("Std::int");
-	var $spos = $s.length;
-	if(x < 0) {
-		var $tmp = Math.ceil(x);
-		$s.pop();
-		return $tmp;
-	}
-	{
-		var $tmp = Math.floor(x);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Std.parseInt = function(x) {
-	$s.push("Std::parseInt");
-	var $spos = $s.length;
-	var v = parseInt(x);
-	if(Math.isNaN(v)) {
-		$s.pop();
-		return null;
-	}
-	{
-		var $tmp = v;
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Std.parseFloat = function(x) {
-	$s.push("Std::parseFloat");
-	var $spos = $s.length;
-	{
-		var $tmp = parseFloat(x);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Std.random = function(x) {
-	$s.push("Std::random");
-	var $spos = $s.length;
-	{
-		var $tmp = Math.floor(Math.random() * x);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-Std.prototype.__class__ = Std;
 Main = function() { }
 Main.__name__ = ["Main"];
 Main.main = function() {
@@ -1537,370 +1944,6 @@ Main.main = function() {
 	$s.pop();
 }
 Main.prototype.__class__ = Main;
-if(!touchmypixel.game.utils) touchmypixel.game.utils = {}
-touchmypixel.game.utils.JSFLTools = function() { }
-touchmypixel.game.utils.JSFLTools.__name__ = ["touchmypixel","game","utils","JSFLTools"];
-touchmypixel.game.utils.JSFLTools.isShape = function(el) {
-	$s.push("touchmypixel.game.utils.JSFLTools::isShape");
-	var $spos = $s.length;
-	{
-		var $tmp = el.elementType == "shape";
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-touchmypixel.game.utils.JSFLTools.isInstance = function(el) {
-	$s.push("touchmypixel.game.utils.JSFLTools::isInstance");
-	var $spos = $s.length;
-	{
-		var $tmp = el.elementType == "instance";
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-touchmypixel.game.utils.JSFLTools.isBitmap = function(el) {
-	$s.push("touchmypixel.game.utils.JSFLTools::isBitmap");
-	var $spos = $s.length;
-	if(!touchmypixel.game.utils.JSFLTools.isInstance(el)) {
-		$s.pop();
-		return false;
-	}
-	{
-		var $tmp = el.libraryItem.itemType == "bitmap";
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-touchmypixel.game.utils.JSFLTools.isComponent = function(el) {
-	$s.push("touchmypixel.game.utils.JSFLTools::isComponent");
-	var $spos = $s.length;
-	if(!touchmypixel.game.utils.JSFLTools.isInstance(el)) {
-		$s.pop();
-		return false;
-	}
-	var c = el;
-	var isComponent = c.libraryItem.itemType == "component";
-	if(isComponent && (el.parameters) == null) throw ((("COMPONENT DIRTY: You need to refresh " + c.name) + " [") + c.libraryItem.name) + "]";
-	{
-		$s.pop();
-		return isComponent;
-	}
-	$s.pop();
-}
-touchmypixel.game.utils.JSFLTools.getChildren = function(timeline,includeGuideLayers) {
-	$s.push("touchmypixel.game.utils.JSFLTools::getChildren");
-	var $spos = $s.length;
-	if(includeGuideLayers == null) includeGuideLayers = false;
-	if(timeline == null) {
-		var $tmp = [];
-		$s.pop();
-		return $tmp;
-	}
-	var els = new Array();
-	var i = timeline.layers.length - 1;
-	while(i >= 0) {
-		var l = timeline.layers[i];
-		if(l.layerType != "guide" || includeGuideLayers) {
-			var f = l.frames[0];
-			{
-				var _g = 0, _g1 = f.elements;
-				while(_g < _g1.length) {
-					var el = _g1[_g];
-					++_g;
-					els.unshift(el);
-				}
-			}
-		}
-		i--;
-	}
-	{
-		$s.pop();
-		return els;
-	}
-	$s.pop();
-}
-touchmypixel.game.utils.JSFLTools.getTimeline = function(symbol) {
-	$s.push("touchmypixel.game.utils.JSFLTools::getTimeline");
-	var $spos = $s.length;
-	{
-		var $tmp = symbol.libraryItem.timeline;
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-touchmypixel.game.utils.JSFLTools.getInstanceChildren = function(symbol) {
-	$s.push("touchmypixel.game.utils.JSFLTools::getInstanceChildren");
-	var $spos = $s.length;
-	{
-		var $tmp = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(symbol));
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-touchmypixel.game.utils.JSFLTools.getDefinitionValues = function(el) {
-	$s.push("touchmypixel.game.utils.JSFLTools::getDefinitionValues");
-	var $spos = $s.length;
-	if(el == null) {
-		$s.pop();
-		return null;
-	}
-	var def = new Hash();
-	if(!touchmypixel.game.utils.JSFLTools.isComponent(el)) {
-		$s.pop();
-		return null;
-	}
-	var el1 = el;
-	{
-		var _g = 0, _g1 = el1.parameters;
-		while(_g < _g1.length) {
-			var p = _g1[_g];
-			++_g;
-			def.set(p.name,p.value);
-		}
-	}
-	{
-		$s.pop();
-		return def;
-	}
-	$s.pop();
-}
-touchmypixel.game.utils.JSFLTools.prototype.__class__ = touchmypixel.game.utils.JSFLTools;
-js.Lib = function() { }
-js.Lib.__name__ = ["js","Lib"];
-js.Lib.isIE = null;
-js.Lib.isOpera = null;
-js.Lib.document = null;
-js.Lib.window = null;
-js.Lib.alert = function(v) {
-	$s.push("js.Lib::alert");
-	var $spos = $s.length;
-	alert(js.Boot.__string_rec(v,""));
-	$s.pop();
-}
-js.Lib.eval = function(code) {
-	$s.push("js.Lib::eval");
-	var $spos = $s.length;
-	{
-		var $tmp = eval(code);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-js.Lib.setErrorHandler = function(f) {
-	$s.push("js.Lib::setErrorHandler");
-	var $spos = $s.length;
-	js.Lib.onerror = f;
-	$s.pop();
-}
-js.Lib.prototype.__class__ = js.Lib;
-StringTools = function() { }
-StringTools.__name__ = ["StringTools"];
-StringTools.urlEncode = function(s) {
-	$s.push("StringTools::urlEncode");
-	var $spos = $s.length;
-	{
-		var $tmp = encodeURIComponent(s);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.urlDecode = function(s) {
-	$s.push("StringTools::urlDecode");
-	var $spos = $s.length;
-	{
-		var $tmp = decodeURIComponent(s.split("+").join(" "));
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.htmlEscape = function(s) {
-	$s.push("StringTools::htmlEscape");
-	var $spos = $s.length;
-	{
-		var $tmp = s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.htmlUnescape = function(s) {
-	$s.push("StringTools::htmlUnescape");
-	var $spos = $s.length;
-	{
-		var $tmp = s.split("&gt;").join(">").split("&lt;").join("<").split("&amp;").join("&");
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.startsWith = function(s,start) {
-	$s.push("StringTools::startsWith");
-	var $spos = $s.length;
-	{
-		var $tmp = (s.length >= start.length && s.substr(0,start.length) == start);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.endsWith = function(s,end) {
-	$s.push("StringTools::endsWith");
-	var $spos = $s.length;
-	var elen = end.length;
-	var slen = s.length;
-	{
-		var $tmp = (slen >= elen && s.substr(slen - elen,elen) == end);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.isSpace = function(s,pos) {
-	$s.push("StringTools::isSpace");
-	var $spos = $s.length;
-	var c = s.charCodeAt(pos);
-	{
-		var $tmp = (c >= 9 && c <= 13) || c == 32;
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.ltrim = function(s) {
-	$s.push("StringTools::ltrim");
-	var $spos = $s.length;
-	var l = s.length;
-	var r = 0;
-	while(r < l && StringTools.isSpace(s,r)) {
-		r++;
-	}
-	if(r > 0) {
-		var $tmp = s.substr(r,l - r);
-		$s.pop();
-		return $tmp;
-	}
-	else {
-		$s.pop();
-		return s;
-	}
-	$s.pop();
-}
-StringTools.rtrim = function(s) {
-	$s.push("StringTools::rtrim");
-	var $spos = $s.length;
-	var l = s.length;
-	var r = 0;
-	while(r < l && StringTools.isSpace(s,(l - r) - 1)) {
-		r++;
-	}
-	if(r > 0) {
-		{
-			var $tmp = s.substr(0,l - r);
-			$s.pop();
-			return $tmp;
-		}
-	}
-	else {
-		{
-			$s.pop();
-			return s;
-		}
-	}
-	$s.pop();
-}
-StringTools.trim = function(s) {
-	$s.push("StringTools::trim");
-	var $spos = $s.length;
-	{
-		var $tmp = StringTools.ltrim(StringTools.rtrim(s));
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.rpad = function(s,c,l) {
-	$s.push("StringTools::rpad");
-	var $spos = $s.length;
-	var sl = s.length;
-	var cl = c.length;
-	while(sl < l) {
-		if(l - sl < cl) {
-			s += c.substr(0,l - sl);
-			sl = l;
-		}
-		else {
-			s += c;
-			sl += cl;
-		}
-	}
-	{
-		$s.pop();
-		return s;
-	}
-	$s.pop();
-}
-StringTools.lpad = function(s,c,l) {
-	$s.push("StringTools::lpad");
-	var $spos = $s.length;
-	var ns = "";
-	var sl = s.length;
-	if(sl >= l) {
-		$s.pop();
-		return s;
-	}
-	var cl = c.length;
-	while(sl < l) {
-		if(l - sl < cl) {
-			ns += c.substr(0,l - sl);
-			sl = l;
-		}
-		else {
-			ns += c;
-			sl += cl;
-		}
-	}
-	{
-		var $tmp = ns + s;
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.replace = function(s,sub,by) {
-	$s.push("StringTools::replace");
-	var $spos = $s.length;
-	{
-		var $tmp = s.split(sub).join(by);
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-StringTools.hex = function(n,digits) {
-	$s.push("StringTools::hex");
-	var $spos = $s.length;
-	var s = "";
-	var hexChars = "0123456789ABCDEF";
-	do {
-		s = hexChars.charAt(n & 15) + s;
-		n >>>= 4;
-	} while(n > 0);
-	if(digits != null) while(s.length < digits) s = "0" + s;
-	{
-		$s.pop();
-		return s;
-	}
-	$s.pop();
-}
-StringTools.prototype.__class__ = StringTools;
 $Main = function() { }
 $Main.__name__ = ["@Main"];
 $Main.prototype.__class__ = $Main;
@@ -1932,64 +1975,6 @@ js.Boot.__init();
 				FLfile:FLfile
 			}
 			;
-	}
-}
-{
-	Math.__name__ = ["Math"];
-	Math.NaN = Number["NaN"];
-	Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
-	Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
-	Math.isFinite = function(i) {
-		$s.push("@Main::new@69");
-		var $spos = $s.length;
-		{
-			var $tmp = isFinite(i);
-			$s.pop();
-			return $tmp;
-		}
-		$s.pop();
-	}
-	Math.isNaN = function(i) {
-		$s.push("@Main::new@81");
-		var $spos = $s.length;
-		{
-			var $tmp = isNaN(i);
-			$s.pop();
-			return $tmp;
-		}
-		$s.pop();
-	}
-}
-{
-	String.prototype.__class__ = String;
-	String.__name__ = ["String"];
-	Array.prototype.__class__ = Array;
-	Array.__name__ = ["Array"];
-	Int = { __name__ : ["Int"]}
-	Dynamic = { __name__ : ["Dynamic"]}
-	Float = Number;
-	Float.__name__ = ["Float"];
-	Bool = { __ename__ : ["Bool"]}
-	Class = { __name__ : ["Class"]}
-	Enum = { }
-	Void = { __ename__ : ["Void"]}
-}
-{
-	js.Lib.document = document;
-	js.Lib.window = window;
-	onerror = function(msg,url,line) {
-		var stack = $s.copy();
-		var f = js.Lib.onerror;
-		$s.splice(0,$s.length);
-		if( f == null ) {
-			var i = stack.length;
-			var s = "";
-			while( --i >= 0 )
-				s += "Called from "+stack[i]+"\n";
-			alert(msg+"\n\n"+s);
-			return false;
-		}
-		return f(msg,stack);
 	}
 }
 {
@@ -2074,5 +2059,69 @@ js.Boot.__init();
 	d.prototype.__class__ = d;
 	d.__name__ = ["Date"];
 }
+{
+	String.prototype.__class__ = String;
+	String.__name__ = ["String"];
+	Array.prototype.__class__ = Array;
+	Array.__name__ = ["Array"];
+	Int = { __name__ : ["Int"]}
+	Dynamic = { __name__ : ["Dynamic"]}
+	Float = Number;
+	Float.__name__ = ["Float"];
+	Bool = { __ename__ : ["Bool"]}
+	Class = { __name__ : ["Class"]}
+	Enum = { }
+	Void = { __ename__ : ["Void"]}
+}
+{
+	Math.__name__ = ["Math"];
+	Math.NaN = Number["NaN"];
+	Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
+	Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
+	Math.isFinite = function(i) {
+		$s.push("@Main::new@69");
+		var $spos = $s.length;
+		{
+			var $tmp = isFinite(i);
+			$s.pop();
+			return $tmp;
+		}
+		$s.pop();
+	}
+	Math.isNaN = function(i) {
+		$s.push("@Main::new@81");
+		var $spos = $s.length;
+		{
+			var $tmp = isNaN(i);
+			$s.pop();
+			return $tmp;
+		}
+		$s.pop();
+	}
+}
+{
+	js.Lib.document = document;
+	js.Lib.window = window;
+	onerror = function(msg,url,line) {
+		var stack = $s.copy();
+		var f = js.Lib.onerror;
+		$s.splice(0,$s.length);
+		if( f == null ) {
+			var i = stack.length;
+			var s = "";
+			while( --i >= 0 )
+				s += "Called from "+stack[i]+"\n";
+			alert(msg+"\n\n"+s);
+			return false;
+		}
+		return f(msg,stack);
+	}
+}
 js.Lib.onerror = null;
 $Main.init = Main.main();
+function __entry()
+{
+	var writer = new touchmypixel.game.LayoutWriter();
+	
+	return writer.new2();
+}

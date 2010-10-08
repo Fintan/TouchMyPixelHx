@@ -1,0 +1,1 @@
+type src\LayoutWriterEntry.jsfl >> %1

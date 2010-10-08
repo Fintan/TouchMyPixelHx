@@ -30,7 +30,8 @@ class Box2dObject extends Object
 	
 	override public function init()
 	{
-		// override
+		for ( b in bodies )
+			b.init();
 	}
 	
 	

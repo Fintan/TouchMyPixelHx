@@ -13,6 +13,7 @@ class Object extends Sprite, implements IObjectHashable
 {
 	public var __objectId:Int;
 	
+	var isDestroyed : Bool;
 	//public var builderInfo:Fast;
 	
 	public function new() 
@@ -22,6 +23,8 @@ class Object extends Sprite, implements IObjectHashable
 		#if !flash
 		ObjectHash.register(this);
 		#end
+		
+		isDestroyed = false;
 	}
 	
 	public function init()
@@ -36,13 +39,16 @@ class Object extends Sprite, implements IObjectHashable
 	
 	public function destroy():Void
 	{
-		#if !flash
-		ObjectHash.deregister(this);
-		#end
-		
-		if (parent != null) 
+		if ( !isDestroyed )
 		{
-			parent.removeChild(this);
+			#if !flash
+			ObjectHash.deregister(this);
+			#end
+			
+			if (parent != null && parent.contains(this)) 
+			{
+				parent.removeChild(this);
+			}
 		}
 	}
 }

@@ -53,7 +53,8 @@ class LayoutBuilder
 			return null;
 		
 		var lo = layouts.get(name);
-		return { width:Std.parseFloat(lo.att.w), height:Std.parseFloat(lo.att.h) };
+		return { width:Std.parseFloat(lo.att.w)/Std.parseFloat(lo.att.sx), height:Std.parseFloat(lo.att.h)/Std.parseFloat(lo.att.sy) };
+		//return { width:Std.parseFloat(lo.att.w), height:Std.parseFloat(lo.att.h)/Std.parseFloat(lo.att.sy) };
 	}
 	
 	public function buildLayout(layout:Fast, simulation:Box2dSimulation)
@@ -106,6 +107,7 @@ class LayoutBuilder
 			switch(child.nodeName)
 			{
 				case "body": createBody(new Fast(child), object);
+				case "bitmap": createBitmap(new Fast(child), object);
 			}
 		}
 	}
@@ -123,6 +125,7 @@ class LayoutBuilder
 		if (addToScope != null)
 			addToScope.addChild(bmp);
 			
+		//trace("addbitmap: " + bmp);
 		simulation.bitmaps.push(bmp);
 	}
 	
@@ -148,7 +151,22 @@ class LayoutBuilder
 	
 	private function createBody(bodyInfo:Fast, ?gameObject:BuilderGameObject)
 	{ 
-		var body = new BuilderBodyObject(simulation);
+		var clazzName = bodyInfo.att.resolve("definition");
+		var body : BuilderBodyObject = null;
+		if ( clazzName != "" )
+		{
+			var clazz = Type.resolveClass(clazzName);
+			
+			if (clazz == null)
+				throw "Body Class: " + clazzName + " cannot be built, as it doesnt exist";
+				
+			body = Type.createInstance(clazz, [simulation]);
+		}
+		else
+		{
+			body = new BuilderBodyObject(simulation);
+		}
+		
 		body.info = bodyInfo;
 		body.gameObject = gameObject;
 		body.type = bodyInfo.att.type;
@@ -287,7 +305,7 @@ class LayoutBuilder
 	/***********/
 	
 	
-	private function parsePoly(el:Fast, bodyInfo:Fast):B2ShapeDef
+	private function parsePoly(el:Fast, bodyInfo:Fast, ?shapeInfo:Fast=null):B2ShapeDef
 	{
 		var verts = [];
 		for (vert in el.nodes.vert)
@@ -295,7 +313,10 @@ class LayoutBuilder
 			verts.push([f(vert.att.x), 
 						f(vert.att.y)]);
 		}
-		var shape = ShapeTools.polygon(	simulation.scale, 
+		var shape = null;
+		if ( shapeInfo == null )
+		{
+			shape = ShapeTools.polygon(	simulation.scale, 
 										verts, 	
 										f(el.att.x) * f(bodyInfo.att.sx), 
 										f(el.att.y) * f(bodyInfo.att.sy), 
@@ -303,6 +324,18 @@ class LayoutBuilder
 										f(el.att.sx) * f(bodyInfo.att.sx),
 										f(el.att.sy) * f(bodyInfo.att.sy)
 										);
+		}
+		else
+		{
+			shape = ShapeTools.polygon(	simulation.scale, 
+										verts, 	
+										(f(el.att.x) + f(shapeInfo.att.x)) * f(bodyInfo.att.sx) * f(shapeInfo.att.sx), 
+										(f(el.att.y) + f(shapeInfo.att.y)) * f(bodyInfo.att.sy) * f(shapeInfo.att.sy), 
+										f(el.att.r), 
+										f(el.att.sx) * f(bodyInfo.att.sx) * f(shapeInfo.att.sx),
+										f(el.att.sy) * f(bodyInfo.att.sy) * f(shapeInfo.att.sy)
+										);
+		}
 										
 		var isStatic = bodyInfo.att.resolve("static") == "true"; 
 		shape.density = isStatic ? 0 : f(bodyInfo.att.density);
@@ -311,15 +344,30 @@ class LayoutBuilder
 		return shape;
 	}
 	
-	private function parseCircle(el:Fast, bodyInfo:Fast):B2ShapeDef
+	private function parseCircle(el:Fast, bodyInfo:Fast, ?shapeInfo:Fast=null):B2ShapeDef
 	{
-		var shape = ShapeTools.circle(	simulation.scale, 	
+		var shape = null;
+		if ( shapeInfo == null ) 
+		{
+			shape = ShapeTools.circle(	simulation.scale, 	
 										f(el.att.x) * f(bodyInfo.att.sx), 
 										f(el.att.y) * f(bodyInfo.att.sy),
 										f(el.att.w)/2,
 										f(bodyInfo.att.sx),
 										f(bodyInfo.att.sy)
 										);
+		}
+		else
+		{
+			shape = ShapeTools.circle(	simulation.scale, 
+										(f(el.att.x) + f(shapeInfo.att.x)) * f(bodyInfo.att.sx) * f(shapeInfo.att.sx), 
+										(f(el.att.y) + f(shapeInfo.att.y)) * f(bodyInfo.att.sy) * f(shapeInfo.att.sy), 
+										f(el.att.w)/2, 
+										f(bodyInfo.att.sx) * f(shapeInfo.att.sx),
+										f(bodyInfo.att.sy) * f(shapeInfo.att.sy)
+										);
+		}
+		
 		var isStatic = bodyInfo.att.resolve("static") == "true"; 
 		shape.density = isStatic ? 0 : f(bodyInfo.att.density);
 		shape.restitution = f(bodyInfo.att.restitution);
@@ -336,9 +384,9 @@ class LayoutBuilder
 		{
 			var shape:B2ShapeDef = switch(childInfo.nodeName)
 			{
-				case "poly": parsePoly(new Fast(childInfo), bodyInfo);
-				case "circle": parseCircle(new Fast(childInfo), bodyInfo);
-				case "rect": parsePoly(new Fast(childInfo), bodyInfo);
+				case "poly": parsePoly(new Fast(childInfo), bodyInfo, shapeInfo);
+				case "circle": parseCircle(new Fast(childInfo), bodyInfo, shapeInfo);
+				case "rect": parsePoly(new Fast(childInfo), bodyInfo, shapeInfo);
 			}
 			
 			if (shape != null)

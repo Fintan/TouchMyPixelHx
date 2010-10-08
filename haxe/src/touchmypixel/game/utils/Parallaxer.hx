@@ -78,13 +78,13 @@ class Parallaxer
 	
 	public function update(instant:Bool = false)
 	{
-		for(layer in layers)
+		/*for(layer in layers)
 		{
 			if (layer.canZoom) {
 				layer.mc.scaleX = zoom;
 				layer.mc.scaleY = zoom;
 			}
-		}
+		}*/
 		
 		// Set controlLayer's Target Position
 		controlLayer.tx = (window.width / 2 - focus.x + focusOffset.x);
@@ -104,7 +104,7 @@ class Parallaxer
 		}
 		
 		var npx:Float = Math.abs((controlLayer.tx - window.left) / (controlLayer.dimensions.width - window.width));
-		var npy:Float = Math.abs((controlLayer.ty - window.left) / (controlLayer.dimensions.height - window.width));
+		var npy:Float = Math.abs((controlLayer.ty - window.top) / (controlLayer.dimensions.height - window.height));
 			
 		var smooth = instant ? 1 : smoothing;
 		
@@ -116,7 +116,15 @@ class Parallaxer
 			// Set All layer positions
 			layer.mc.x += (layer.tx - layer.mc.x) / smooth;
 			layer.mc.y += (layer.ty - layer.mc.y) / smooth;
+			
+			//layer.mc.x = roundToNearest(1.0, layer.mc.x);
+			//layer.mc.y = roundToNearest(1.0, layer.mc.y);
 		}		
+	}
+	
+	inline function roundToNearest( roundTo : Float, value : Float ) : Float
+	{
+		return Math.round( value / roundTo ) * roundTo;
 	}
 	
 	private function updateLayerTarget(layer:ParallaxLayer, tx:Float, ty:Float)

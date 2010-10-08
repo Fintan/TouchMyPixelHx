@@ -39,7 +39,7 @@
   <!-- Executed before build -->
   <preBuildCommand />
   <!-- Executed after build -->
-  <postBuildCommand alwaysRun="False" />
+  <postBuildCommand alwaysRun="False">src\appendEntry.bat "$(OutputDir)\$(OutputName)"</postBuildCommand>
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />

@@ -56,7 +56,7 @@ class Box2dSimulation extends Sprite
 		autoUpdateObjects = false;
 		
 		scale = 30.;
-		iterations = 30;
+		iterations = 10;
 		
 		initAABB = new B2AABB();
 		initAABB.lowerBound.Set(-1000 / scale, -1000 / scale);
@@ -91,6 +91,15 @@ class Box2dSimulation extends Sprite
 		dbgDraw.m_drawFlags = B2DebugDraw.e_shapeBit | B2DebugDraw.e_jointBit  | B2DebugDraw.e_centerOfMassBit;
 		if (debug)
 			world.SetDebugDraw(dbgDraw);
+	}
+	
+	public function drawAABB( aabb : B2AABB, ?color : Int = 0xff0000 ) : Void
+	{
+		if ( debug )
+		{
+			debugDrawScope.graphics.lineStyle(2, color );
+			debugDrawScope.graphics.drawRect(aabb.lowerBound.x * scale, aabb.lowerBound.y * scale, (aabb.upperBound.x - aabb.lowerBound.x) * scale, (aabb.upperBound.y - aabb.lowerBound.y) * scale);
+		}
 	}
 	
 	public function update(dt:Float)
