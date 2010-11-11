@@ -45,10 +45,8 @@ class Object extends Sprite, implements IObjectHashable
 			ObjectHash.deregister(this);
 			#end
 			
-			if (parent != null && parent.contains(this)) 
-			{
+			if (parent != null) 
 				parent.removeChild(this);
-			}
 		}
 	}
 }

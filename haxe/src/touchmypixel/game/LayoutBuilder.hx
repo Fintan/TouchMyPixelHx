@@ -12,6 +12,7 @@ import box2D.dynamics.B2World;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
+import flash.system.System;
 import touchmypixel.game.box2d.ShapeTools;
 import haxe.xml.Fast;
 import touchmypixel.game.objects.Box2dObject;
@@ -21,6 +22,7 @@ import touchmypixel.game.objects.LBGeometry;
 import touchmypixel.game.objects.Object;
 import touchmypixel.game.simulations.Box2dSimulation;
 import touchmypixel.game.utils.Loader;
+import touchmypixel.utils.GcTracker;
 
 typedef LayoutInfo = 
 {
@@ -40,11 +42,17 @@ class LayoutBuilder
 		this.xml = Xml.parse(xml);
 		fast = new Fast(this.xml);
 		
-		
-		
 		layouts = new Hash();
 		for (n in fast.nodes.layout)
 			layouts.set(n.att.name, n);
+	}
+	
+	public function destroy() : Void
+	{		
+		xml = null;
+		fast = null;
+		layouts = null;
+		simulation = null;
 	}
 	
 	public function getLayoutInfo(name:String) : LayoutInfo
@@ -202,7 +210,9 @@ class LayoutBuilder
 			bodyDef.position.y = f(bodyInfo.att.y) / simulation.scale;
 			bodyDef.angle = f(bodyInfo.att.r)*Math.PI/180;		
 		}
-		bodyDef.isBullet = true;
+		
+		bodyDef.isBullet = (bodyInfo.has.isBullet && bodyInfo.att.isBullet == "true");
+		//trace("isBullet: " + bodyDef.isBullet);
 		
 		var b2body = simulation.world.CreateBody(bodyDef);
 		b2body.SetUserData(body);

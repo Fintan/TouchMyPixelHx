@@ -27,4 +27,13 @@ class BuilderGameObject extends Box2dObject
 			this.simulation.sync(this, autoSyncToBody.body, autoSyncTransform);
 		}
 	}
+	
+	override public function destroy() : Void
+	{
+		info = null;
+		autoSyncToBody = null;
+		autoSyncTransform = null;
+		
+		super.destroy();
+	}
 }

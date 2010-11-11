@@ -14,14 +14,15 @@ import flash.net.URLRequest;
 
 class Loader 
 {
-	public static var loaded:Hash<Dynamic> = new Hash();
+	public static var loadedBitmaps:Hash<BitmapData> = new Hash();
+	public static var loadedSounds:Hash<Sound> = new Hash();
 	
 	public static function loadBitmap(src:String):Bitmap
 	{
 		// already loaded
-		if (loaded.exists(src))
+		if (loadedBitmaps.exists(src))
 		{
-			return new Bitmap(loaded.get(src), PixelSnapping.AUTO, true);
+			return new Bitmap(loadedBitmaps.get(src), PixelSnapping.AUTO, true);
 		}
 		
 		// load bitmap
@@ -38,15 +39,26 @@ class Loader
 			bd = Type.createInstance(cl, [50, 50]);
 		#end
 		
-		loaded.set(src, bd);
+		loadedBitmaps.set(src, bd);
 		
-		return new Bitmap(loaded.get(src), PixelSnapping.AUTO, true);
+		return new Bitmap(loadedBitmaps.get(src), PixelSnapping.AUTO, true);
+	}
+	
+	public static function destroy() : Void
+	{
+		for ( bmp in loadedBitmaps )
+			bmp.dispose();
+		loadedBitmaps = new Hash<BitmapData>();
+		
+		for ( snd in loadedSounds )
+			snd.close();
+		loadedSounds = new Hash<Sound>();
 	}
 	
 	public static function loadSound(url:String):Sound
 	{
-		if (loaded.exists(url))
-			return cast(loaded.get(url), Sound);
+		if (loadedSounds.exists(url))
+			return cast(loadedSounds.get(url), Sound);
 		
 		var sound:Sound = null;
 		
@@ -61,7 +73,7 @@ class Loader
 			sound = Type.createInstance(cl, [url]);
 		#end
 		
-		loaded.set(url, sound);
+		loadedSounds.set(url, sound);
 		
 		return sound;
 	}

@@ -42,6 +42,19 @@ class Parallaxer
 	{
 	}
 	
+	public function destroy() : Void
+	{
+		for(layer in layers)
+			layer.destroy();
+			
+		scope = null;
+		window = null;
+		windowCenter = null;
+		focus = focusOffset = null;
+		controlLayer = null;
+		bounds = null;
+	}
+	
 	public function drawWindow()
 	{
 		scope.graphics.lineStyle(1, 0);
@@ -153,5 +166,12 @@ class ParallaxLayer
 		this.tx = 0;
 		this.ty = 0;
 		this.canZoom = canZoom;
+	}
+	
+	public function destroy() : Void
+	{
+		mc = null;
+		dimensions = null;
+		offset = null;
 	}
 }

@@ -17,6 +17,7 @@ import touchmypixel.game.LevelBase;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import touchmypixel.game.objects.Object;
+//import v8ss.GameTools;
 
 class Box2dSimulation extends Sprite
 {
@@ -152,13 +153,30 @@ class Box2dSimulation extends Sprite
 			for (o in objects)
 				o.destroy();
 		}
-			
-		world = null;
+		
+		initAABB = null;
+		mousePos = null;
+		
+		//if ( world != null)
+		//{
+			//GameTools.freeB2World(world, true);
+			//world = null;
+		//}
+
 		objects = null;
 		namedObjects = null;
-		bitmaps = null;
+		bitmaps = null; 
 		
-		contactManager.clear();
+		if ( dbgDraw != null )
+		{
+			dbgDraw.m_sprite = null;
+			dbgDraw = null;
+		}
+		debugDrawScope = null;
+		
+		if ( contactManager != null )
+			contactManager.clear();
+		contactManager = null;
 	}
 	
 	public function getBodyAtMouse( ?includeStatic : Bool = false) : B2Body 

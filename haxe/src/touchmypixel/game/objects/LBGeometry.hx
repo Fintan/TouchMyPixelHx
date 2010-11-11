@@ -22,4 +22,8 @@ class LBGeometry
 		//contacts = new Array<Dynamic>();
 	}
 	
+	public function destroy() : Void
+	{
+		//for ( s in sha
+	}
 }

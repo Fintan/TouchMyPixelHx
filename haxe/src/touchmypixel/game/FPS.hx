@@ -30,4 +30,10 @@ class FPS extends flash.text.TextField
 			times.shift();
 		text = Std.string(times.length);
 	}
+	
+	public function destroy() : Void
+	{
+		flash.Lib.current.stage.removeEventListener(flash.events.Event.ENTER_FRAME, onEnterFrame);
+		times = null;
+	}
 }

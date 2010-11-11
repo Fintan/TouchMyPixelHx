@@ -40,10 +40,14 @@ class Box2dObject extends Object
 	}
 	
 	override public function destroy():Void
-	{
+	{		
+		if ( bodies != null )
+		{
+			for (b in bodies)
+				b.destroy();
+			bodies = null;
+		}
+		simulation = null;
 		super.destroy();
-		
-		for (b in bodies)	
-			b.destroy();
 	}
 }

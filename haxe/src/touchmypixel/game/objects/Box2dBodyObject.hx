@@ -49,12 +49,37 @@ class Box2dBodyObject extends Object
 	{
 		super.destroy();
 		
+		freeContactList(contacts_add);
 		contacts_add = null;
+		freeContactList(contacts_persist);
 		contacts_persist = null;
+		freeContactList(contacts_remove);
 		contacts_remove = null;
-		
-		body.SetUserData(null);
-		
-		simulation.world.DestroyBody(body);
+	
+		if ( body != null )
+		{
+			body.SetUserData(null);	
+			simulation.world.DestroyBody(body);
+			body = null;
+		}
+	
+		gameObject = null;
+		simulation = null;
+	}
+	
+	inline function freeContactList( list : ObjectHash<Array<ContactPoint>> ) : Void
+	{
+		if ( list != null )
+		{
+			for ( a in list )
+			{
+				for ( cp in a )
+				{
+					cp.body1 = cp.body2 = null;
+					cp.object1 = cp.object2 = null;
+					cp.shape1 = cp.shape2 = null;
+				}
+			}
+		}
 	}
 }

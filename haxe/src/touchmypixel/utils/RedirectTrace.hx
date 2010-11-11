@@ -41,6 +41,11 @@ class RedirectTrace
 			ExternalInterface.call("console.log", traceCount2++ + "  " +pos.fileName + ":" + pos.lineNumber + ": " +v);
 		}
 	}
+	
+	public static function toNone()
+	{
+		haxe.Log.trace = function(v, ?pos) { }
+	}
 }
 #else
 class RedirectTrace

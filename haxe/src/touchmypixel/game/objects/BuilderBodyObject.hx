@@ -23,4 +23,24 @@ class BuilderBodyObject extends Box2dBodyObject
 		geometry = new Array<LBGeometry>();
 		namedGeometry = new Hash<LBGeometry>();
 	}
+	
+	override public function destroy() : Void
+	{
+		info = null;
+		
+		if ( geometry != null )
+		{
+			for ( geo in geometry )
+				geo.destroy();
+			geometry = null;
+		}
+		if ( namedGeometry != null )
+		{
+			for ( geo in namedGeometry )
+				geo.destroy();
+			namedGeometry = null;
+		}
+			
+		super.destroy();
+	}
 }
