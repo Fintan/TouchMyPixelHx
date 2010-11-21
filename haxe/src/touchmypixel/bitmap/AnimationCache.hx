@@ -1,11 +1,11 @@
 
-package touchmypixel.utils;
+package touchmypixel.bitmap;
 
 import flash.display.Bitmap;
 import flash.display.MovieClip;
 import flash.Lib;
-import touchmypixel.events.BitmapEvent;
-import touchmypixel.events.ProcessEvent;
+//import touchmypixel.events.BitmapEvent;
+//import touchmypixel.events.ProcessEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 
@@ -41,7 +41,7 @@ class AnimationCache extends EventDispatcher
 		try {
 			if(animations.get(id) == null || replaceExisting){
 				animation = new Animation();
-				animation.buildCacheFromClip(clip);
+				animation.buildCacheFromClip(clip);//also buildCacheFromLibrary
 				animations.set(id, animation);
 			} else {
 				animation = animations.get(id);
@@ -52,6 +52,37 @@ class AnimationCache extends EventDispatcher
 		return animation;
 	}
 	
+	public function cacheLibAnimation(identifier:String, scaleFactor:Float=1.0):Animation{
+		var animation:Animation = null;
+		if(animations.get(identifier) == null){
+			animation = new Animation();
+			animation.buildCacheFromLibrary(identifier);
+			animations.set(identifier, animation);
+		} else {
+			animation =  animations.get(identifier);
+		}
+		return animation;
+	}
+	
+	public function cacheImageSequence(id:String, bitmaps:Array<Bitmap>):Animation
+	{
+		var animation:Animation = null;
+		try {
+			if(animations.get(id) == null || replaceExisting){
+				animation = new Animation();
+				animation.buildCacheFromBitmaps(bitmaps);
+				animations.set(id, animation);
+				trace("animation should be set");
+			} else {
+				animation = animations.get(id);
+			}
+		}catch (e:Dynamic) {
+			trace("oops");
+			//	dispatchEvent(new BitmapEvent(BitmapEvent.BITMAP_CREATION_FAIL, true, false, "Error caching tiles in AnimationCache::cacheAnimation"));
+		}
+		return animation;
+	}
+		
 	public function getAnimation(id:String):Animation
 	{
 		var cachedAnimation = animations.get(id);
@@ -78,7 +109,7 @@ class AnimationCache extends EventDispatcher
 	public function processQueue():Void
 	{
 		currentlyProcessingItem = 0;
-		dispatchEvent(new ProcessEvent(ProcessEvent.START));
+		//dispatchEvent(new ProcessEvent(ProcessEvent.START));
 		process();
 	}
 	
@@ -89,12 +120,12 @@ class AnimationCache extends EventDispatcher
 		if (item != null)
 		{
 			cacheAnimation(item.id, item.clip);
-			dispatchEvent(new ProcessEvent(ProcessEvent.PROGRESS,currentlyProcessingItem/cacheQueue.length));
+			//dispatchEvent(new ProcessEvent(ProcessEvent.PROGRESS,currentlyProcessingItem/cacheQueue.length));
 			
 			// Should be called async' to avoid a hang
 			process();
 		} else {
-			dispatchEvent(new ProcessEvent(ProcessEvent.COMPLETE));
+			//dispatchEvent(new ProcessEvent(ProcessEvent.COMPLETE));
 			cacheQueue = [];
 		}
 	}

@@ -9,9 +9,37 @@ import flash.events.Event;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.errors.Error;
+import flash.system.ApplicationDomain;
+import org.casalib.time.FrameTime;
+
+//using fboyle.util.FlipUtil;
 
 class Animation extends Sprite
 {
+
+	//The number of ticks that will happen every second.
+
+	public static var TICKS_PER_SECOND:Int = 12;
+	
+	//The rate at which ticks are fired, in seconds.
+	
+	public static var TICK_RATE:Float = 1.0 / cast(TICKS_PER_SECOND, Float);
+	
+	// The rate at which ticks are fired, in milliseconds.
+	
+	public static var TICK_RATE_MS:Float = TICK_RATE * 1000;
+	
+	public static var MAX_TICKS_PER_FRAME:Int = 1; 
+	
+	private var lastTime:Float;
+
+	private var elapsed:Float; 
+	
+	private var _timeScale:Float; 
+
+	//--------------
+
 	public var bitmap:Bitmap;
 	public var clip:MovieClip;
 	public var frames:Array<BitmapData>;
@@ -29,11 +57,17 @@ class Animation extends Sprite
 	public var currentFrame:Int;
 	
 	private var _playing:Bool;
+	
+	private var frameOrigins:Array<Point>;
 		
 	public function new() 
 	{
 		super();
-		
+		//----
+		lastTime = -1.0;
+		elapsed = 0.0;
+		_timeScale = 1.0;
+		//----
 		frames = [];
 		currentFrame = 1;
 		cache = true;
@@ -52,20 +86,67 @@ class Animation extends Sprite
 	
 	public function isPlaying():Bool { return _playing; }
 	
-	public function buildCacheFromLibrary(identifier:String, ?rectangle:Rectangle=null):Void
-	{
-		var instance = Type.createInstance(Type.resolveClass(identifier), []);
+	public function buildCacheFromLibrary(identifier:String, ?rectangle:Rectangle=null):Void{
+	
+		var LibItem = Type.resolveClass(identifier);
+			if (LibItem == null)
+				throw "Cannot retrieve Library Item: " + identifier;
 		
-		buildCacheFromClip(instance, rectangle);
+		var instance = Type.createInstance(LibItem, []);
+			
+		//var instance = Type.createInstance(ApplicationDomain.currentDomain.getDefinition(identifier), [60,60]);
+		
+		buildCacheFromClip(instance, new Rectangle(0,0,instance.width,instance.height));
 		
 		// Cant get identifiers in the cpp as afaik
 	}
 	
-	public function buildCacheFromClip(clip:MovieClip, ?rectangle:Rectangle=null):Void
+	/*
+	*
+	* Alternative to buildCacheFromClip() for a more platofrm neutral approach
+	*
+	*/
+	public function buildCacheFromBitmaps(bitmaps:Array<Bitmap>, ?rectangle:Rectangle=null):Void{
+		trace("BUILDING FROM IMAGE SEQUENCE");
+	
+		if(bitmaps.length==-1){
+			throw(new Error("no images in the sequence!"));
+		}
+		var rect:Rectangle; 
+		var bounds = Reflect.field(clip, "e_bounds");
+		
+		if (rectangle == null)
+		{	
+			//trace("test "+ bitmaps.toString());
+			var bm = bitmaps[0];
+			//trace(" bm.bitmapData "+bm.bitmapData.width);	
+			rect = new Rectangle(0, 0, bm.bitmapData.width,  bm.bitmapData.height);
+				
+		} else {
+			rect = rectangle;
+		}
+		
+		var j = 0;
+		for (i in bitmaps)
+		{	
+			var bitmapData:BitmapData = new BitmapData(Std.int(rect.width), Std.int(rect.height), true, 0x00000000);
+			var m:Matrix = new Matrix();
+			m.translate(-rect.x, -rect.y);
+			//m.scale(clip.scaleX, clip.scaleY);
+			var bm = bitmaps[j];
+			bitmapData.draw(bm,m);
+			frames.push(bitmapData);
+			j++;
+		}
+		
+	}
+	
+	public function buildCacheFromClip(clip:MovieClip, ?rectangle:Rectangle=null, ?flipHorizontal:Bool=false):Void
 	{
 		trace("BUILDING FROM CLIP");
 		this.clip = clip;
 
+		frameOrigins = new Array<Point>();
 		
 		var rect:Rectangle; 
 		var bounds = Reflect.field(clip, "e_bounds");
@@ -86,17 +167,27 @@ class Animation extends Sprite
 		// Hard coded rect as rect's arnt supported in cpp yet
 		//rect = new Rectangle(0, 0, 90, 90);
 		
-		
 		for (i in 1...clip.totalFrames+1)
 		{
 			clip.gotoAndStop(i);
+			
+			if(flipHorizontal){
+				//fboyle.util.FlipUtil
+				//clip.flipHorizontal(); //TODO: doesn't work!
+			}
+			
+			frameOrigins[i-1] = org.casalib.util.DisplayObjectUtil.getOffsetPosition(clip);
+			//trace("frameOrigins[i-1] "+frameOrigins[i-1]);
 			makeAllChildrenGoToFrame(clip, i);
-			trace(Std.int(rect.width) +" : " +Std.int(rect.height));
+			//trace(Std.int(rect.width) +" : " +Std.int(rect.height));
 			var bitmapData:BitmapData = new BitmapData(Std.int(rect.width), Std.int(rect.height), true, 0x00000000);
+			//var bitmapData:BitmapData = new BitmapData(Std.int(rect.width), Std.int(rect.height), true, 0x00000000);
 			var m:Matrix = new Matrix();
-			m.translate(-rect.x, -rect.y);
+			m.translate(-rect.x, -rect.y + Std.int(frameOrigins[i-1].y));
 			m.scale(clip.scaleX, clip.scaleY);
+			
 			bitmapData.draw(clip,m);
+			
 			frames.push(bitmapData);
 		}
 		bitmap.x = rect.x;
@@ -187,10 +278,15 @@ class Animation extends Sprite
 			currentFrame = Math.round(frame);
 			bitmap.bitmapData = frames[currentFrame - 1];
 			bitmap.smoothing = true;
+			
+			if(bitmap.parent != null){
+				bitmap.parent.x = -(frameOrigins[currentFrame-1].x);
+				bitmap.parent.y = -(frameOrigins[currentFrame-1].y);
+			}
 		}
 	}
 	
-	public function enterFrame(e:Event = null):Void
+	/*public function enterFrame2(e:Event = null):Void
 	{
 		if(reverse){
 			prevFrame();
@@ -198,6 +294,7 @@ class Animation extends Sprite
 			nextFrame();
 		}
 		
+		//TODO: set a frame rate to control speed
 		if (currentFrame == totalFrames) {
 			
 			if (!repeat) {
@@ -206,6 +303,67 @@ class Animation extends Sprite
 			dispatchEvent(new Event(Event.COMPLETE));
 			if (onEnd != null) onEnd();
 		}
+	}*/
+	
+	private function enterFrame(e:Event = null):Void{
+	
+		// Track current time.		
+		var currentTime = FrameTime.getInstance().time;
+		
+		if (lastTime < 0){
+		
+			lastTime = currentTime;
+		
+			return;
+		
+		}
+		
+		// Calculate time since last frame and advance that much.
+		
+		var deltaTime = (currentTime - lastTime) * _timeScale;
+		
+		advance(deltaTime);
+		
+		// Note new last time.
+		
+		lastTime = currentTime;
+	
+	}
+	
+	private function advance(deltaTime:Float):Void{
+
+		// Add time to the accumulator.
+		
+		elapsed += deltaTime;
+		
+		// Perform ticks, respecting tick caps.
+		
+		var tickCount = 0;
+		
+		while (elapsed >= TICK_RATE_MS && (tickCount < MAX_TICKS_PER_FRAME)){
+		
+			//------	
+			
+			if(reverse){
+				prevFrame();
+			}else {
+				nextFrame();
+			}
+			if (currentFrame == totalFrames) {
+				if (!repeat) {
+					stop();
+				}
+				dispatchEvent(new Event(Event.COMPLETE));
+				if (onEnd != null) onEnd();
+			}
+			//-------
+			
+			elapsed -= TICK_RATE_MS;
+			
+			tickCount++;
+		
+		}
+	
 	}
 	
 	public function update():Void
@@ -219,5 +377,7 @@ class Animation extends Sprite
 	{
 		stop();
 		if (parent != null) parent.removeChild(this);
+		
+		frameOrigins = null;
 	}
 }
