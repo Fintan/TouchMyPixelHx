@@ -120,21 +120,6 @@ class FollowWhenCloseController extends Object{
 			
 	}
 	
-	
-    inline function rotateAroundPoint(point:B2Vec2, angle:Float, body:B2Body){
-    
-	   var cosAngle:Float = Math.cos(angle);
-	   var sinAngle:Float = Math.sin(angle);
-	   
-	   var distX:Float = body.GetPosition().x - point.x;
-	   var distY:Float = body.GetPosition().y - point.y;
-	   var newPoint = new B2Vec2(cosAngle * distX - sinAngle * distY + point.x,
-	                        cosAngle * distY + sinAngle * distX + point.y);
-	  body.SetXForm(newPoint, angle);
-	  
-	}
-
-	
 	override public function destroy(){
 		if(this.gameObject!=null) this.gameObject = null;
 		if(this.body!=null) this.body = null;
