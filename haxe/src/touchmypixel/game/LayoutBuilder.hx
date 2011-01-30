@@ -1,6 +1,8 @@
 /*
  * JSFL Layout Builder - Tony Polinelli
  * Parses layout xml files & creates (in this case) box2d simulations
+ *
+ *  (I added setupAnimations() )
  * 
  * */
 
@@ -9,10 +11,11 @@ import box2D.collision.shapes.B2Shape;
 import box2D.collision.shapes.B2ShapeDef;
 import box2D.dynamics.B2BodyDef;
 import box2D.dynamics.B2World;
+import fboyle.animation.AnimationItem;
+import fboyle.animation.AnimationSet;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
-import flash.system.System;
 import touchmypixel.game.box2d.ShapeTools;
 import haxe.xml.Fast;
 import touchmypixel.game.objects.Box2dObject;
@@ -22,7 +25,6 @@ import touchmypixel.game.objects.LBGeometry;
 import touchmypixel.game.objects.Object;
 import touchmypixel.game.simulations.Box2dSimulation;
 import touchmypixel.game.utils.Loader;
-import touchmypixel.utils.GcTracker;
 
 typedef LayoutInfo = 
 {
@@ -42,17 +44,11 @@ class LayoutBuilder
 		this.xml = Xml.parse(xml);
 		fast = new Fast(this.xml);
 		
+		
+		
 		layouts = new Hash();
 		for (n in fast.nodes.layout)
 			layouts.set(n.att.name, n);
-	}
-	
-	public function destroy() : Void
-	{		
-		xml = null;
-		fast = null;
-		layouts = null;
-		simulation = null;
 	}
 	
 	public function getLayoutInfo(name:String) : LayoutInfo
@@ -61,8 +57,7 @@ class LayoutBuilder
 			return null;
 		
 		var lo = layouts.get(name);
-		return { width:Std.parseFloat(lo.att.w)/Std.parseFloat(lo.att.sx), height:Std.parseFloat(lo.att.h)/Std.parseFloat(lo.att.sy) };
-		//return { width:Std.parseFloat(lo.att.w), height:Std.parseFloat(lo.att.h)/Std.parseFloat(lo.att.sy) };
+		return { width:Std.parseFloat(lo.att.w), height:Std.parseFloat(lo.att.h) };
 	}
 	
 	public function buildLayout(layout:Fast, simulation:Box2dSimulation)
@@ -74,8 +69,7 @@ class LayoutBuilder
 			
 		for (child in layout.x.elements())
 		{
-			switch(child.nodeName)
-			{
+			switch(child.nodeName){
 				case "body": createBody(new Fast(child));
 				case "object": createObject(new Fast(child));
 				case "gameObject": createGameObject(new Fast(child));
@@ -97,12 +91,14 @@ class LayoutBuilder
 		 * Create the gameObject via instantiating it from its defined 'class'
 		 */
 		var object:BuilderGameObject = Type.createInstance(c, [simulation]);
+		object.name = objectInfo.att.name; //added to reference 'Player' displayobject instance for roation when walking on hills
 		object.info = objectInfo;
 		object.x = f(objectInfo.att.x);
 		object.y = f(objectInfo.att.y);
 		object.scaleX = f(objectInfo.att.sx);
 		object.scaleY = f(objectInfo.att.sy);
 		object.rotation = f(objectInfo.att.r);
+		//flash.Lib.trace("objectInfo.att.name "+objectInfo.att.name);
 		
 		if (objectInfo.att.name != "")
 			simulation.namedObjects.set(objectInfo.att.name, object);
@@ -115,14 +111,19 @@ class LayoutBuilder
 			switch(child.nodeName)
 			{
 				case "body": createBody(new Fast(child), object);
-				case "bitmap": createBitmap(new Fast(child), object);
+				//case "animations": trace("animations"); //handled in createBody() because it needs a reference to the body object - but could me more efficient?
 			}
 		}
 	}
 	
 	private function createBitmap(objectInfo:Fast, ?addToScope:DisplayObjectContainer)
 	{
-		var bmp = Loader.loadBitmap(objectInfo.att.file);
+		#if flash
+			var bmp = Loader.loadBitmap(objectInfo.att.linkage);
+		#else
+			var bmp = Loader.loadBitmap(objectInfo.att.file);
+		#end
+		//var bmp = Loader.loadBitmap(objectInfo.att.file);
 		bmp.smoothing = true;
 		bmp.x = f(objectInfo.att.x);
 		bmp.y = f(objectInfo.att.y);
@@ -133,7 +134,6 @@ class LayoutBuilder
 		if (addToScope != null)
 			addToScope.addChild(bmp);
 			
-		//trace("addbitmap: " + bmp);
 		simulation.bitmaps.push(bmp);
 	}
 	
@@ -159,22 +159,8 @@ class LayoutBuilder
 	
 	private function createBody(bodyInfo:Fast, ?gameObject:BuilderGameObject)
 	{ 
-		var clazzName = bodyInfo.att.resolve("definition");
-		var body : BuilderBodyObject = null;
-		if ( clazzName != "" )
-		{
-			var clazz = Type.resolveClass(clazzName);
-			
-			if (clazz == null)
-				throw "Body Class: " + clazzName + " cannot be built, as it doesnt exist";
-				
-			body = Type.createInstance(clazz, [simulation]);
-		}
-		else
-		{
-			body = new BuilderBodyObject(simulation);
-		}
-		
+		var body = new BuilderBodyObject(simulation);
+		body.name = bodyInfo.att.name;//allows searching for instance names in collision checks
 		body.info = bodyInfo;
 		body.gameObject = gameObject;
 		body.type = bodyInfo.att.type;
@@ -185,8 +171,7 @@ class LayoutBuilder
 			simulation.namedObjects.set(bodyInfo.att.name, body);
 		
 		var bodyDef = new B2BodyDef();
-		if (gameObject != null)
-		{
+		if (gameObject != null){
 			/*
 			 * inside a gameObject bodies have an extra level of transformation
 			 */ 
@@ -200,6 +185,25 @@ class LayoutBuilder
 			bodyDef.position.x = (nx + gameObject.x) / simulation.scale;
 			bodyDef.position.y = (ny + gameObject.y) / simulation.scale;
 			bodyDef.angle = r + f(bodyInfo.att.r) * Math.PI / 180;
+			//trace("(bodyInfo.att.fixedRotation" +bodyInfo.att.fixedRotation);
+			var rot = bodyInfo.att.fixedRotation=="true"?true:false;
+			bodyDef.fixedRotation = rot;
+			
+			//TODO: add spritesheet functionality:
+			/*
+			//spritesheet-> library symbol name
+			//linkage-> library symbol linkage name
+			<animationedcharacter spritesheet="herosheet.png" linkage="herosheet">
+				<animations>
+					//sheetindices-> suffix of library symbol name
+					//linkage-> library symbol linkage name
+					//id-> library symbol linkage name
+					<animation id="walk" linkage="walk" sheetindices="0123"/>
+					<animation id="jump" linkage="jump" sheetindices="456"/>
+					<animation id="stand" linkage="stand" sheetindices="7"/>
+				</animations>
+			</animationedcharacter>
+			*/
 			
 		} else {
 			
@@ -210,9 +214,7 @@ class LayoutBuilder
 			bodyDef.position.y = f(bodyInfo.att.y) / simulation.scale;
 			bodyDef.angle = f(bodyInfo.att.r)*Math.PI/180;		
 		}
-		
-		bodyDef.isBullet = (bodyInfo.has.isBullet && bodyInfo.att.isBullet == "true");
-		//trace("isBullet: " + bodyDef.isBullet);
+		bodyDef.isBullet = true;
 		
 		var b2body = simulation.world.CreateBody(bodyDef);
 		b2body.SetUserData(body);
@@ -266,11 +268,14 @@ class LayoutBuilder
 				body.geometry.push(geom);
 			}
 				
-			switch(elementInfo.nodeName)
-			{
+			switch(elementInfo.nodeName){
 				case "bitmap": createBitmap(new Fast(elementInfo), body);
 			}
 		}
+		
+		
+		
+		
 		b2body.SetMassFromShapes();
 		
 		body.body = b2body;
@@ -290,12 +295,23 @@ class LayoutBuilder
 				
 				//  Auto 'sync' the gameObject's transform to a defined body - useful for graphics alignment
 				
-				if (gameObject.info.att.autoSyncToBody == bodyInfo.att.name)
-				{
+				if (gameObject.info.att.autoSyncToBody == bodyInfo.att.name){
+				
 					var t = { x:f(bodyInfo.att.x), y:f(bodyInfo.att.y), rotation:f(bodyInfo.att.r) };
 					
 					gameObject.autoSyncToBody = body;
 					gameObject.autoSyncTransform = t;
+				}
+				
+				/*
+				* NOTE: Fintan addition
+				* Now build the Animations that are auto-synced to the gameObject 
+				* (couldn't figure out how to nest <animations> node inside <body> node
+				* so I'm using an autosync attribute instead (called autoSyncToAnimations) on the <gameObject> node
+				*/
+				if( gameObject.info.att.autoSyncToAnimations != "none" ){	
+					//trace("autoSyncToAnimations: "+ bodyInfo.att.autoSyncToAnimations);
+					setupAnimations(gameObject.info.att.autoSyncToAnimations, gameObject.info, body);
 				}
 				
 				// set the body as a property on the game Object (defined by its 'name');
@@ -312,10 +328,63 @@ class LayoutBuilder
 	}
 	
 	
+	/*
+	*Fintan addition
+	*
+	* Adds animation sets that are associated with a gameobject
+	* -will use AnimationController in implementation
+	*/
+	private function setupAnimations(id:String, gameObject:Fast, ?bod:BuilderBodyObject):Void{
+		
+		var animationItems:Array<fboyle.animation.AnimationItem> = new Array(); 
+
+		var scaleFactor = 1.0;
+		var pos = new flash.geom.Point();
+		
+		for (child in gameObject.x.elements())
+		{
+			//trace("child.nodeName "+child.nodeName);
+			switch(child.nodeName)
+			{
+				case "animations": 
+				var el = new haxe.xml.Fast(child);
+				if( el.has.scalefactor ){
+					scaleFactor = Std.parseFloat(el.att.scalefactor);
+				 	//scaleFactor = el.att.scalefactor;
+				 	//trace( el.att.scalefactor ); // optional attribute (because I defined it halfway through project
+				 }
+				 if( el.has.posX ){
+					pos.x = Std.parseFloat(el.att.posX);
+				 	//trace( el.att.posX ); // optional attribute (because I defined it halfway through project
+				 }
+ 				 if( el.has.posY ){
+					pos.y = Std.parseFloat(el.att.posY);
+				 	//trace( el.att.posY ); // optional attribute (because I defined it halfway through project
+				 }
+
+				for( ani in el.nodes.animation ) {
+				     //trace("ani.att.id "+ ani.att.id);
+				     //use animationCache code and refer to createBitmap() to create animations
+				    // trace("ani.att.scalefactor "+ ani.att.scalefactor);
+				   // if( ani.has.scalefactor ) trace( ani.att.scalefactor ); // optional attribute
+				     animationItems.push(new fboyle.animation.AnimationItem(ani.att.linkage));
+					 
+					 //TODO: so far I'm only using the linkage ID but I'll also need to record spritesheet info
+					 
+				}
+				
+			}
+		}
+		
+		var aniSet = new fboyle.animation.AnimationSet(bod, id, animationItems, scaleFactor, pos);
+		bod.animationSet = aniSet;
+		
+	}
+	
 	/***********/
 	
 	
-	private function parsePoly(el:Fast, bodyInfo:Fast, ?shapeInfo:Fast=null):B2ShapeDef
+	private function parsePoly(el:Fast, bodyInfo:Fast):B2ShapeDef
 	{
 		var verts = [];
 		for (vert in el.nodes.vert)
@@ -323,10 +392,7 @@ class LayoutBuilder
 			verts.push([f(vert.att.x), 
 						f(vert.att.y)]);
 		}
-		var shape = null;
-		if ( shapeInfo == null )
-		{
-			shape = ShapeTools.polygon(	simulation.scale, 
+		var shape = ShapeTools.polygon(	simulation.scale, 
 										verts, 	
 										f(el.att.x) * f(bodyInfo.att.sx), 
 										f(el.att.y) * f(bodyInfo.att.sy), 
@@ -334,50 +400,24 @@ class LayoutBuilder
 										f(el.att.sx) * f(bodyInfo.att.sx),
 										f(el.att.sy) * f(bodyInfo.att.sy)
 										);
-		}
-		else
-		{
-			shape = ShapeTools.polygon(	simulation.scale, 
-										verts, 	
-										(f(el.att.x) + f(shapeInfo.att.x)) * f(bodyInfo.att.sx) * f(shapeInfo.att.sx), 
-										(f(el.att.y) + f(shapeInfo.att.y)) * f(bodyInfo.att.sy) * f(shapeInfo.att.sy), 
-										f(el.att.r), 
-										f(el.att.sx) * f(bodyInfo.att.sx) * f(shapeInfo.att.sx),
-										f(el.att.sy) * f(bodyInfo.att.sy) * f(shapeInfo.att.sy)
-										);
-		}
 										
 		var isStatic = bodyInfo.att.resolve("static") == "true"; 
 		shape.density = isStatic ? 0 : f(bodyInfo.att.density);
 		shape.restitution = f(bodyInfo.att.restitution);
 		shape.friction = f(bodyInfo.att.friction);
+		//shape.fixedRotation =  f(bodyInfo.att.fixedRotation); //TODO
 		return shape;
 	}
 	
-	private function parseCircle(el:Fast, bodyInfo:Fast, ?shapeInfo:Fast=null):B2ShapeDef
+	private function parseCircle(el:Fast, bodyInfo:Fast):B2ShapeDef
 	{
-		var shape = null;
-		if ( shapeInfo == null ) 
-		{
-			shape = ShapeTools.circle(	simulation.scale, 	
+		var shape = ShapeTools.circle(	simulation.scale, 	
 										f(el.att.x) * f(bodyInfo.att.sx), 
 										f(el.att.y) * f(bodyInfo.att.sy),
 										f(el.att.w)/2,
 										f(bodyInfo.att.sx),
 										f(bodyInfo.att.sy)
 										);
-		}
-		else
-		{
-			shape = ShapeTools.circle(	simulation.scale, 
-										(f(el.att.x) + f(shapeInfo.att.x)) * f(bodyInfo.att.sx) * f(shapeInfo.att.sx), 
-										(f(el.att.y) + f(shapeInfo.att.y)) * f(bodyInfo.att.sy) * f(shapeInfo.att.sy), 
-										f(el.att.w)/2, 
-										f(bodyInfo.att.sx) * f(shapeInfo.att.sx),
-										f(bodyInfo.att.sy) * f(shapeInfo.att.sy)
-										);
-		}
-		
 		var isStatic = bodyInfo.att.resolve("static") == "true"; 
 		shape.density = isStatic ? 0 : f(bodyInfo.att.density);
 		shape.restitution = f(bodyInfo.att.restitution);
@@ -394,9 +434,9 @@ class LayoutBuilder
 		{
 			var shape:B2ShapeDef = switch(childInfo.nodeName)
 			{
-				case "poly": parsePoly(new Fast(childInfo), bodyInfo, shapeInfo);
-				case "circle": parseCircle(new Fast(childInfo), bodyInfo, shapeInfo);
-				case "rect": parsePoly(new Fast(childInfo), bodyInfo, shapeInfo);
+				case "poly": parsePoly(new Fast(childInfo), bodyInfo);
+				case "circle": parseCircle(new Fast(childInfo), bodyInfo);
+				case "rect": parsePoly(new Fast(childInfo), bodyInfo);
 			}
 			
 			if (shape != null)
