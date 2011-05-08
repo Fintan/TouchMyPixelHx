@@ -4,27 +4,36 @@
  */
 
 package touchmypixel.game.objects;
-import flash.display.Sprite;
+
 import haxe.xml.Fast;
 import touchmypixel.game.ds.ObjectHash;
 import touchmypixel.game.ds.IObjectHashable;
 
-class Object extends Sprite, implements IObjectHashable
-{
+class Object implements IObjectHashable{
+	
+	public var name:String; //no longer extends Sprite so need to define this
 	public var __objectId:Int;
 	
-	var isDestroyed : Bool;
+	#if easeljs
+	public var container:easelhx.display.Container;
+	#else
+	//public var container:flash.display.Sprite;
+	public var container:flash.display.MovieClip;
+	#end
 	//public var builderInfo:Fast;
 	
 	public function new() 
 	{
-		super();
-		
+		name = "";
+		#if easeljs
+		container = new easelhx.display.Container();
+		#else
+		//container = new flash.display.Sprite();
+		container = new flash.display.MovieClip();
+		#end
 		#if !flash
 		ObjectHash.register(this);
 		#end
-		
-		isDestroyed = false;
 	}
 	
 	public function init()
@@ -39,14 +48,19 @@ class Object extends Sprite, implements IObjectHashable
 	
 	public function destroy():Void
 	{
-		if ( !isDestroyed )
+		#if !flash
+		ObjectHash.deregister(this);
+		#end
+		
+		if (container.parent != null) 
 		{
-			#if !flash
-			ObjectHash.deregister(this);
+			#if easeljs
+			//parent is only a DisplayObject and Container has the addChild method
+			var p:easelhx.display.Container = cast container.parent; 
+			p.removeChild(container);
+			#else
+			container.parent.removeChild(container);
 			#end
-			
-			if (parent != null) 
-				parent.removeChild(this);
 		}
 	}
 }
