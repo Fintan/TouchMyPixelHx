@@ -1,33 +1,9 @@
-/**
- * 
- * FlaBox2dLayout by Fintan Boyle
- * Visit www.fboyle.com
- * 
- * Copyright (c) 2010 Fintan Boyle 
- * 
- * 
- * Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php 
- * 
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- */
+//
+//  FlaBox2dLayout
+//
+//  Created by Fintan Boyle on 2011-01-31.
+//  Copyright (c) 2011 Modello Design Ltd. All rights reserved.
+//
 package fboyle.layout;
 import touchmypixel.game.simulations.Box2dSimulation;
 import box2D.collision.shapes.B2Shape;
@@ -42,6 +18,19 @@ import haxe.xml.Fast;
 import fboyle.display.DisplayTypeDefs;
 import fboyle.display.DisplayFactory;
 import fboyle.layout.LayoutTypeDefs;
+
+/*
+ * 
+ * js.Boot.__trace = function(v,i) {
+		var msg = (i != null?((i.fileName + ":") + i.lineNumber) + ": ":"");
+		msg += js.Boot.__string_rec(v,"");
+		fl.trace(msg);
+	}
+	js.Boot.__clear_trace = function() {
+		fl.outputPanel.clear();
+	}
+ * 
+ **/
 
 class FlaBox2dLayout {
 	
@@ -90,10 +79,11 @@ class FlaBox2dLayout {
 		
 	public function buildLayout(layout:Fast, simulation){
 	//public function buildLayout(layout:Fast, simulation:SimulationHx){
+	
 		this.simulation = cast simulation;
 		if (layout == null)
 			throw "Layout does not exist";
-
+	
 		for (child in layout.x.elements()){
 			//trace("child.nodeName "+child.nodeName);
 			switch(child.nodeName){
@@ -104,12 +94,19 @@ class FlaBox2dLayout {
 				case "empty": createEmpty(new Fast(child));
 			}
 		}
+		
 	}
 	
 	
 	public function createEmpty(objectInfo:Fast){
 		
-		var empty = new EmptyVo(objectInfo.att.name, objectInfo.att.id, objectInfo.att.extraInfo, f(objectInfo.att.x), f(objectInfo.att.y));
+		var rot = 0.0;
+		if(objectInfo.has.r){
+			//rotation added in middle of project
+			rot = f(objectInfo.att.r);
+		}
+		
+		var empty = new EmptyVo(objectInfo.att.name, objectInfo.att.id, objectInfo.att.extraInfo, f(objectInfo.att.x), f(objectInfo.att.y), rot);
 		
 		if(simulation !=null)if(simulation.emptyObjects !=null)
 		simulation.emptyObjects.set(objectInfo.att.name, empty);
@@ -165,7 +162,7 @@ class FlaBox2dLayout {
 			simulation.namedObjects.set(bodyInfo.att.name, body);
 		
 		var bodyDef = new B2BodyDef();
-		if (gameObject != null){
+		if (gameObject != null) {
 			/*
 			 * inside a gameObject bodies have an extra level of transformation
 			 */ 
@@ -206,18 +203,25 @@ class FlaBox2dLayout {
 			 */
 			bodyDef.position.x = f(bodyInfo.att.x) / simulation.scale;
 			bodyDef.position.y = f(bodyInfo.att.y) / simulation.scale;
-			bodyDef.angle = f(bodyInfo.att.r)*Math.PI/180;		
+			bodyDef.angle = f(bodyInfo.att.r) * Math.PI / 180;		
+			
 		}
 		bodyDef.isBullet = true;
 		
+		
 		var b2body = simulation.world.CreateBody(bodyDef);
+		
 		b2body.SetUserData(body);
+		
+		
 		/*
 		 * Build shapes that are inside the body
 		 */
 		for (elementInfo in bodyInfo.x.elements())
 		{	
+			
 			var fastEl = new Fast(elementInfo);
+			
 			var shapes:Array<B2ShapeDef> = switch(elementInfo.nodeName)
 			{
 				case "poly": [parsePoly(fastEl, bodyInfo)];
@@ -261,16 +265,20 @@ class FlaBox2dLayout {
 				
 				body.geometry.push(geom);
 			}
-				
+			
+			
 			switch(elementInfo.nodeName){
-				case "bitmap": flaLayout.createBitmap(new Fast(elementInfo), cast body.container);
+				case "bitmap": flaLayout.createBitmap(new Fast(elementInfo), body.container);
 			}
+			
+			
 		}
 		
 		
 		
 		
 		b2body.SetMassFromShapes();
+		
 	
 		body.body = b2body; //I will refer to this in Player objects (autoSyncToBody.body)
 		
@@ -322,7 +330,9 @@ class FlaBox2dLayout {
 		
 		simulation.objects.push(body);
 		simulation.container.addChild(body.container);
+		
 	}
+	
 	
 	/*
 	*

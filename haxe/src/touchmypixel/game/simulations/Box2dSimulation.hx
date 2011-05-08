@@ -11,27 +11,27 @@ import box2D.common.math.B2Vec2;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2DebugDraw;	
 import box2D.dynamics.B2World;
-import flash.display.Bitmap;
 import touchmypixel.game.box2d.ContactManager;
-import touchmypixel.game.LevelBase;
-import flash.display.DisplayObject;
-import flash.display.Sprite;
 import touchmypixel.game.objects.Object;
-//import v8ss.GameTools;
 
-class Box2dSimulation extends Sprite
-{
+import fboyle.display.DisplayTypeDefs;
+import fboyle.layout.LayoutTypeDefs;
+
+class Box2dSimulation {
+	
 	public var world:B2World;
 	
 	public var scale:Float;
 	public var iterations:Int;
+	public var timeStep:Null<Float>;
 	
 	public var initAABB:B2AABB;
 	public var initGravity:B2Vec2;
 	public var initDoSleep:Bool;
 	
 	private var dbgDraw:B2DebugDraw;
-	public var debugDrawScope:Sprite;
+	
+	public var debugDrawScope:ShapeHx;
 	
 	public var running:Bool;
 	public var debug:Bool;
@@ -40,15 +40,30 @@ class Box2dSimulation extends Sprite
 
 	public var objects:Array<Object>;
 	public var namedObjects:Hash<Object>;
-	public var bitmaps:Array<Bitmap>;
+	public var bitmaps:Array<BitmapHx>;
+	public var emptyObjects:Hash<EmptyVo>;
 	
 	public var autoUpdateObjects:Bool;
 	
 	public var mousePos:B2Vec2;
 	
-	public function new(?debug:Bool=true) 
-	{
-		super();
+	#if easeljs
+	public var container:easelhx.display.Container;
+	var easelStage:easelhx.display.Stage;
+	#else
+	public var container:flash.display.MovieClip;
+	//public var container:flash.display.Sprite;
+	#end
+	
+	public function new(?debug:Bool=true, ?stage, ?s) {
+		
+		#if easeljs
+		container = cast stage;
+		easelStage = s;
+		
+		#else
+		container = stage;
+		#end
 		
 		this.debug = debug;
 		
@@ -57,23 +72,32 @@ class Box2dSimulation extends Sprite
 		autoUpdateObjects = false;
 		
 		scale = 30.;
-		iterations = 10;
-		
+		iterations = 30;
 		initAABB = new B2AABB();
 		initAABB.lowerBound.Set(-1000 / scale, -1000 / scale);
 		initAABB.upperBound.Set(1000/ scale, 1000 / scale);
-		
 		initGravity = new B2Vec2(0, 200/scale);
 		
 		initDoSleep = true;
 		
-		debugDrawScope = this;	
+		#if easeljs
 		
+		var debugShape = new easelhx.display.Shape();
+		this.container.addChild(debugShape);
+		
+		debugDrawScope = cast debugShape;
+		#else
+		debugDrawScope = cast this.container;	
+		#end
 		objects = [];
 		namedObjects = new Hash();
 		bitmaps = [];
+		emptyObjects = new Hash();
 		
 		mousePos = new B2Vec2();
+		
+		timeStep = 1 / 50;
+	
 	}
 	
 	public function init()
@@ -81,10 +105,10 @@ class Box2dSimulation extends Sprite
 		world = new B2World(initAABB, initGravity, initDoSleep);
 		
 		contactManager = new ContactManager();
-		//world.SetContactListener(contactManager);
+		world.SetContactListener(contactManager);
 		
 		dbgDraw = new B2DebugDraw();
-		dbgDraw.m_sprite = debugDrawScope;
+		dbgDraw.m_sprite = cast debugDrawScope;
 		dbgDraw.m_fillAlpha = .3;
 		dbgDraw.m_lineThickness = 1;
 		dbgDraw.m_xformScale = 1;
@@ -94,22 +118,13 @@ class Box2dSimulation extends Sprite
 			world.SetDebugDraw(dbgDraw);
 	}
 	
-	public function drawAABB( aabb : B2AABB, ?color : Int = 0xff0000 ) : Void
-	{
-		if ( debug )
-		{
-			debugDrawScope.graphics.lineStyle(2, color );
-			debugDrawScope.graphics.drawRect(aabb.lowerBound.x * scale, aabb.lowerBound.y * scale, (aabb.upperBound.x - aabb.lowerBound.x) * scale, (aabb.upperBound.y - aabb.lowerBound.y) * scale);
-		}
-	}
-	
 	public function update(dt:Float)
 	{
 		if (running) 
 		{	
-			//contactManager.clear();
+			contactManager.clear();
 		
-			world.Step(1/50, iterations);
+			world.Step(timeStep != null ? timeStep : dt, iterations);
 			
 			if(autoUpdateObjects)
 				for (o in objects)
@@ -117,15 +132,16 @@ class Box2dSimulation extends Sprite
 		}
 	}
 	
-	public function sync(gfx:DisplayObject, body:B2Body, ?bodyOffset:{ x:Float, y:Float, rotation:Float })
+	//public function sync(gfx:DisplayObject, body:B2Body, ?bodyOffset:{ x:Float, y:Float, rotation:Float })
+	public function sync(gfx:DisplayObjectHx, body:B2Body, ?bodyOffset:{ x:Float, y:Float, rotation:Float })
 	{
 		var position:B2Vec2 = body.GetPosition();
+		var gfx = cast gfx;
 		gfx.x = position.x * scale;            
 		gfx.y = position.y * scale;
 		gfx.rotation = body.GetXForm().R.GetAngle() * 180 / Math.PI;
 		
-		if (bodyOffset != null)
-		{
+		if (bodyOffset != null){
 			var r = body.GetXForm().R.GetAngle()+ bodyOffset.rotation * Math.PI / 180;
 			var ox = bodyOffset.x * Math.cos(r) - bodyOffset.y * Math.sin(r);
 			var oy = bodyOffset.x * Math.sin(r) + bodyOffset.y * Math.cos(r);
@@ -153,34 +169,26 @@ class Box2dSimulation extends Sprite
 			for (o in objects)
 				o.destroy();
 		}
-		
-		initAABB = null;
-		mousePos = null;
-		
-		//if ( world != null)
-		//{
-			//GameTools.freeB2World(world, true);
-			//world = null;
-		//}
-
+			
+		world = null;
 		objects = null;
 		namedObjects = null;
-		bitmaps = null; 
+		bitmaps = null;
+		emptyObjects = null;
 		
-		if ( dbgDraw != null )
-		{
-			dbgDraw.m_sprite = null;
-			dbgDraw = null;
-		}
-		debugDrawScope = null;
-		
-		if ( contactManager != null )
-			contactManager.clear();
-		contactManager = null;
+		contactManager.clear();
 	}
 	
 	public function getBodyAtMouse( ?includeStatic : Bool = false) : B2Body 
 	{
+		#if easeljs
+		var mouseX = easelStage.mouseX;
+		var mouseY = easelStage.mouseY;
+		#else
+		var mouseX = container.mouseX;
+		var mouseY = container.mouseY;
+		#end
+		
 		var mx = mouseX / scale;
 		var my = mouseY / scale;
 		mousePos.Set( mx, my );

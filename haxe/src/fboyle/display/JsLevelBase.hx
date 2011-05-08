@@ -1,36 +1,14 @@
-/**
- * 
- * JsLevelBase by Fintan Boyle
- * Visit www.fboyle.com
- * 
- * Copyright (c) 2010 Fintan Boyle 
- * 
- * 
- * Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php 
- * 
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- */
+
+//
+//  JsLevelBase
+//
+//  Created by Fintan Boyle on 2011-02-04.
+//  Copyright (c) 2011 Modello Design Ltd. All rights reserved.
+//
 package fboyle.display;
 
 import easelhx.utils.Ticker;
+import fboyle.display.DisplayTypeDefs;
 //import touchmypixel.io.Keys;
 //import touchmypixel.game.ILevel;
 import fboyle.display.ILevel;
@@ -43,6 +21,8 @@ class JsLevelBase implements ILevel {
 	public var container:Container;
 	private var maxDT:Float;
 	
+	private var stage:StageHx;
+	
 	public function new(){
 		//super();
 		
@@ -50,6 +30,8 @@ class JsLevelBase implements ILevel {
 		
 		//Keys.init();
 		container = new Container();
+		
+		stage = cast (fboyle.utils.DisplayObjectUtil.getStage()); 
 		init();
 	}
 	
@@ -73,7 +55,7 @@ class JsLevelBase implements ILevel {
 		//trace("hello fintan: start()");
 		lastFrameTime = haxe.Timer.stamp();
 		//addEventListener(Event.ENTER_FRAME, loop);
-		Ticker.setInterval(50);		// 50 ms = 20 fps
+		Ticker.setInterval(20);		// 50 ms = 20 fps
 		Ticker.addListener(this);
 	}
 	
@@ -112,6 +94,6 @@ class JsLevelBase implements ILevel {
 	
 	public function update(dt:Float):Void { 
 		// update the stage:
-		cast (fboyle.utils.DisplayObjectUtil.getStage()).tick();
+		stage.tick();
 	}
 }
