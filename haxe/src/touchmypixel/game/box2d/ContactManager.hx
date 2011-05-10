@@ -14,6 +14,7 @@ import box2D.dynamics.B2Body;
 import box2D.dynamics.B2ContactListener;
 import touchmypixel.game.objects.Box2dBodyObject;
 import touchmypixel.game.objects.Box2dObject;
+import touchmypixel.game.box2d.ContactPoint;
 import touchmypixel.game.ds.ObjectHash;
 
 class ContactManager extends B2ContactListener
@@ -25,6 +26,7 @@ class ContactManager extends B2ContactListener
 		super();
 		clearList = [];
 		clear();
+		
 	}
 	
 	override public function Add(point:B2ContactPoint):Void 
@@ -62,7 +64,7 @@ class ContactManager extends B2ContactListener
 			
 		/***/
 		
-		if(o1.cacheContacts)
+		if(o1 != null && o1.cacheContacts)
 		{	
 			h = Reflect.field(o1, "contacts_" + type);
 			if (!h.exists(o2))
@@ -74,7 +76,7 @@ class ContactManager extends B2ContactListener
 		}
 		/***/
 		
-		if(o2.cacheContacts)
+		if(o2 != null && o2.cacheContacts)
 		{
 			h = Reflect.field(o2, "contacts_" + type);
 			if (!h.exists(o1))
@@ -85,6 +87,7 @@ class ContactManager extends B2ContactListener
 			clearList.push(o2);
 		}
 	}
+
 	
 	public function clear()
 	{

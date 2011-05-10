@@ -6,7 +6,6 @@
 
 package touchmypixel.game;
 
-import js.Lib;
 import jsfl.ComponentInstance;
 import jsfl.Document;
 import jsfl.Fl;
@@ -38,53 +37,23 @@ class LayoutWriter
 	private var lib:Library;
 	private var root:Timeline;
 	
-	var mainStatus : String;
-	var startTime : Float;
-	
-	var failed : Bool;
-	var logXml : String;
-	
 	public function new()
-	{
-		mainStatus = "OK!";
-	}
-	
-	public function new2()
 	{
 		doc = Fl.getDocumentDOM();
 		lib = doc.library;
 		root = doc.timelines[0];
 		
-		logXml = "";
-		failed = false;
-		
-		startTime = Date.now().getTime();
-		
-		//Fl.outputPanel.clear();
+		Fl.outputPanel.clear();
 		
 		var results = searchTimeline(root);
 		
 		var xml = parseResults(results);
 		
-		//trace(xml);		
-	
+		//trace(xml);
 		
-		if ( !failed )
-			saveXml(xml);
 		
-		var totalTime = Date.now().getTime() - startTime;
-		//trace("totalTime: " + totalTime);
 		
-		log("Executed in " + totalTime + "ms");
-		
-		var xmlStr = '<result success="'+Std.string(!failed)+'" time="'+totalTime+'">' + logXml + '</result>';
-		return xmlStr;
-		//return mainStatus + "|" + totalTime;
-	}
-	
-	function log( v : Dynamic ) : Void
-	{
-		logXml += "<log>"+v+"</log>";
+		saveXml(xml);
 	}
 	
 	private function saveXml(xml:String):Void
@@ -93,8 +62,8 @@ class LayoutWriter
 		path = path.substr(0, path.lastIndexOf("."));
 		path += ".xml";
 		
-		log('EXPORTED: ' +path);
-		//trace('EXPORTED: ' +path);
+		
+		trace('EXPORTED: ' +path);
 		
 		FLfile.write(path, xml);
 	}
@@ -157,18 +126,9 @@ class LayoutWriter
 	
 	public function parseBitmap(result:Result):String
 	{
+		var xml = '<bitmap ' + parseParameters(result) + ' file="'+result.scope.libraryItem.name.replace("-", "/") +'" />\n';
 		
-		//trace(result.scope.libraryItem.linkageClassName);
-		var file = result.scope.libraryItem.linkageClassName;
-		if ( file != "undefined" && file != null )
-			//var xml = '<bitmap ' + parseParameters(result) + ' file="' + result.scope.libraryItem.name.replace("-", "/") +'" />\n';
-			return '<bitmap ' + parseParameters(result) + ' file="' + result.scope.libraryItem.linkageClassName +'" />\n';
-		
-		return '';
-		
-		//trace(result.scope.libraryItem.name);
-		
-		//5return xml;
+		return xml;
 	}
 	
 	public function parseBody(result:Result):String
@@ -401,12 +361,7 @@ class LayoutWriter
 		if ( s.isGroup )
 		{
 			if ( points.length == 0 )
-			{
-				//throw "No points for bounding box";
-				log("No points for bounding box");
-				failed = true;
-				return '';
-			}
+				throw "No points for bounding box";
 				
 			// Calculate bounding box coordinates based on point values
 			var left = points[0].x;
@@ -454,26 +409,11 @@ class LayoutWriter
 		
 		// give a warning for non closed shapes
 		if (lastPoint.x != points[0].x || lastPoint.y != points[0].y)
-		{
-			//trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]");
-			log("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]");
-			failed = true;
-		}
+			trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]");
 		else
 			points.pop();
-		
-		var triangles = null;
-		
-		try
-		{
-			triangles = Triangulator.triangulate(points);
-		}
-		catch ( e : String )
-		{
-			log(e);
-			failed = true;
-			return '';
-		}
+			
+		var triangles = Triangulator.triangulate(points);
 		//trace(triangles);
 		var polys = Triangulator.polygonizeTriangles(triangles);
 		//trace(polys);

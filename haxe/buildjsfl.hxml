@@ -1,0 +1,5 @@
+
+-main demo.MainJsfl
+-cp src
+-js bin/jsfl/box2dlayout.jsfl
+-D cs4

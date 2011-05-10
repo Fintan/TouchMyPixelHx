@@ -1,0 +1,88 @@
+<layout name="example" x="0" y="0" sx="1" sy="1" r="0" type="layout" w="665.9" h="500.9">
+<body  name="" x="320" y="10" sx="0.9999847412109375" sy="1" r="0" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="true" type="border">
+	<poly x="0" y="0" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="320.5" y="10.45" />
+		<vert x="320.5" y="-10.45" />
+		<vert x="-320.5" y="-10.45" />
+		<vert x="-320.5" y="10.45" />
+	</poly>
+</body>
+<body  name="" x="320" y="490" sx="0.9999847412109375" sy="1" r="0" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="true" type="border">
+	<poly x="0" y="0" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="320.5" y="10.45" />
+		<vert x="320.5" y="-10.45" />
+		<vert x="-320.5" y="-10.45" />
+		<vert x="-320.5" y="10.45" />
+	</poly>
+</body>
+<body  name="" x="0" y="247" sx="0.75677490234375" sy="1" r="-90" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="true" type="border">
+	<poly x="0" y="0" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="320.5" y="10.45" />
+		<vert x="320.5" y="-10.45" />
+		<vert x="-320.5" y="-10.45" />
+		<vert x="-320.5" y="10.45" />
+	</poly>
+</body>
+<body  name="" x="645" y="253" sx="0.75677490234375" sy="1" r="-90" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="true" type="border">
+	<poly x="0" y="0" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="320.5" y="10.45" />
+		<vert x="320.5" y="-10.45" />
+		<vert x="-320.5" y="-10.45" />
+		<vert x="-320.5" y="10.45" />
+	</poly>
+</body>
+<body  name="logo2" x="518.65" y="159.5" sx="0.998992919921875" sy="0.998992919921875" r="29.9998779296875" categoryBits="0x1" definition="" density="5.00" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution="0.60" static="false" type="params">
+	<poly x="-0.05" y="-0.35" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="-70.95" y="70.85" />
+		<vert x="70.85" y="70.85" />
+		<vert x="70.85" y="-71.5" />
+		<vert x="-70.95" y="-71.5" />
+	</poly>
+<bitmap  name="" x="-71.5" y="-71.5" sx="1" sy="1" r="0" file="images/logo.png" linkage="logo.png" />
+</body>
+<body  name="logo1" x="219.55" y="206.35" sx="0.5728302001953125" sy="0.5728302001953125" r="-18.935211181640625" categoryBits="0x1" definition="" density="5.00" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution="0.60" static="false" type="params">
+	<poly x="-0.05" y="-0.35" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="-70.95" y="70.85" />
+		<vert x="70.85" y="70.85" />
+		<vert x="70.85" y="-71.5" />
+		<vert x="-70.95" y="-71.5" />
+	</poly>
+<bitmap  name="" x="-71.5" y="-71.5" sx="1" sy="1" r="0" file="images/logo.png" linkage="logo.png" />
+</body>
+<body  name="logo4" x="100" y="236" sx="1" sy="1" r="0" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="false" type="params">
+	<circle x="0.5" y="0.5" w="113"  h="113" r="0" sx="0.99822998046875" sy="0.99822998046875" />
+<bitmap  name="" x="-56" y="-56" sx="1" sy="1" r="0" file="images/flash_logo3.png" linkage="flash_logo3.png" />
+</body>
+<body  name="logo5" x="124" y="98.25" sx="1" sy="1" r="0" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="false" type="params">
+	<poly x="0.1" y="-55.15" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="-37.5" y="-8.899999999999999" />
+		<vert x="-37.5" y="8.899999999999999" />
+		<vert x="37.5" y="8.899999999999999" />
+		<vert x="37.5" y="-8.899999999999999" />
+	</poly>
+	<poly x="0.2" y="-0.05" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="-37.3" y="53.1" />
+		<vert x="0" y="64" />
+		<vert x="37.3" y="53.1" />
+		<vert x="45.1" y="-38.3" />
+		<vert x="-44.7" y="-38.3" />
+	</poly>
+<bitmap  name="" x="-46" y="-64" sx="1" sy="1" r="0" file="images/HTML5_Logo_128.png" linkage="HTML5_Logo_128.png" />
+</body>
+<body  name="logo3" x="321" y="102.4" sx="0.6318359375" sy="0.6318359375" r="0" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="false" type="params">
+	<circle x="0.5" y="0.5" w="113"  h="113" r="0" sx="0.99822998046875" sy="0.99822998046875" />
+<bitmap  name="" x="-56" y="-56" sx="1" sy="1" r="0" file="images/flash_logo3.png" linkage="flash_logo3.png" />
+</body>
+<body  name="logo3" x="588.2" y="62.4" sx="0.6318359375" sy="0.6318359375" r="0" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="false" type="params">
+	<circle x="0.5" y="0.5" w="113"  h="113" r="0" sx="0.99822998046875" sy="0.99822998046875" />
+<bitmap  name="" x="-56" y="-56" sx="1" sy="1" r="0" file="images/flash_logo3.png" linkage="flash_logo3.png" />
+</body>
+<body  name="logo3" x="266.6" y="328.4" sx="0.6318359375" sy="0.6318359375" r="0" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="false" type="params">
+	<circle x="0.5" y="0.5" w="113"  h="113" r="0" sx="0.99822998046875" sy="0.99822998046875" />
+<bitmap  name="" x="-56" y="-56" sx="1" sy="1" r="0" file="images/flash_logo3.png" linkage="flash_logo3.png" />
+</body>
+<body  name="logo3" x="569" y="301.2" sx="0.6318359375" sy="0.6318359375" r="0" categoryBits="0x1" definition="" density="1" friction=".5" grindable="0" isBullet="false" oneWay="0x0000" restitution=".5" static="false" type="params">
+	<circle x="0.5" y="0.5" w="113"  h="113" r="0" sx="0.99822998046875" sy="0.99822998046875" />
+<bitmap  name="" x="-56" y="-56" sx="1" sy="1" r="0" file="images/flash_logo3.png" linkage="flash_logo3.png" />
+</body>
+</layout>

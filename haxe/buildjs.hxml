@@ -1,0 +1,21 @@
+-main demo.Main
+-cp src
+-resource assets/box2dlayout.xml@resources
+-D easeljs
+-D easelhx
+--remap flash:js
+-js bin/js/main.js
+# try using preview here: "pre<TAB>"
+
+
+-cmd echo "----------------------------------------"
+-cmd echo "Test compiled javascript..."
+-cmd echo "Clear server file..."
+-cmd rm -r  /Users/fintan/sites/dev/haxebox2dtest
+-cmd echo "Copy compiled files to server..."
+-cmd cp -r bin/js /Users/fintan/sites/dev/haxebox2dtest
+-cmd echo "Open in browser..."
+-cmd open http://localhost/~fintan/dev/haxebox2dtest/index.html
+-cmd echo "Done!"
+-cmd echo "----------------------------------------"
+

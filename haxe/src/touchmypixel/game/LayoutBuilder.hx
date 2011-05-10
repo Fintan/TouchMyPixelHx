@@ -1,8 +1,6 @@
 /*
  * JSFL Layout Builder - Tony Polinelli
  * Parses layout xml files & creates (in this case) box2d simulations
- *
- *  (I added setupAnimations() )
  * 
  * */
 
@@ -26,8 +24,7 @@ import touchmypixel.game.objects.Object;
 import touchmypixel.game.simulations.Box2dSimulation;
 import touchmypixel.game.utils.Loader;
 
-typedef LayoutInfo = 
-{
+typedef LayoutInfo = {
 	var width : Float;
 	var height : Float;
 }

@@ -9,11 +9,11 @@ import box2D.common.math.B2Vec2;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2BodyDef;
 import box2D.collision.shapes.B2ShapeDef;
-import flash.display.DisplayObject;
+//import flash.display.DisplayObject;
 import haxe.xml.Fast;
 import touchmypixel.game.ds.ObjectHash;
 import touchmypixel.game.simulations.Box2dSimulation;
-import flash.display.Sprite;
+//import flash.display.Sprite;
 
 class Box2dObject extends Object
 {
@@ -30,8 +30,7 @@ class Box2dObject extends Object
 	
 	override public function init()
 	{
-		for ( b in bodies )
-			b.init();
+		// override
 	}
 	
 	
@@ -40,14 +39,10 @@ class Box2dObject extends Object
 	}
 	
 	override public function destroy():Void
-	{		
-		if ( bodies != null )
-		{
-			for (b in bodies)
-				b.destroy();
-			bodies = null;
-		}
-		simulation = null;
+	{
 		super.destroy();
+		
+		for (b in bodies)	
+			b.destroy();
 	}
 }

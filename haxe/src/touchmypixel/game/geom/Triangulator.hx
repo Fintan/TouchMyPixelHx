@@ -42,8 +42,8 @@ class Triangulator {
 			return null;
 		}
 		
-		var i:int = 0;
-		var vNum:int = xv.length;
+		var i = 0;
+		var vNum = xv.length;
 	  
 		var buffer:Array = new Array();
 		var bufferSize:Int = 0;

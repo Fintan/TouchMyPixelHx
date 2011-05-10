@@ -4,7 +4,7 @@ package touchmypixel.game.box2d;
 import box2D.collision.shapes.B2CircleDef;
 import box2D.collision.shapes.B2PolygonDef;
 import box2D.common.math.B2Vec2;
-import flash.geom.Point;
+//import flash.geom.Point;
 
 /**
 * ...
@@ -15,6 +15,9 @@ class ShapeTools
 {
 	public static function polygon(worldScale:Float, points:Array<Array<Float>>, ?offsetX:Float = 0, ?offsetY:Float = 0, ?rotation:Float = 0, ?scaleX:Float = 1, ?scaleY:Float = 1):B2PolygonDef
 	{
+	
+		if(points.length>8)trace("Warning: B2PolygonDef can only handle <=8 vertices");
+		
 		// Rotate points around center if needed
 		if (rotation != 0)
 		{
@@ -29,6 +32,7 @@ class ShapeTools
 			points = newPoints;
 		}
 		
+		//points.reverse();
 		var s:B2PolygonDef = new B2PolygonDef();
 		s.vertexCount = points.length;
 		
@@ -38,7 +42,7 @@ class ShapeTools
 			s.vertices[c].Set((points[i][0] * scaleX + offsetX) / worldScale , (points[i][1] * scaleY + offsetY) / worldScale );
 			i--;
 		}
-			
+		
 		return s;
 	}
 	

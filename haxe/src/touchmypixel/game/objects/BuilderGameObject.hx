@@ -10,7 +10,9 @@ import haxe.xml.Fast;
 class BuilderGameObject extends Box2dObject
 {
 	public var info:Fast;
+	public var fixedRotation:Bool;
 	public var autoSyncToBody:BuilderBodyObject;
+	
 	public var autoSyncTransform: { x:Float, y:Float, rotation:Float };
 	
 	public function new(s) 
@@ -24,16 +26,8 @@ class BuilderGameObject extends Box2dObject
 	{
 		if (this.autoSyncToBody != null)
 		{
-			this.simulation.sync(this, autoSyncToBody.body, autoSyncTransform);
+			trace("got an autoSyncToBody!");
+			this.simulation.sync(cast this.container, autoSyncToBody.body, autoSyncTransform);
 		}
-	}
-	
-	override public function destroy() : Void
-	{
-		info = null;
-		autoSyncToBody = null;
-		autoSyncTransform = null;
-		
-		super.destroy();
 	}
 }

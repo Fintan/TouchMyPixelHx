@@ -1,7 +1,8 @@
 
 package touchmypixel.game;
+import touchmypixel.game.ILevel;
 
-import flash.display.MovieClip;
+//import flash.display.MovieClip;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -12,7 +13,7 @@ import flash.ui.Keyboard;
 import touchmypixel.io.Keys;
 import haxe.FastList;
 
-class LevelBase extends Sprite
+class LevelBase extends Sprite, implements ILevel
 {
 	public var lastFrameTime:Float;
 	private var maxDT:Float;

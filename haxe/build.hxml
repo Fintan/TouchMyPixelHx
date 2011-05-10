@@ -1,0 +1,9 @@
+-main demo.Main
+-cp src
+-resource assets/box2dlayout.xml@resources
+-swf-lib assets/box2dlayout.swf
+-swf-version 10
+-swf-header 655:491:40:3399CC
+## @tm-preview
+-cmd open -a /Applications/Flash\ Player\ Debugger.app bin/swf/Main.swf
+-swf9 bin/swf/Main.swf
