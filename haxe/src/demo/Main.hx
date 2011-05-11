@@ -8,7 +8,6 @@ package demo;
 import box2D.collision.shapes.B2Shape;
 import box2D.collision.B2AABB;
 import box2D.common.math.B2Vec2;
-import fboyle.util.Rnd;
 import touchmypixel.game.objects.Box2dBodyObject;
 import fboyle.display.LevelBase;
 import fboyle.layout.FlaBox2dLayout;
@@ -45,9 +44,7 @@ class Main extends LevelBase, implements ILayoutContainer{
 	
 	public function setup() {
 		
-		fboyle.utils.DisplayObjectUtil.getStage().addChild(container);
-	
-		simulation = new Box2dSimulation(true, container, cast fboyle.utils.DisplayObjectUtil.getStage());
+		simulation = new Box2dSimulation(false, container, cast fboyle.utils.DisplayObjectUtil.getStage());
 		simulation.initGravity.y = 10;
 		simulation.initAABB.upperBound.x = 1000;
 		simulation.initAABB.upperBound.y = 2000;
@@ -60,6 +57,9 @@ class Main extends LevelBase, implements ILayoutContainer{
 		layout.buildLayout(layout.layouts.get("example"), simulation);
 		
 		this.start();
+		
+		fboyle.utils.DisplayObjectUtil.getStage().addChild(container);
+		
 	}
 	
 	override public function update(dt:Float):Void{

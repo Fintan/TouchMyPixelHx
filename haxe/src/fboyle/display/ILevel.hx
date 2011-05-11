@@ -35,6 +35,5 @@ interface ILevel implements IDestroyable {
 	function init():Void;
 	function start():Void;
 	function stop():Void;
-	//function destroy():Void;//IDestroyable
 	function update(dt:Float):Void;
 }

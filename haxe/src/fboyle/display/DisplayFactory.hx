@@ -68,7 +68,6 @@ class AbstractDisplayList{
 	
 	function new(){} 
 		
-	//public function loadBitmap(src:String, ?callback=null):BitmapHx {
 	public function loadBitmap(src:String):BitmapHx {
 		return throw "this is an abstract class";
 	}
@@ -76,26 +75,18 @@ class AbstractDisplayList{
 	public function loadMovieClip(src:String, ?infoOb):ContainerHx{
 		return throw "this is an abstract class";
 	}
-	/*
-	public function playAnimation(id:String, ?indices:Array<Int>):Void{
-		//BitmapSequence for easel,  touchmypixel.bitmap.Animation for Flash
-		return throw "this is an abstract class";
-	}*/
 	
 	public function addChild(child:DisplayObjectHx, parent:ContainerHx):Void{
-	//public function addChild(child, parent):Void{
 		trace("this is an abstract class");
-	//	return throw "this is an abstract class";
 	}
 	
 	public function removeChild(child:DisplayObjectHx, ?parent:ContainerHx):Void{
 		trace("this is an abstract class");
-	//	return throw "this is an abstract class";
 	}
 	
 }
 
-//@:require('easeljs')
+
 #if easeljs
 class EaselDisplayList extends AbstractDisplayList{
 	
@@ -108,8 +99,6 @@ class EaselDisplayList extends AbstractDisplayList{
 		easelLoader = new fboyle.utils.EaselLoadUtil();
 	}
 
-	
-	//override public function loadBitmap(src:String, ?callback=null):BitmapHx {
 	override public function loadBitmap(src:String):BitmapHx {
 	
 		//load an external bitmap
@@ -121,7 +110,7 @@ class EaselDisplayList extends AbstractDisplayList{
 	}
 	
 	override public function loadMovieClip(src:String, ?infoOb):ContainerHx{
-	//	trace("loadMovieClip (spriteSheet)");
+
 		//load a spriteSheet 
 		return EaselLoader.loadMovieClip(src, infoOb);
 		
@@ -146,13 +135,10 @@ class EaselDisplayList extends AbstractDisplayList{
 	}
 	
 	override public function addChild(child:DisplayObjectHx, parent:ContainerHx):Void{
-		//trace("add child: "+child + " to  parent: "+parent);
 		parent.addChild(child);
 	}
 
 	override public function removeChild(child:DisplayObjectHx, ?parent:ContainerHx):Void{
-		//return throw "this is an abstract class";
-		//parent.removeChild(child);
 		if(cast(child.parent, ContainerHx) != null)
 			cast(child.parent, ContainerHx).removeChild(child);
 	}
@@ -204,7 +190,6 @@ class CppDisplayList extends AbstractDisplayList{
 	override public function loadBitmap(src:String):BitmapHx {
 		var data = nme.display.BitmapData.load(src);
 		return new flash.display.Bitmap(data);
-	//	return Loader.loadBitmap(src);
 	}
 	
 	override public function loadMovieClip(src:String, ?infoOb):ContainerHx{

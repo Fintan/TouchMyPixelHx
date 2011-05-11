@@ -40,7 +40,7 @@ class AnimationSet{
 			#end
 			
 		}
-		trace("animationItems[0].libraryName "+animationItems[0].libraryName);
+		//trace("animationItems[0].libraryName "+animationItems[0].libraryName);
 		clip = animations.get(animationItems[0].libraryName);
 		container.addChild(clip);
 		clip.gotoAndStop(1);

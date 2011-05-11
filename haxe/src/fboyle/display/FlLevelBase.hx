@@ -43,13 +43,13 @@ import touchmypixel.io.Keys;
 import haxe.FastList;
 
 class FlLevelBase implements ILevel{
-	//public var container:Sprite;
+	
 	public var container:MovieClip;
 	public var lastFrameTime:Float;
 	private var maxDT:Float;
 	
 	public function new(){
-		//container = new Sprite();
+		
 		container = new MovieClip();
 		
 		maxDT = 1 / 10;

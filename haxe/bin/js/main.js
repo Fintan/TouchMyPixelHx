@@ -10798,7 +10798,7 @@ demo.Main.prototype.setup = function() {
 		$r = fboyle.utils.DisplayObjectUtil.stage;
 		return $r;
 	}(this))).addChild(this.container);
-	this.simulation = new touchmypixel.game.simulations.Box2dSimulation(true,this.container,(function($this) {
+	this.simulation = new touchmypixel.game.simulations.Box2dSimulation(false,this.container,(function($this) {
 		var $r;
 		if(fboyle.utils.DisplayObjectUtil.stage == null) haxe.Log.trace("warning: canvas/stage hasn't been defined!",{ fileName : "DisplayObjectUtil.hx", lineNumber : 75, className : "fboyle.utils.DisplayObjectUtil", methodName : "getStage"});
 		$r = fboyle.utils.DisplayObjectUtil.stage;

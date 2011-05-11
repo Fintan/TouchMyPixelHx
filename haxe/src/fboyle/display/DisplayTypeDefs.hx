@@ -33,12 +33,9 @@ package fboyle.display;
 
 // - cascading typedefs to align EaselJs display list with Flash display list
 
-// other differences should be handled possibly with factory pattern determined with compiler if clause?
-
 #if (flash || cpp)
 
 typedef DisplayObjectHx = flash.display.DisplayObject;
-//typedef ContainerHx = flash.display.DisplayObjectContainer;
 typedef ContainerHx = flash.display.MovieClip;
 typedef BitmapHx = flash.display.Bitmap;
 typedef StageHx = flash.display.Stage;
@@ -56,11 +53,6 @@ typedef ShapeHx = easelhx.display.Shape;
 typedef GraphicsHx = easelhx.display.Graphics;
 typedef TextFieldHx = easelhx.display.Text;
 
-//-gen-haxe-classes from swf extends MovieClip and Bitmap; 
-//todo: I need to remap flash.display to fboyle.display if possible
-//typedef MovieClip = ContainerHx;
-//typedef Bitmap = BitmapHx;
-//typedef DisplayObject = DisplayObjectHx;
 
 #end
 
@@ -83,98 +75,3 @@ typedef AnimationSequenceInfo = {
 	var scope:ContainerHx;
 
 }
-
-	//
-#if Simulation
-//tmp
-//entire box2d library gets added to swf even if SimulationHx is not used!!
-typedef SimulationHx = {>ContainerHx,
-	var container:ContainerHx;
-	var world:box2D.dynamics.B2World;
-	var scale:Float;
-	var objects:Array<touchmypixel.game.objects.Object>;
-	var namedObjects:Hash<touchmypixel.game.objects.Object>;
-	var bitmaps:Array<BitmapHx>;	
-}
-#end
-	
-/*
-//flash.display.DisplayObject/easeljs.display.DisplayObject
-typedef DisplayObjectHx = {
-	var alpha(default, default):Float;
-	var name(default, default):String;
-	var parent(default, null):DisplayObjectHx;
-	var rotation(default, default):Float;
-	var scaleX(default, default):Float;
-	var scaleY(default, default):Float;
-	var visible(default, default):Bool;
-	var x(default, default):Float;
-	var y(default, default):Float;
-}
-//flash.display.DisplayObjectContainer//easeljs.display.Container
-typedef ContainerHx = {>DisplayObjectHx,
-	function addChild(child:DisplayObjectHx):DisplayObjectHx;
-	function addChildAt(child:DisplayObjectHx, index:Int):DisplayObjectHx;
-	function removeChild(child:DisplayObjectHx):Dynamic;
-	function removeChildAt(index:Int):Dynamic;
-	function getChildAt(index:Int):DisplayObjectHx;
-	function getChildIndex( child:DisplayObjectHx):Int;
-	function toString():String;
-}
-
-typedef BitmapHx = {>DisplayObjectHx,
-}
-
-
-typedef StageHx = {>ContainerHx,
-	var mouseX(default, default):Float; //defined in DisplayObjectContainer in Flash, here in EaselJs
-	var mouseY(default, default):Float; //defined in DisplayObjectContainer in Flash, here in EaselJs
-}
-
-//flash.display.Sprite//easeljs.display.Shape
-typedef ShapeHx = {>DisplayObjectHx,
-	var graphics( default, default ) : GraphicsHx;
-	function draw( ctx:Dynamic, ignoreCache:Bool ):Bool;
-}
-
-
-#if (flash||cpp)
-typedef GraphicsHx = {
-	function moveTo( x:Float, y:Float ):Void;
-	function lineTo( x:Float, y:Float ):Void;
-	function clear():Void;
-	//function beginFill(color:String, ?alpha:Float):Dynamic; //color is a string for EaselJs
-	function endFill():Void;
-	function drawCircle( x:Float, y:Float, radius:Float) : Void;
-	
-	//easel specific
-	//function setStrokeStyle( thickness:Float, ?caps:String, ?joints:String, ?miterLimit:Float):Graphics;
-	//function beginStroke( color : String ) : Graphics;
-	//flash specific
-	//function lineStyle( ?thickness:Float, ?color:UInt, ?alpha:Float, ?pixelHinting:Bool, ?scaleMode:LineScaleMode, ?caps:CapsStyle, ?joints:JointStyle, ?miterLimit:Float):Void
-	
-}
-
-#else
-//easeljs.display.Graphics returns a Graphics object with each method call, flash.display.Grpahics returns Void
-typedef GraphicsHx = {
-	function moveTo( x:Float, y:Float ):Dynamic;
-	function lineTo( x:Float, y:Float ):Dynamic;
-	function clear():Dynamic;
-	//function beginFill(color:String, ?alpha:Float):Dynamic; //color is a string for EaselJs
-	function endFill():Dynamic;
-	function drawCircle( x:Float, y:Float, radius:Float) : Dynamic;
-	
-	//easel specific
-	//function setStrokeStyle( thickness:Float, ?caps:String, ?joints:String, ?miterLimit:Float):Graphics;
-	//function beginStroke( color : String ) : Graphics;
-	//flash specific
-	//function lineStyle( ?thickness:Float, ?color:UInt, ?alpha:Float, ?pixelHinting:Bool, ?scaleMode:LineScaleMode, ?caps:CapsStyle, ?joints:JointStyle, ?miterLimit:Float):Void
-	
-}
-
-#end
-
-*/
-//---------------------
-

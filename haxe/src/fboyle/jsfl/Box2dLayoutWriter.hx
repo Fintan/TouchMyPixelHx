@@ -5,6 +5,8 @@
 //
 //  Made adjustments to touchmypixel.game.LayoutWriter
 //
+// Note:  this is now an old script (i.e., made before adding easeljx support - so may not work with code currently)
+//
 // (e.g. added parseAnimations() and added linkage attribute to bitmap node, introduced new component called Def_Animations)
 
 /*

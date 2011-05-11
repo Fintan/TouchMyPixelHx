@@ -9,8 +9,6 @@ package fboyle.display;
 
 import easelhx.utils.Ticker;
 import fboyle.display.DisplayTypeDefs;
-//import touchmypixel.io.Keys;
-//import touchmypixel.game.ILevel;
 import fboyle.display.ILevel;
 
 import easelhx.display.Container;
@@ -24,11 +22,9 @@ class JsLevelBase implements ILevel {
 	private var stage:StageHx;
 	
 	public function new(){
-		//super();
 		
 		maxDT = 1 / 10;
 		
-		//Keys.init();
 		container = new Container();
 		
 		stage = cast (fboyle.utils.DisplayObjectUtil.getStage()); 
@@ -39,28 +35,13 @@ class JsLevelBase implements ILevel {
 		//override
 	}
 	
-/*	public function find<T>(type:Class<T>):List<T>{
-		var items = new List();
-		if(this.children!=null){
-		for (i in 0...this.children.length){
-			var child = getChildAt(i);
-			if (Std.is(child, type))
-				items.add(child);
-		}
-	}
-		return cast items;
-	}*/
-	
 	public function start():Void {
-		//trace("hello fintan: start()");
 		lastFrameTime = haxe.Timer.stamp();
-		//addEventListener(Event.ENTER_FRAME, loop);
 		Ticker.setInterval(20);		// 50 ms = 20 fps
 		Ticker.addListener(this);
 	}
 	
 	public function stop():Void {
-		//removeEventListener(Event.ENTER_FRAME, loop);
 		Ticker.removeListener(this);
 	}
 	
@@ -86,10 +67,6 @@ class JsLevelBase implements ILevel {
 
 		lastFrameTime = currentTime;
 		
-	}
-	
-	private function loop(e:Dynamic):Void {
-	
 	}
 	
 	public function update(dt:Float):Void { 
