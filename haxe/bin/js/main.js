@@ -970,7 +970,9 @@ if(typeof fboyle=='undefined') fboyle = {}
 if(!fboyle.layout) fboyle.layout = {}
 fboyle.layout.FlaBox2dLayout = function(xml) {
 	if( xml === $_ ) return;
+	this.onFilesLoaded = new hxs.Signal1();
 	this.flaLayout = new fboyle.layout.FlaLayout(xml);
+	this.flaLayout.onFilesLoaded.add($closure(this,"_onFilesLoaded"));
 	this.xml = Xml.parse(xml);
 	this.fast = new haxe.xml.Fast(this.xml);
 	this.layouts = new Hash();
@@ -984,12 +986,17 @@ fboyle.layout.FlaBox2dLayout = function(xml) {
 	this.displayList = fboyle.display.DisplayFactory.setDisplayList(displayType);
 }
 fboyle.layout.FlaBox2dLayout.__name__ = ["fboyle","layout","FlaBox2dLayout"];
+fboyle.layout.FlaBox2dLayout.prototype.onFilesLoaded = null;
 fboyle.layout.FlaBox2dLayout.prototype.xml = null;
 fboyle.layout.FlaBox2dLayout.prototype.fast = null;
 fboyle.layout.FlaBox2dLayout.prototype.layouts = null;
 fboyle.layout.FlaBox2dLayout.prototype.displayList = null;
 fboyle.layout.FlaBox2dLayout.prototype.flaLayout = null;
 fboyle.layout.FlaBox2dLayout.prototype.simulation = null;
+fboyle.layout.FlaBox2dLayout.prototype._onFilesLoaded = function(str) {
+	this.flaLayout.onFilesLoaded.remove($closure(this,"_onFilesLoaded"));
+	this.onFilesLoaded.dispatch(str);
+}
 fboyle.layout.FlaBox2dLayout.prototype.getLayoutInfo = function(name) {
 	if(!this.layouts.exists(name)) return null;
 	var lo = this.layouts.get(name);
@@ -1159,7 +1166,7 @@ fboyle.layout.FlaBox2dLayout.prototype.createBody = function(bodyInfo,gameObject
 	this.simulation.container.addChild(body.container);
 }
 fboyle.layout.FlaBox2dLayout.prototype.parseShape = function(shapeInfo,bodyInfo) {
-	haxe.Log.trace("parseShape bitches",{ fileName : "FlaBox2dLayout.hx", lineNumber : 409, className : "fboyle.layout.FlaBox2dLayout", methodName : "parseShape"});
+	haxe.Log.trace("parseShape bitches",{ fileName : "FlaBox2dLayout.hx", lineNumber : 423, className : "fboyle.layout.FlaBox2dLayout", methodName : "parseShape"});
 	var shapes = new Array();
 	var $it0 = shapeInfo.x.elements();
 	while( $it0.hasNext() ) {
@@ -6484,6 +6491,7 @@ box2D.dynamics.B2BoundaryListener.prototype.Violation = function(body) {
 box2D.dynamics.B2BoundaryListener.prototype.__class__ = box2D.dynamics.B2BoundaryListener;
 fboyle.layout.FlaLayout = function(xml) {
 	if( xml === $_ ) return;
+	this.onFilesLoaded = new hxs.Signal1();
 	this.xml = Xml.parse(xml);
 	this.fast = new haxe.xml.Fast(this.xml);
 	this.layouts = new Hash();
@@ -6495,13 +6503,17 @@ fboyle.layout.FlaLayout = function(xml) {
 	var displayType = "flash";
 	displayType = "easeljs";
 	this.displayList = fboyle.display.DisplayFactory.setDisplayList(displayType);
+	this.loadingCount = this.loadedCount = 0;
 }
 fboyle.layout.FlaLayout.__name__ = ["fboyle","layout","FlaLayout"];
+fboyle.layout.FlaLayout.prototype.onFilesLoaded = null;
 fboyle.layout.FlaLayout.prototype.xml = null;
 fboyle.layout.FlaLayout.prototype.fast = null;
 fboyle.layout.FlaLayout.prototype.layouts = null;
 fboyle.layout.FlaLayout.prototype.displayList = null;
 fboyle.layout.FlaLayout.prototype.container = null;
+fboyle.layout.FlaLayout.prototype.loadingCount = null;
+fboyle.layout.FlaLayout.prototype.loadedCount = null;
 fboyle.layout.FlaLayout.prototype.getLayoutInfo = function(name) {
 	if(!this.layouts.exists(name)) return null;
 	var lo = this.layouts.get(name);
@@ -6535,7 +6547,8 @@ fboyle.layout.FlaLayout.prototype.createEmpty = function(objectInfo) {
 	}
 }
 fboyle.layout.FlaLayout.prototype.createBitmap = function(objectInfo,addToScope) {
-	var bmp = this.displayList.loadBitmap(objectInfo.att.resolve("file"));
+	this.loadingCount++;
+	var bmp = this.displayList.loadBitmap(objectInfo.att.resolve("file"),$closure(this,"loadedCheck"));
 	bmp.x = Std.parseFloat(objectInfo.att.resolve("x"));
 	bmp.y = Std.parseFloat(objectInfo.att.resolve("y"));
 	bmp.rotation = Std.parseFloat(objectInfo.att.resolve("r"));
@@ -6545,11 +6558,12 @@ fboyle.layout.FlaLayout.prototype.createBitmap = function(objectInfo,addToScope)
 	}
 }
 fboyle.layout.FlaLayout.prototype.createMovieClip = function(objectInfo,addToScope) {
+	this.loadingCount++;
 	var frames = objectInfo.att.resolve("sheetindicies").split(",");
 	var sFrame = frames.length < 1?0:Std.parseInt(frames[0]);
 	var eFrame = frames.length >= 1?Std.parseInt(frames[frames.length - 1]):0;
 	var seqInfo = { name : objectInfo.att.resolve("name"), file : objectInfo.att.resolve("file"), frameWidth : Std.parseFloat(objectInfo.att.resolve("frameWidth")), frameHeight : Std.parseFloat(objectInfo.att.resolve("frameHeight")), registrationPoint : { x : Std.parseInt(objectInfo.att.resolve("regX")), y : Std.parseInt(objectInfo.att.resolve("regY"))}, sheetindicies : objectInfo.att.resolve("sheetindicies"), startFrame : sFrame, endFrame : eFrame, scope : addToScope};
-	var mc = this.displayList.loadMovieClip(objectInfo.att.resolve("file"),seqInfo);
+	var mc = this.displayList.loadMovieClip(objectInfo.att.resolve("file"),seqInfo,$closure(this,"loadedCheck"));
 	mc.x = Std.parseFloat(objectInfo.att.resolve("x"));
 	mc.y = Std.parseFloat(objectInfo.att.resolve("y"));
 	mc.rotation = Std.parseFloat(objectInfo.att.resolve("r"));
@@ -6560,6 +6574,13 @@ fboyle.layout.FlaLayout.prototype.createMovieClip = function(objectInfo,addToSco
 		}
 	}
 	return mc;
+}
+fboyle.layout.FlaLayout.prototype.loadedCheck = function() {
+	this.loadedCount++;
+	if(this.loadingCount == this.loadedCount) {
+		this.onFilesLoaded.dispatch(this.loadedCount + " files loaded");
+		this.loadedCount = this.loadingCount = 0;
+	}
 }
 fboyle.layout.FlaLayout.prototype.f = function(v) {
 	return Std.parseFloat(v);
@@ -8613,14 +8634,14 @@ fboyle.display.DisplayFactory.prototype.__class__ = fboyle.display.DisplayFactor
 fboyle.display.AbstractDisplayList = function(p) {
 }
 fboyle.display.AbstractDisplayList.__name__ = ["fboyle","display","AbstractDisplayList"];
-fboyle.display.AbstractDisplayList.prototype.loadBitmap = function(src) {
+fboyle.display.AbstractDisplayList.prototype.loadBitmap = function(src,callbackFunction) {
 	return (function($this) {
 		var $r;
 		throw "this is an abstract class";
 		return $r;
 	}(this));
 }
-fboyle.display.AbstractDisplayList.prototype.loadMovieClip = function(src,infoOb) {
+fboyle.display.AbstractDisplayList.prototype.loadMovieClip = function(src,infoOb,callbackFunction) {
 	return (function($this) {
 		var $r;
 		throw "this is an abstract class";
@@ -8643,11 +8664,19 @@ fboyle.display.EaselDisplayList.__name__ = ["fboyle","display","EaselDisplayList
 fboyle.display.EaselDisplayList.__super__ = fboyle.display.AbstractDisplayList;
 for(var k in fboyle.display.AbstractDisplayList.prototype ) fboyle.display.EaselDisplayList.prototype[k] = fboyle.display.AbstractDisplayList.prototype[k];
 fboyle.display.EaselDisplayList.prototype.easelLoader = null;
-fboyle.display.EaselDisplayList.prototype.loadBitmap = function(src) {
-	return fboyle.utils.EaselLoader.loadBitmap(src);
+fboyle.display.EaselDisplayList.prototype.loadBitmap = function(src,callbackFunction) {
+	var here = this;
+	return this.easelLoader.loadBitmap(src,function(id) {
+		here.easelLoader.nullCallbackReference(id);
+		callbackFunction();
+	});
 }
-fboyle.display.EaselDisplayList.prototype.loadMovieClip = function(src,infoOb) {
-	return fboyle.utils.EaselLoader.loadMovieClip(src,infoOb);
+fboyle.display.EaselDisplayList.prototype.loadMovieClip = function(src,infoOb,callbackFunction) {
+	var here = this;
+	return this.easelLoader.loadMovieClip(src,infoOb,function(id) {
+		here.easelLoader.nullCallbackReference(id);
+		callbackFunction();
+	});
 }
 fboyle.display.EaselDisplayList.prototype.addChild = function(child,parent) {
 	parent.addChild(child);
@@ -8685,29 +8714,40 @@ fboyle.display.CppDisplayList.__super__ = fboyle.display.AbstractDisplayList;
 for(var k in fboyle.display.AbstractDisplayList.prototype ) fboyle.display.CppDisplayList.prototype[k] = fboyle.display.AbstractDisplayList.prototype[k];
 fboyle.display.CppDisplayList.prototype.__class__ = fboyle.display.CppDisplayList;
 fboyle.utils.EaselLoadUtil = function(p) {
+	if( p === $_ ) return;
+	fboyle.utils.EaselLoadUtil.loaded = new Hash();
 }
 fboyle.utils.EaselLoadUtil.__name__ = ["fboyle","utils","EaselLoadUtil"];
 fboyle.utils.EaselLoadUtil.prototype.loadBitmap = function(src,onLoadCallback) {
-	var img = js.Lib.document.createElement("img");
-	if(onLoadCallback != null) img.onload = onLoadCallback;
-	img.src = src;
-	return new Bitmap(img);
+	return new Bitmap(this.loadImage(src,onLoadCallback));
 }
-fboyle.utils.EaselLoadUtil.prototype.loadBitmapSequence = function(imgSeq,sequenceInfo) {
-	haxe.Log.trace("?? loadBitmapSequence",{ fileName : "EaselLoadUtil.hx", lineNumber : 53, className : "fboyle.utils.EaselLoadUtil", methodName : "loadBitmapSequence"});
-	var seqName = sequenceInfo.name;
+fboyle.utils.EaselLoadUtil.prototype.loadImage = function(src,onLoadCallback) {
+	var img = js.Lib.document.createElement("img");
+	img.onload = function(e) {
+		fboyle.utils.EaselLoadUtil.loaded.set(src,img);
+		if(onLoadCallback != null) onLoadCallback(src);
+	};
+	img.src = src;
+	return img;
+}
+fboyle.utils.EaselLoadUtil.prototype.loadMovieClip = function(src,sequenceInfo,onLoadCallback) {
+	var seqArr = sequenceInfo.sheetindicies.split(",");
+	if(seqArr.length <= 1) {
+		var bmp = this.loadBitmap(sequenceInfo.file,onLoadCallback);
+		return bmp;
+	}
+	var img = this.loadImage(src,onLoadCallback);
 	var frameData = { };
-	frameData[seqName] = [sequenceInfo.startFrame,sequenceInfo.endFrame];
-	var spriteSheet = new SpriteSheet(imgSeq.image,sequenceInfo.frameWidth,sequenceInfo.frameHeight,frameData);
+	frameData[sequenceInfo.name] = [seqArr[0],seqArr[seqArr.length - 1]];
+	var spriteSheet = new SpriteSheet(img,sequenceInfo.frameWidth,sequenceInfo.frameHeight,frameData);
 	var bmpSeq = new BitmapSequence(spriteSheet);
-	bmpSeq.regX = Std["int"](bmpSeq.spriteSheet.frameWidth / 2) | 0;
-	bmpSeq.regY = Std["int"](bmpSeq.spriteSheet.frameHeight / 2) | 0;
-	bmpSeq.x = 200;
-	bmpSeq.y = 200;
-	var parentContainer = sequenceInfo.scope;
-	parentContainer.addChild(bmpSeq);
-	bmpSeq.gotoAndPlay(sequenceInfo.name);
+	bmpSeq.regX = Std["int"](sequenceInfo.registrationPoint.x);
+	bmpSeq.regY = Std["int"](sequenceInfo.registrationPoint.y);
+	bmpSeq.gotoAndStop(seqArr[0]);
 	return bmpSeq;
+}
+fboyle.utils.EaselLoadUtil.prototype.nullCallbackReference = function(id) {
+	if(fboyle.utils.EaselLoadUtil.loaded.exists(id)) fboyle.utils.EaselLoadUtil.loaded.set(id,null);
 }
 fboyle.utils.EaselLoadUtil.prototype.__class__ = fboyle.utils.EaselLoadUtil;
 Std = function() { }
@@ -10807,6 +10847,7 @@ demo.Main.main = function() {
 	new demo.Main();
 }
 demo.Main.prototype.simulation = null;
+demo.Main.prototype.layout = null;
 demo.Main.prototype.playing = null;
 demo.Main.prototype.button = null;
 demo.Main.prototype.setup = function() {
@@ -10820,20 +10861,26 @@ demo.Main.prototype.setup = function() {
 	this.simulation.autoUpdateObjects = true;
 	this.simulation.timeStep = 1 / 40;
 	this.simulation.init();
-	var layout = new fboyle.layout.FlaBox2dLayout(haxe.Resource.getString("resources"));
-	layout.buildLayout(layout.layouts.get("example"),this.simulation);
+	this.layout = new fboyle.layout.FlaBox2dLayout(haxe.Resource.getString("resources"));
+	this.layout.buildLayout(this.layout.layouts.get("example"),this.simulation);
 	this.button = this.simulation.nonGameObjects.get("playButton");
 	fboyle.utils.ListenerUtil.addListener(this.button,fboyle.events.MouseEvent.CLICK,$closure(this,"onClicked"));
 	fboyle.utils.MovieClipUtil.gotoAndStop(this.button,"1");
-	this.start();
-	haxe.Timer.delay($closure(this,"stop"),200);
-	this.playing = false;
+	this.layout.onFilesLoaded.add($closure(this,"onReady"));
+	haxe.Log.trace("loading images...",{ fileName : "Main.hx", lineNumber : 67, className : "demo.Main", methodName : "setup"});
 	((function($this) {
 		var $r;
 		if(fboyle.utils.DisplayObjectUtil.stage == null) haxe.Log.trace("warning: canvas/stage hasn't been defined!",{ fileName : "DisplayObjectUtil.hx", lineNumber : 75, className : "fboyle.utils.DisplayObjectUtil", methodName : "getStage"});
 		$r = fboyle.utils.DisplayObjectUtil.stage;
 		return $r;
 	}(this))).addChild(this.container);
+}
+demo.Main.prototype.onReady = function(message) {
+	haxe.Log.trace(message,{ fileName : "Main.hx", lineNumber : 75, className : "demo.Main", methodName : "onReady"});
+	this.start();
+	haxe.Timer.delay($closure(this,"stop"),200);
+	this.playing = false;
+	this.layout.onFilesLoaded.remove($closure(this,"onReady"));
 }
 demo.Main.prototype.onClicked = function(e) {
 	if(!this.playing) {
@@ -11052,6 +11099,7 @@ box2D.collision.B2TimeOfImpact.s_p1 = new box2D.common.math.B2Vec2();
 box2D.collision.B2TimeOfImpact.s_p2 = new box2D.common.math.B2Vec2();
 box2D.collision.B2TimeOfImpact.s_xf1 = new box2D.common.math.B2XForm();
 box2D.collision.B2TimeOfImpact.s_xf2 = new box2D.common.math.B2XForm();
+fboyle.utils.EaselLoadUtil.loaded = new Hash();
 haxe.Timer.arr = new Array();
 touchmypixel.game.ds.ObjectHash.registeredObjects = new IntHash();
 touchmypixel.game.ds.ObjectHash.i = 0;

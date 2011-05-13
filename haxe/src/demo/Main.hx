@@ -21,13 +21,13 @@ using fboyle.utils.MovieClipUtil;
 
 class Main extends LevelBase{
 
-	public var simulation:Box2dSimulation;
+	var simulation:Box2dSimulation;
+	var layout:FlaBox2dLayout;
 	
 	var playing:Bool;
 	var button:ContainerHx;
 	
 	public function new() {
-		
 		
 		#if easeljs //set the stage up for easeljs target, needs to happen before super() is called
 			var canvas:js.DomCanvas = cast js.Lib.document.getElementById("testCanvas");
@@ -52,21 +52,33 @@ class Main extends LevelBase{
 		simulation.timeStep = 1 / 40;
 		simulation.init();
 		//create a layout for the simulation
-		var layout = new FlaBox2dLayout(Resource.getString("resources"));
+		layout = new FlaBox2dLayout(Resource.getString("resources"));
 		layout.buildLayout(layout.layouts.get("example"), simulation);
+		
 		//use button graphic to turn the simulation on and off
 		button = simulation.nonGameObjects.get("playButton");
 		button.addListener(MouseEvent.CLICK, onClicked);
 		//frame 1 starts at a zero index in easeljs so I added a dummy first frame on the spritesheet so that it matchs the same for flash target
 		#if easeljs button.gotoAndStop("1"); #end 
 		
-		this.start(); //render initial layout
-		Timer.delay(stop, 200); //pause initially so it isn't a resource hog
-		playing = false;
+		//allowing for asyncronous loading of images on easeljs target
+		layout.onFilesLoaded.add(onReady);
+		
+		#if !easeljs onReady(""); #else trace("loading images..."); #end //images are embedded for Flash target
 		
 		//add container to the stage
 		fboyle.utils.DisplayObjectUtil.getStage().addChild(container);
 		
+	}
+	
+	function onReady(message){
+		#if easeljs trace(message); #end
+		//I'm delaying rendering until everything is loaded
+		this.start(); //render initial layout
+		Timer.delay(stop, 200); //pause initially so it isn't a resource hog
+		playing = false;
+		
+		layout.onFilesLoaded.remove(onReady);
 	}
 
 	

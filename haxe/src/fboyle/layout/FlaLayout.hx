@@ -31,6 +31,7 @@
  * 
  */
 package fboyle.layout;
+import hxs.Signal1;
 
 import fboyle.display.DisplayTypeDefs;
 import fboyle.display.DisplayFactory;
@@ -44,6 +45,8 @@ import haxe.xml.Fast;
  **/
 class FlaLayout {
 	
+	public var onFilesLoaded:Signal1<String>;
+	
 	public var xml:Xml;
 	public var fast:Fast;
 	public var layouts:Hash<Fast>;
@@ -51,8 +54,13 @@ class FlaLayout {
 	var displayList:AbstractDisplayList;
 	
 	var container:fboyle.layout.ILayoutContainer;
+	
+	var loadingCount:Int;
+	var loadedCount:Int;
 		
 	public function new(xml:String){
+		
+		onFilesLoaded = new Signal1();
 		this.xml = Xml.parse(xml);
 		fast = new Fast(this.xml);
 		
@@ -67,6 +75,8 @@ class FlaLayout {
 		displayType = "cpp";
 		#end
 		displayList = DisplayFactory.setDisplayList(displayType);
+		
+		loadingCount = loadedCount = 0;
 	}
 	
 	/**
@@ -115,6 +125,9 @@ class FlaLayout {
 	}
 	
 	public function createBitmap(objectInfo:Fast, ?addToScope:ContainerHx){
+		
+		loadingCount++;
+		
 		#if flash
 			var bmp = displayList.loadBitmap(objectInfo.att.linkage);
 			var bitmap:flash.display.Bitmap = bmp;
@@ -123,7 +136,7 @@ class FlaLayout {
 			bmp.scaleY = f(objectInfo.att.sy);
 				
 		#elseif easeljs
-			var bmp = displayList.loadBitmap(objectInfo.att.file);
+			var bmp = displayList.loadBitmap(objectInfo.att.file, loadedCheck);
 			
 		#elseif cpp
 			var bmp = displayList.loadBitmap(objectInfo.att.file);
@@ -150,7 +163,7 @@ class FlaLayout {
 	
 	public function createMovieClip(objectInfo:Fast, ?addToScope:ContainerHx):ContainerHx{
 		
-		//trace("createMovieClip !!!"+ objectInfo.att.linkageId);
+		loadingCount++;
 		
 		#if flash
 			var mc = displayList.loadMovieClip(objectInfo.att.linkageId, true);
@@ -178,7 +191,7 @@ class FlaLayout {
 				scope:addToScope
 			};
 			
-			var mc = displayList.loadMovieClip(objectInfo.att.file, seqInfo);
+			var mc = displayList.loadMovieClip(objectInfo.att.file, seqInfo, loadedCheck);
 			
 		#elseif cpp
 		
@@ -228,6 +241,18 @@ class FlaLayout {
 		
 		return mc;
 		
+	}
+	
+	function loadedCheck(){
+		
+		loadedCount++;
+		
+		//trace("loadedCheck: loadedCount" + loadedCount + "   loadingCount: "+ loadingCount);
+		
+		if(loadingCount == loadedCount){
+			onFilesLoaded.dispatch(loadedCount + " files loaded");
+			loadedCount = loadingCount = 0;
+		}
 	}
 	
 	public inline function f(v:String){

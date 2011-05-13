@@ -5,6 +5,7 @@
 //  Copyright (c) 2011 Modello Design Ltd. All rights reserved.
 //
 package fboyle.layout;
+import hxs.Signal1;
 import fboyle.layout.ILayoutContainer;
 import touchmypixel.game.simulations.Box2dSimulation;
 import box2D.collision.shapes.B2Shape;
@@ -35,6 +36,9 @@ import fboyle.layout.LayoutTypeDefs;
 
 class FlaBox2dLayout {
 	
+	public var onFilesLoaded:Signal1<String>;
+	
+	
 	public var xml:Xml;
 	public var fast:Fast;
 	public var layouts:Hash<Fast>;
@@ -49,7 +53,10 @@ class FlaBox2dLayout {
 	
 	public function new(xml:String){
 		
+		onFilesLoaded = new Signal1();
+		
 		flaLayout = new FlaLayout(xml); //use regular FlaLayout to create bitmaps and movieclips
+		flaLayout.onFilesLoaded.add(_onFilesLoaded);
 		
 		this.xml = Xml.parse(xml);
 		fast = new Fast(this.xml);
@@ -65,6 +72,13 @@ class FlaBox2dLayout {
 			displayType = "cpp";
 		#end
 		displayList = DisplayFactory.setDisplayList(displayType);
+	}
+	
+	function _onFilesLoaded(str){
+		
+		flaLayout.onFilesLoaded.remove(_onFilesLoaded);
+		onFilesLoaded.dispatch(str);
+		
 	}
 	
 	/**

@@ -21,67 +21,78 @@ import js.Dom;
  **/
 class EaselLoadUtil {
 	
-	//public var loaded:Hash<Dynamic>;
-	//public var onBitmapLoaded:Signal1<Bitmap>;
+	public static var loaded:Hash<Dynamic> = new Hash();
 	
 	public function new(){
-		//loaded= new Hash();
-	//	onBitmapLoaded= new Signal1<Bitmap>();
+		loaded= new Hash();
 	}
 	
 	public function loadBitmap(src:String, ?onLoadCallback):BitmapHx{
-	
-		//var img = untyped __js__("new Image()");
-		var img:Image = cast Lib.document.createElement("img");
-		
-		if(onLoadCallback!=null)
-			img.onload = onLoadCallback;
-			
-			//img.onload = function(e):Void{
-				//loaded.set(src, img);
-			//	onBitmapLoaded.dispatch(new Bitmap(img));
-			//	return new Bitmap(img);
-			//};
-		
-		img.src = src;
-			
-		return cast new Bitmap(img);
-		
+		return cast new Bitmap(loadImage(src, onLoadCallback));
 	}
 	
-	public function loadBitmapSequence(imgSeq:Bitmap, sequenceInfo:AnimationSequenceInfo):ContainerHx{
-		trace("?? loadBitmapSequence");
+	public function loadImage(src:String, ?onLoadCallback):Image{
 		
-		// frameData defines the sequences that can be played
-		// in this format: {nameOfSequence:[startFrame, endFrame, optionalNameOfNextSequence]}
-		var seqName = sequenceInfo.name;
+		//var img = untyped __js__("new Image()");
+		var img:Image = cast js.Lib.document.createElement("img");
 		
+		img.onload = function(e):Void{
+			loaded.set(src, img);	
+			if(onLoadCallback!=null){
+				onLoadCallback(src);
+			}
+		};
+		
+		img.src = src;
+	
+		return img;
+	}
+	
+	//need frameW, frameH, frameOrigin, startFrame,endFrame, sequenceName 
+	public function loadMovieClip(src:String, sequenceInfo:AnimationSequenceInfo, ?onLoadCallback):ContainerHx{
+		//trace("loadMovieClip "+src);
+		
+		var seqArr = sequenceInfo.sheetindicies.split(",");
+	
+		if(seqArr.length <=1){
+			var bmp = loadBitmap(sequenceInfo.file, onLoadCallback);
+			return cast bmp;
+		}
+		
+		var img = loadImage(src, onLoadCallback);
 		
 		var frameData:Dynamic<String> = { };
-		Reflect.setField(frameData, seqName, [sequenceInfo.startFrame,sequenceInfo.endFrame]);
+		//Reflect.setField(frameData, sequenceInfo.name, [sequenceInfo.startFrame,sequenceInfo.endFrame]);
+		Reflect.setField(frameData, sequenceInfo.name, [ seqArr[0], seqArr[seqArr.length-1] ]);
 		
-		var spriteSheet  = new SpriteSheet(imgSeq.image, sequenceInfo.frameWidth, sequenceInfo.frameHeight, frameData);
-	//	var spriteSheet  = new SpriteSheet(imgSeq.image, sequenceInfo.frameWidth, sequenceInfo.frameHeight, {frameData:[sequenceInfo.startFrame,sequenceInfo.endFrame]});
-		//var spriteSheet  = new SpriteSheet(imgSeq, sequenceInfo.frameWidth, sequenceInfo.frameHeight, {walkUpRt:[sequenceInfo.startFrame,sequenceInfo.endFrame]});
-		//var spriteSheet  = new SpriteSheet(imgSeq.image, 140, 122, {boy_jumping:[1,5]});
-		
+		// create spritesheet and assign the initial frameData
+		// frameData defines the sequences that can be played
+		// in this format: {nameOfSequence:[startFrame, endFrame, optionalNameOfNextSequence]}
+		var spriteSheet  = new SpriteSheet(img, sequenceInfo.frameWidth, sequenceInfo.frameHeight, frameData);
+	
 		// create a BitmapSequence instance to display and play back the sprite sheet:
 		var bmpSeq = new BitmapSequence(spriteSheet);
 
 		// set the registration point (the point it will be positioned and rotated around)
 		// to the center of the frame dimensions:
-		bmpSeq.regX = Std.int( bmpSeq.spriteSheet.frameWidth/2)|0;
-		bmpSeq.regY = Std.int( bmpSeq.spriteSheet.frameHeight/2)|0;
-	
-		bmpSeq.x = 200;
-		bmpSeq.y = 200;
-	
-		var parentContainer:Stage = cast sequenceInfo.scope;
-		parentContainer.addChild(bmpSeq);
-		//parentContainer.addChild(spriteSheet.image);
-		//bmpSeq.gotoAndPlay("boy_jumping");		//animate
-		bmpSeq.gotoAndPlay(sequenceInfo.name);
-	
+		//bmpSeq.regX = Std.int( bmpSeq.spriteSheet.frameWidth/2)|0;
+		//bmpSeq.regY = Std.int( bmpSeq.spriteSheet.frameHeight/2)|0;
+		bmpSeq.regX = Std.int( sequenceInfo.registrationPoint.x );
+		bmpSeq.regY = Std.int( sequenceInfo.registrationPoint.y );
+		
+		// draw the first frame:
+		//trace("seqArr.toString() "+seqArr.toString());
+		bmpSeq.gotoAndStop(seqArr[0]);//stop on first frame
+		
 		return cast bmpSeq;
+		
 	}
+	
+	public function nullCallbackReference(id){
+		//I don't think I need this because I am not holding any references to onLoadCallback if I just remove loaded hash?
+		if (loaded.exists(id)){
+			loaded.set(id, null);
+		}
+	}
+	
 }

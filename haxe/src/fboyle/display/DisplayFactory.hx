@@ -68,11 +68,11 @@ class AbstractDisplayList{
 	
 	function new(){} 
 		
-	public function loadBitmap(src:String):BitmapHx {
+	public function loadBitmap(src:String, ?callbackFunction):BitmapHx {
 		return throw "this is an abstract class";
 	}
 	
-	public function loadMovieClip(src:String, ?infoOb):ContainerHx{
+	public function loadMovieClip(src:String, ?infoOb, ?callbackFunction):ContainerHx{
 		return throw "this is an abstract class";
 	}
 	
@@ -99,20 +99,26 @@ class EaselDisplayList extends AbstractDisplayList{
 		easelLoader = new fboyle.utils.EaselLoadUtil();
 	}
 
-	override public function loadBitmap(src:String):BitmapHx {
+	override public function loadBitmap(src:String, ?callbackFunction):BitmapHx {
 	
 		//load an external bitmap
-		return EaselLoader.loadBitmap(src);
-		
-		/*return easelLoader.loadBitmap(src, function(e):Void{
-			trace("LOADED worked so it did!!");
-			});*/
+		//return EaselLoader.loadBitmap(src);
+		var here = this;
+		return easelLoader.loadBitmap(src, function(id):Void{
+			here.easelLoader.nullCallbackReference(id);
+			callbackFunction();
+			});
 	}
 	
-	override public function loadMovieClip(src:String, ?infoOb):ContainerHx{
+	override public function loadMovieClip(src:String, ?infoOb, ?callbackFunction):ContainerHx{
 
 		//load a spriteSheet 
-		return EaselLoader.loadMovieClip(src, infoOb);
+		//return EaselLoader.loadMovieClip(src, infoOb);
+		var here = this;
+		return easelLoader.loadMovieClip(src, infoOb, function(id):Void{
+			here.easelLoader.nullCallbackReference(id);
+			callbackFunction();
+			});
 		
 		/*
 		var here = this;
@@ -155,11 +161,11 @@ class FlashDisplayList extends AbstractDisplayList{
 	
 	#if flash
 	
-	override public function loadBitmap(src:String):BitmapHx {
+	override public function loadBitmap(src:String, ?callbackFunction):BitmapHx {
 		return Loader.loadBitmap(src);
 	}
 	
-	override public function loadMovieClip(src:String, ?infoOb):ContainerHx{
+	override public function loadMovieClip(src:String, ?infoOb, ?callbackFunction):ContainerHx{
 		return Loader.loadMovieClip(src, infoOb);
 		//#if !flash
 		//Loader.buildCacheFromBitmaps(bitmaps:Array<Bitmap>, ?rectangle:Rectangle=null)
@@ -187,12 +193,12 @@ class CppDisplayList extends AbstractDisplayList{
 	
 	#if cpp
 	
-	override public function loadBitmap(src:String):BitmapHx {
+	override public function loadBitmap(src:String, ?callbackFunction):BitmapHx {
 		var data = nme.display.BitmapData.load(src);
 		return new flash.display.Bitmap(data);
 	}
 	
-	override public function loadMovieClip(src:String, ?infoOb):ContainerHx{
+	override public function loadMovieClip(src:String, ?infoOb, ?callbackFunction):ContainerHx{
 		var ob:AnimationSequenceInfo = infoOb;
 		if(ob==null)trace("Warning: AnimationSequenceInfo is null for "+src);
 		
