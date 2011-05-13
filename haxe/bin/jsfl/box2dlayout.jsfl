@@ -717,6 +717,8 @@ fboyle.layout.FlaBox2dLayoutExport.prototype.parseMovieClip = function(result) {
 				xml += " r=\"" + (sc.rotation + r.rotation) + "\"";
 				xml += " sx=\"" + r.scaleX * sc.scaleX + "\"";
 				xml += " sy=\"" + r.scaleY * sc.scaleY + "\"";
+				xml += " regX=\"" + r.x + "\"";
+				xml += " regY=\"" + r.y + "\"";
 				break;
 			}
 		}
@@ -729,7 +731,7 @@ fboyle.layout.FlaBox2dLayoutExport.prototype.parseBitmap = function(result) {
 	var linkageID;
 	var itemName = StringTools.replace(result.scope.libraryItem.name,"-","/");
 	if(result.scope.libraryItem.linkageClassName == null) {
-		haxe.Log.trace("Warning: " + result.scope.libraryItem.name + " has no linkage id",{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 353, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "parseBitmap"});
+		haxe.Log.trace("Warning: " + result.scope.libraryItem.name + " has no linkage id",{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 359, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "parseBitmap"});
 		linkageID = itemName;
 	} else linkageID = StringTools.replace(result.scope.libraryItem.linkageClassName,"-","/");
 	var xml = "<bitmap " + this.parseParameters(result) + " file=\"" + itemName + "\" linkage=\"" + linkageID + "\" />\n";
@@ -814,7 +816,7 @@ fboyle.layout.FlaBox2dLayoutExport.prototype.parseElementPoly = function(s,scope
 		}
 	}
 	if(!touchmypixel.geom.Triangulator.isWindingDirectionCCW(points)) points.reverse();
-	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]",{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 514, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "parseElementPoly"}); else points.pop();
+	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]",{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 520, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "parseElementPoly"}); else points.pop();
 	var triangles = touchmypixel.geom.Triangulator.triangulate(points);
 	var polys = touchmypixel.geom.Triangulator.polygonizeTriangles(triangles);
 	var _g = 0;
@@ -881,10 +883,20 @@ fboyle.layout.FlaBox2dLayoutExport.prototype.saveXml = function(xml) {
 	var path = this.doc.pathURI;
 	path = path.substr(0,path.lastIndexOf("."));
 	path += ".xml";
-	haxe.Log.trace("EXPORTED: " + path,{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 633, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "saveXml"});
+	haxe.Log.trace("EXPORTED: " + path,{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 639, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "saveXml"});
 	jsfl.FLfile.write(path,xml);
 }
 fboyle.layout.FlaBox2dLayoutExport.prototype.__class__ = fboyle.layout.FlaBox2dLayoutExport;
+if(typeof demo=='undefined') demo = {}
+demo.MainJsfl = function(p) {
+	if( p === $_ ) return;
+	new fboyle.layout.FlaBox2dLayoutExport();
+}
+demo.MainJsfl.__name__ = ["demo","MainJsfl"];
+demo.MainJsfl.main = function() {
+	new demo.MainJsfl();
+}
+demo.MainJsfl.prototype.__class__ = demo.MainJsfl;
 StringBuf = function(p) {
 	if( p === $_ ) return;
 	this.b = new Array();
@@ -914,16 +926,6 @@ haxe.Log.clear = function() {
 	js.Boot.__clear_trace();
 }
 haxe.Log.prototype.__class__ = haxe.Log;
-MainJsfl = function(p) {
-	if( p === $_ ) return;
-	new fboyle.layout.FlaBox2dLayoutExport();
-}
-MainJsfl.__name__ = ["MainJsfl"];
-MainJsfl.main = function() {
-	haxe.Log.trace("hello",{ fileName : "MainJsfl.hx", lineNumber : 12, className : "MainJsfl", methodName : "main"});
-	new MainJsfl();
-}
-MainJsfl.prototype.__class__ = MainJsfl;
 Hash = function(p) {
 	if( p === $_ ) return;
 	this.h = {}
@@ -1276,4 +1278,4 @@ js.Boot.__init();
 	d.__name__ = ["Date"];
 }
 js.Lib.onerror = null;
-MainJsfl.main()
+demo.MainJsfl.main()

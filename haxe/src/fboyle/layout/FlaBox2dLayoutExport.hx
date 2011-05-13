@@ -107,6 +107,8 @@ class FlaBox2dLayoutExport {
 		xml += ' sx="' +sc.scaleX+ '"';
 		xml += ' sy="' +sc.scaleY+ '"';
 		xml += ' r="' +sc.rotation+ '"';
+		//xml += ' regX="' +0+ '"';
+		//xml += ' regY="' +0+ '"';
 		
 		if (result.info.isComponent())
 		{
@@ -197,6 +199,9 @@ class FlaBox2dLayoutExport {
 		//xml += ' sy="' +sc.scaleY+ '"';
 		xml += ' r="' +sc.rotation+ '"';
 		
+	
+		
+		
 		if (result.info.isComponent())
 		{
 			var def = result.info.getDefinitionValues();
@@ -268,7 +273,8 @@ class FlaBox2dLayoutExport {
 					xml += ' r="' +(sc.rotation + r.rotation)+ '"';
 					xml += ' sx="' +(r.scaleX * sc.scaleX)+ '"';
 					xml += ' sy="' +(r.scaleY * sc.scaleY)+ '"';
-					
+					xml += ' regX="' +r.x+ '"';
+					xml += ' regY="' +r.y+ '"';
 					break; //only want one
 				}
 			}

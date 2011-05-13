@@ -3,10 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/demo/Main.hx</string>
+	<string>src/fboyle/layout/FlaBox2dLayout.hx</string>
 	<key>documents</key>
 	<array>
 		<dict>
+			<key>expanded</key>
+			<true/>
 			<key>name</key>
 			<string>assets</string>
 			<key>regexFolderFilter</key>
@@ -18,7 +20,7 @@
 			<key>filename</key>
 			<string>build.hxml</string>
 			<key>lastUsed</key>
-			<date>2011-05-10T22:06:59Z</date>
+			<date>2011-05-11T18:19:51Z</date>
 		</dict>
 		<dict>
 			<key>expanded</key>
@@ -50,26 +52,26 @@
 			<key>filename</key>
 			<string>buildjsfl.hxml</string>
 			<key>lastUsed</key>
-			<date>2011-05-10T22:22:12Z</date>
+			<date>2011-05-12T17:14:30Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
-		<key>build.hxml</key>
+		<key>assets/box2dlayout.xml</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>11</integer>
+				<integer>0</integer>
 				<key>line</key>
 				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
-			<integer>0</integer>
+			<integer>109</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>73</integer>
 		</dict>
 		<key>buildjs.hxml</key>
 		<dict>
@@ -85,19 +87,119 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>buildjsfl.hxml</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>6</integer>
+				<key>line</key>
+				<integer>4</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>src/demo/Main.hx</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>40</integer>
+				<integer>7</integer>
 				<key>line</key>
-				<integer>49</integer>
+				<integer>14</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>20</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>37</integer>
+				<key>line</key>
+				<integer>14</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>7</integer>
+				<key>line</key>
+				<integer>14</integer>
+			</dict>
+		</dict>
+		<key>src/fboyle/display/DisplayTypeDefs.hx</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>79</integer>
+				<key>line</key>
+				<integer>13</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>23</integer>
+			<integer>39</integer>
+		</dict>
+		<key>src/fboyle/layout/FlaBox2dLayout.hx</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>57</integer>
+				<key>line</key>
+				<integer>91</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>80</integer>
+		</dict>
+		<key>src/fboyle/layout/FlaBox2dLayoutExport.hx</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>63</integer>
+				<key>line</key>
+				<integer>41</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>31</integer>
+		</dict>
+		<key>src/fboyle/layout/FlaLayout.hx</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>86</integer>
+				<key>line</key>
+				<integer>150</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>146</integer>
+		</dict>
+		<key>src/fboyle/utils/EaselLoader.hx</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>29</integer>
+				<key>line</key>
+				<integer>120</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>68</integer>
 		</dict>
 		<key>src/haxe.hx</key>
 		<dict>
@@ -200,20 +302,18 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>src/haxe.hx</string>
-		<string>build.hxml</string>
-		<string>src/touchmypixel/game/objects/BuilderGameObject.hx</string>
-		<string>src/touchmypixel/game/objects/BuilderPlaceHolderObject.hx</string>
 		<string>src/demo/Main.hx</string>
-		<string>src/touchmypixel/game/objects/Box2dBodyObject.hx</string>
-		<string>buildjs.hxml</string>
-		<string>src/touchmypixel/game/objects/Box2dObject.hx</string>
-		<string>src/touchmypixel/game/objects/Object.hx</string>
-		<string>src/touchmypixel/game/objects/BuilderBodyObject.hx</string>
+		<string>src/fboyle/display/DisplayTypeDefs.hx</string>
+		<string>src/fboyle/utils/EaselLoader.hx</string>
+		<string>src/fboyle/layout/FlaBox2dLayout.hx</string>
+		<string>src/fboyle/layout/FlaLayout.hx</string>
+		<string>assets/box2dlayout.xml</string>
+		<string>src/fboyle/layout/FlaBox2dLayoutExport.hx</string>
+		<string>buildjsfl.hxml</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{51, 69}, {923, 739}}</string>
+	<string>{{56, 93}, {867, 739}}</string>
 </dict>
 </plist>

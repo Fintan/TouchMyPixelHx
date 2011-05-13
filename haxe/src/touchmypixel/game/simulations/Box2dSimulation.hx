@@ -42,6 +42,7 @@ class Box2dSimulation {
 	public var namedObjects:Hash<Object>;
 	public var bitmaps:Array<BitmapHx>;
 	public var emptyObjects:Hash<EmptyVo>;
+	public var nonGameObjects:Hash<ContainerHx>; //to accomodate mixing ui elements with the sim level xml
 	
 	public var autoUpdateObjects:Bool;
 	
@@ -52,7 +53,6 @@ class Box2dSimulation {
 	var easelStage:easelhx.display.Stage;
 	#else
 	public var container:flash.display.MovieClip;
-	//public var container:flash.display.Sprite;
 	#end
 	
 	public function new(?debug:Bool=true, ?stage, ?s) {
@@ -93,6 +93,7 @@ class Box2dSimulation {
 		namedObjects = new Hash();
 		bitmaps = [];
 		emptyObjects = new Hash();
+		nonGameObjects = new Hash();
 		
 		mousePos = new B2Vec2();
 		
@@ -132,7 +133,6 @@ class Box2dSimulation {
 		}
 	}
 	
-	//public function sync(gfx:DisplayObject, body:B2Body, ?bodyOffset:{ x:Float, y:Float, rotation:Float })
 	public function sync(gfx:DisplayObjectHx, body:B2Body, ?bodyOffset:{ x:Float, y:Float, rotation:Float })
 	{
 		var position:B2Vec2 = body.GetPosition();
@@ -175,6 +175,7 @@ class Box2dSimulation {
 		namedObjects = null;
 		bitmaps = null;
 		emptyObjects = null;
+		nonGameObjects = null;
 		
 		contactManager.clear();
 	}

@@ -3,26 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>EaselJS Example: Box2d</title>
-
 <link href="styles.css" rel="stylesheet" type="text/css" />
-<!-- Import EaselJS Framework -->
-<script src="easel0.3.2/easeljs/utils/UID.js"></script>
-<script src="easel0.3.2/easeljs/geom/Matrix2D.js"></script>
-<script src="easel0.3.2/easeljs/events/MouseEvent.js"></script>
-<script src="easel0.3.2/easeljs/display/SpriteSheet.js"></script>
-<script src="easel0.3.2/easeljs/display/Shadow.js"></script>
-<script src="easel0.3.2/easeljs/display/DisplayObject.js"></script>
-<script src="easel0.3.2/easeljs/display/Container.js"></script>
-<script src="easel0.3.2/easeljs/display/Stage.js"></script>
-<script src="easel0.3.2/easeljs/display/Bitmap.js"></script>
-<script src="easel0.3.2/easeljs/display/BitmapSequence.js"></script>
-<script src="easel0.3.2/easeljs/display/Graphics.js"></script>
-<script src="easel0.3.2/easeljs/display/Shape.js"></script>
-<script src="easel0.3.2/easeljs/display/Text.js"></script>
-<script src="easel0.3.2/easeljs/utils/Ticker.js"></script>
-<!--script src="easel0.3.2/easeljs.js"></script-->
-<!-- End EaselJS Imports -->
-<script type="text/javascript" src="Stats.js"></script>
+
 </head>
 <body>
 	
@@ -31,14 +13,15 @@
     </div>
 	<div id="holder">
 		<div id="Stage"></div>
-		<!--p>mrdoob <a target="_blank" href="https://github.com/mrdoob/stats.js">Stats.js Library</a></p-->
 	</div>
     <div class="canvasHolder">
 		<canvas id="testCanvas" width="655" height="491"></canvas>
 	</div>
-
+	
 	<div id="haxe:trace"></div>
-	<script src="main.js"></script>
+	<script type="text/javascript" src="easel0.3.2/easel.js"></script>
+	<script type="text/javascript" src="main.js"></script>
+	<script type="text/javascript" src="Stats.js"></script>
 	<script type="text/javascript">
 		var stats = new Stats();
 		document.getElementById('Stage').appendChild( stats.domElement );

@@ -85,4 +85,15 @@
 	<circle x="0.5" y="0.5" w="113"  h="113" r="0" sx="0.99822998046875" sy="0.99822998046875" />
 <bitmap  name="" x="-56" y="-56" sx="1" sy="1" r="0" file="images/flash_logo3.png" linkage="flash_logo3.png" />
 </body>
+<body  name="" x="302.6" y="149.45" sx="1" sy="1" r="0" categoryBits="0x1" definition="" density="6.00" friction="2.00" grindable="0" isBullet="false" oneWay="0x0000" restitution="0.30" static="false" type="params">
+	<poly x="50" y="68" w="0"  h="0" r="0" sx="1" sy="1">
+		<vert x="-50" y="68" />
+		<vert x="50" y="68" />
+		<vert x="50" y="-68" />
+		<vert x="-50" y="-68" />
+	</poly>
+<bitmap  name="" x="0" y="0" sx="1" sy="1" r="0" file="images/haxe_logo.jpg" linkage="haxe_logo.jpg" />
+</body>
+<movieclip name="playButton" linkageId="button_mc" x="591.55" y="23.95" file="images/button_states.png" sheetindicies="0,1,2" frameWidth="40.00" frameHeight="40.00" r="0" sx="1" sy="1" regX="0" regY="0">
+</movieclip>
 </layout>

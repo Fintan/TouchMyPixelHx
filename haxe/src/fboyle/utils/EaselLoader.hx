@@ -72,15 +72,13 @@ class EaselLoader {
 		
 		img.onload = function(e):Void{
 			loaded.set(src, img);	
-			//trace("LOADED!! "+ src);
+			//trace("LOADED: "+ src);
 		};
 		
 		img.src = src;
 	
 		return img;
 	} 
-	
-	//TODO need to do this using HxSignals to allow for asyncronous stuff!!
 	
 	//need frameW, frameH, frameOrigin, startFrame,endFrame, sequenceName 
 	public static function loadMovieClip(src:String, sequenceInfo:AnimationSequenceInfo):ContainerHx{
@@ -97,7 +95,7 @@ class EaselLoader {
 		
 		var frameData:Dynamic<String> = { };
 		//Reflect.setField(frameData, sequenceInfo.name, [sequenceInfo.startFrame,sequenceInfo.endFrame]);
-		Reflect.setField(frameData, sequenceInfo.name, [ seqArr[0], seqArr[1] ]);
+		Reflect.setField(frameData, sequenceInfo.name, [ seqArr[0], seqArr[seqArr.length-1] ]);
 		
 		// create spritesheet and assign the initial frameData
 		// frameData defines the sequences that can be played
@@ -111,14 +109,13 @@ class EaselLoader {
 		// to the center of the frame dimensions:
 		//bmpSeq.regX = Std.int( bmpSeq.spriteSheet.frameWidth/2)|0;
 		//bmpSeq.regY = Std.int( bmpSeq.spriteSheet.frameHeight/2)|0;
-		
 		bmpSeq.regX = Std.int( sequenceInfo.registrationPoint.x );
 		bmpSeq.regY = Std.int( sequenceInfo.registrationPoint.y );
 		
-		// start playing the first sequence:
-		//bmpSeq.gotoAndPlay(sequenceInfo.name);		//animate
-		//bmpSeq.gotoAndStop("0");
+		// draw the first frame:
+		//trace("seqArr.toString() "+seqArr.toString());
 		bmpSeq.gotoAndStop(seqArr[0]);//stop on first frame
+		
 		return cast bmpSeq;
 		
 	}

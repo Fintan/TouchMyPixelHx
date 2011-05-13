@@ -130,6 +130,8 @@ class FlaLayoutExport {
 		xml += ' sx="' +sc.scaleX+ '"';
 		xml += ' sy="' +sc.scaleY+ '"';
 		xml += ' r="' +sc.rotation+ '"';
+		xml += ' regX="' +0+ '"';
+		xml += ' regY="' +0+ '"';
 		
 		if (result.info.isComponent())
 		{

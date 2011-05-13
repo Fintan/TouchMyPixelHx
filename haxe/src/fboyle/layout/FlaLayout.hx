@@ -4,6 +4,8 @@
  * Visit www.fboyle.com
  * 
  * Copyright (c) 2010 Fintan Boyle 
+ *  
+ *  (Based on TouchMyPixel LayoutBuilder)
  * 
  * 
  * Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php 
@@ -33,7 +35,6 @@ package fboyle.layout;
 import fboyle.display.DisplayTypeDefs;
 import fboyle.display.DisplayFactory;
 import fboyle.layout.LayoutTypeDefs;
-//import flash.display.DisplayObjectContainer;
 import haxe.xml.Fast;
 
 
@@ -79,7 +80,6 @@ class FlaLayout {
 		return { width:Std.parseFloat(lo.att.w), height:Std.parseFloat(lo.att.h) };
 	}
 		
-	//public function buildLayout(layout:Fast, addToScope:ContainerHx){
 	public function buildLayout(layout:Fast, addToScope:ILayoutContainer){
 	
 		/*if(!Std.is(addToScope, fboyle.layout.ILayoutContainer)){
@@ -148,7 +148,7 @@ class FlaLayout {
 	}
 	
 	
-	public function createMovieClip(objectInfo:Fast, ?addToScope:ContainerHx){
+	public function createMovieClip(objectInfo:Fast, ?addToScope:ContainerHx):ContainerHx{
 		
 		//trace("createMovieClip !!!"+ objectInfo.att.linkageId);
 		
@@ -161,22 +161,22 @@ class FlaLayout {
 		
 			var frames = objectInfo.att.sheetindicies.split(",");
 			
-			var sFrame = frames.length == 0?Std.parseInt(frames[0]):0;
-			var eFrame = frames.length >= 0?Std.parseInt(frames[frames.length - 1]):0;
+			//var sFrame = frames.length == 0?Std.parseInt(frames[0]):0;
+			var sFrame = frames.length < 1  ? 0:Std.parseInt(frames[0]);
+			var eFrame = frames.length >= 1 ? Std.parseInt(frames[frames.length - 1]):0;
 			//trace("sFrame "+sFrame+"  eFrame "+ eFrame);
 			var seqInfo:AnimationSequenceInfo = cast {
 				name:objectInfo.att.name,
 				file:objectInfo.att.file,
 				frameWidth:f(objectInfo.att.frameWidth),
 				frameHeight:f(objectInfo.att.frameHeight),
-				registrationPoint:{ x:objectInfo.att.regX, y:objectInfo.att.regY },
+				registrationPoint:{ x:Std.parseInt(objectInfo.att.regX), y:Std.parseInt(objectInfo.att.regY) },
+				//registrationPoint:{ x:0, y:0 },
 				sheetindicies:objectInfo.att.sheetindicies,
 				startFrame:sFrame,
 				endFrame:eFrame,
 				scope:addToScope
 			};
-			//TODO:retrieve registrationPoint from Fla file
-			//note: registrationPoint is currently redundant (just using center point currently)
 			
 			var mc = displayList.loadMovieClip(objectInfo.att.file, seqInfo);
 			
@@ -220,9 +220,13 @@ class FlaLayout {
 			displayList.addChild(mc, addToScope);
 		}
 		
-		if (objectInfo.att.name != "")
-			if(container !=null)if(container.namedObjects !=null)
-			container.namedObjects.set(objectInfo.att.name, mc);
+		if (objectInfo.att.name != ""){
+			if(container !=null)if(container.namedObjects !=null){
+				container.namedObjects.set(objectInfo.att.name, mc);
+			}
+		}
+		
+		return mc;
 		
 	}
 	

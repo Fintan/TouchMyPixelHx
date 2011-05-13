@@ -5,6 +5,7 @@
 //  Copyright (c) 2011 Modello Design Ltd. All rights reserved.
 //
 package fboyle.layout;
+import fboyle.layout.ILayoutContainer;
 import touchmypixel.game.simulations.Box2dSimulation;
 import box2D.collision.shapes.B2Shape;
 import touchmypixel.game.objects.LBGeometry;
@@ -89,11 +90,22 @@ class FlaBox2dLayout {
 			switch(child.nodeName){
 				case "gameObject": createGameObject(new Fast(child));
 				case "body": createBody(new Fast(child));
-				case "movieclip": flaLayout.createMovieClip(new Fast(child), cast simulation.container);
+				//todo: need to add movieclips to namedobjects hash!!
+				//case "movieclip": flaLayout.createMovieClip(new Fast(child), cast simulation.container);
+				case "movieclip": createMovieClip(new Fast(child), cast simulation.container);
 				case "bitmap": flaLayout.createBitmap(new Fast(child), cast simulation.container);
 				case "empty": createEmpty(new Fast(child));
 			}
 		}
+		
+	}
+	
+	function createMovieClip(objectInfo:Fast, layoutContainer:ContainerHx){
+		
+		var mc = flaLayout.createMovieClip(objectInfo, layoutContainer);
+		
+		if(simulation !=null)if(simulation.nonGameObjects !=null)
+			simulation.nonGameObjects.set(objectInfo.att.name, mc);
 		
 	}
 	
