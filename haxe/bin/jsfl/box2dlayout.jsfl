@@ -531,366 +531,10 @@ js.Boot.__init = function() {
 	$closure = js.Boot.__closure;
 }
 js.Boot.prototype.__class__ = js.Boot;
-if(typeof fboyle=='undefined') fboyle = {}
-if(!fboyle.layout) fboyle.layout = {}
-fboyle.layout.FlaBox2dLayoutExport = function(p) {
-	if( p === $_ ) return;
-	this.doc = jsfl.Fl.getDocumentDOM();
-	this.lib = this.doc.library;
-	this.root = this.doc.timelines[0];
-	jsfl.Fl.outputPanel.clear();
-	var results = this.searchTimeline(this.root);
-	var xml = this.parseResults(results);
-	haxe.Log.trace(xml,{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 77, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "new"});
-	this.saveXml(xml);
-}
-fboyle.layout.FlaBox2dLayoutExport.__name__ = ["fboyle","layout","FlaBox2dLayoutExport"];
-fboyle.layout.FlaBox2dLayoutExport.prototype.doc = null;
-fboyle.layout.FlaBox2dLayoutExport.prototype.lib = null;
-fboyle.layout.FlaBox2dLayoutExport.prototype.root = null;
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseResults = function(results) {
-	var xml = "";
-	var _g = 0;
-	while(_g < results.length) {
-		var r = results[_g];
-		++_g;
-		xml += (function($this) {
-			var $r;
-			switch(r.type) {
-			case "layout":
-				$r = $this.parseLayout(r);
-				break;
-			case "bitmap":
-				$r = $this.parseBitmap(r);
-				break;
-			case "movieclip":
-				$r = $this.parseMovieClip(r);
-				break;
-			case "body":
-				$r = $this.parseBody(r);
-				break;
-			case "gameObject":
-				$r = $this.parseGameObject(r);
-				break;
-			case "empty":
-				$r = $this.parseEmpty(r);
-				break;
-			}
-			return $r;
-		}(this));
-	}
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseParameters = function(result) {
-	var sc = result.scope;
-	var xml = "";
-	xml += " name=\"" + sc.name + "\"";
-	xml += " x=\"" + sc.x + "\"";
-	xml += " y=\"" + sc.y + "\"";
-	xml += " sx=\"" + sc.scaleX + "\"";
-	xml += " sy=\"" + sc.scaleY + "\"";
-	xml += " r=\"" + sc.rotation + "\"";
-	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
-		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
-		var $it0 = def.keys();
-		while( $it0.hasNext() ) {
-			var v = $it0.next();
-			xml += " " + v + "=\"" + def.get(v) + "\"";
-		}
-	}
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseLayout = function(result) {
-	var xml = "<layout" + this.parseParameters(result);
-	xml += " w=\"" + result.scope.width + "\" h=\"" + result.scope.height + "\"";
-	xml += ">\n";
-	xml += this.parseResults(result.children);
-	xml += "</layout>\n";
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseGameObject = function(result) {
-	var xml = "<gameObject " + this.parseParameters(result) + ">\n";
-	xml += this.parseResults(result.children);
-	xml += "</gameObject>\n";
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseBody = function(result) {
-	var xml = "<body " + this.parseParameters(result) + ">\n";
-	xml += this.parseElements(result.scope);
-	xml += this.parseResults(result.children);
-	xml += "</body>\n";
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseEmpty = function(result) {
-	var sc = result.scope;
-	var xml = "<empty";
-	xml += " name=\"" + sc.name + "\"";
-	xml += " x=\"" + sc.x + "\"";
-	xml += " y=\"" + sc.y + "\"";
-	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
-		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
-		var $it0 = def.keys();
-		while( $it0.hasNext() ) {
-			var v = $it0.next();
-			xml += " " + v + "=\"" + def.get(v) + "\"";
-		}
-	}
-	xml += "/>\n";
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseMovieClipParameters = function(result) {
-	var sc = result.scope;
-	var xml = "";
-	xml += " name=\"" + sc.name + "\"";
-	xml += " x=\"" + sc.x + "\"";
-	xml += " y=\"" + sc.y + "\"";
-	xml += " r=\"" + sc.rotation + "\"";
-	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
-		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
-		var $it0 = def.keys();
-		while( $it0.hasNext() ) {
-			var v = $it0.next();
-			xml += " " + v + "=\"" + def.get(v) + "\"";
-		}
-	}
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseMovieClip = function(result) {
-	var linkageId = result.scope.libraryItem.linkageClassName;
-	var xml = "<movieclip";
-	var sc = result.scope;
-	xml += " name=\"" + sc.name + "\"";
-	var childname = "none";
-	var spritesheet = "none";
-	var sheetindicies = [];
-	var frameWidth = "60";
-	var frameHeight = "60";
-	var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
-	var $it0 = def.keys();
-	while( $it0.hasNext() ) {
-		var v = $it0.next();
-		switch(v) {
-		case "child":
-			childname = def.get(v);
-			break;
-		case "spritesheet":
-			spritesheet = def.get(v);
-			break;
-		case "frameWidth":
-			frameWidth = def.get(v);
-			break;
-		case "frameHeight":
-			frameHeight = def.get(v);
-			break;
-		case "sheetindicies":
-			var arr = (function($this) {
-				var $r;
-				var $t = def.get(v);
-				if(Std["is"]($t,Array)) $t; else throw "Class cast error";
-				$r = $t;
-				return $r;
-			}(this));
-			var _g1 = 0, _g = arr.length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				sheetindicies[i] = arr[i].value;
-			}
-			break;
-		}
-	}
-	var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(result.scope));
-	while(_g < _g1.length) {
-		var r = _g1[_g];
-		++_g;
-		if(r.elementType == "instance") {
-			var el = r;
-			var linkageId1 = el.libraryItem.linkageClassName;
-			var def1 = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
-			if(r.name == childname) {
-				xml += " linkageId=\"" + linkageId1 + "\"";
-				xml += " x=\"" + (sc.x + r.x) + "\"";
-				xml += " y=\"" + (sc.y + r.y) + "\"";
-				xml += " file=\"" + spritesheet + "\"";
-				xml += " sheetindicies=\"" + sheetindicies + "\"";
-				xml += " frameWidth=\"" + frameWidth + "\"";
-				xml += " frameHeight=\"" + frameHeight + "\"";
-				xml += " r=\"" + (sc.rotation + r.rotation) + "\"";
-				xml += " sx=\"" + r.scaleX * sc.scaleX + "\"";
-				xml += " sy=\"" + r.scaleY * sc.scaleY + "\"";
-				xml += " regX=\"" + r.x + "\"";
-				xml += " regY=\"" + r.y + "\"";
-				break;
-			}
-		}
-	}
-	xml += ">\n";
-	xml += "</movieclip>\n";
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseBitmap = function(result) {
-	var linkageID;
-	var itemName = StringTools.replace(result.scope.libraryItem.name,"-","/");
-	if(result.scope.libraryItem.linkageClassName == null) {
-		haxe.Log.trace("Warning: " + result.scope.libraryItem.name + " has no linkage id",{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 359, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "parseBitmap"});
-		linkageID = itemName;
-	} else linkageID = StringTools.replace(result.scope.libraryItem.linkageClassName,"-","/");
-	var xml = "<bitmap " + this.parseParameters(result) + " file=\"" + itemName + "\" linkage=\"" + linkageID + "\" />\n";
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseShape = function(result) {
-	var xml = "<shape " + this.parseParameters(result) + ">\n";
-	xml += "</shape>\n";
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseElements = function(scope) {
-	var xml = "";
-	var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(scope));
-	while(_g < _g1.length) {
-		var child = _g1[_g];
-		++_g;
-		if(touchmypixel.game.utils.JSFLTools.isShape(child)) {
-			var s = child;
-			if(s.isRectangleObject) xml += this.parseElementRect(child); else if(s.isOvalObject) xml += this.parseElementCircle(child); else xml += this.parseElementPoly(child,scope);
-		}
-	}
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseElementCircle = function(s) {
-	var xml = "\t<circle x=\"" + s.x + "\" y=\"" + s.y + "\" w=\"" + s.width + "\"  h=\"" + s.height + "\" r=\"" + s.rotation + "\" sx=\"" + s.scaleX + "\" sy=\"" + s.scaleY + "\" />\n";
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseElementRect = function(s) {
-	var xml = this.parseElementPoly(s,null);
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.parseElementPoly = function(s,scope) {
-	var xml = "";
-	var points = new Array();
-	var lastPoint = null;
-	var _g = 0, _g1 = s.edges;
-	while(_g < _g1.length) {
-		var e = _g1[_g];
-		++_g;
-		var p1 = e.getControl(0);
-		var p2 = e.getControl(2);
-		if(points.length == 0) {
-			points.push(e.getControl(0));
-			points.push(e.getControl(2));
-			lastPoint = e.getControl(2);
-		} else {
-			var _g2 = 0, _g3 = s.edges;
-			while(_g2 < _g3.length) {
-				var e2 = _g3[_g2];
-				++_g2;
-				var p11 = e2.getControl(0);
-				var p21 = e2.getControl(2);
-				if(p11.x == lastPoint.x && p11.y == lastPoint.y) {
-					points.push(p21);
-					lastPoint = p21;
-					break;
-				}
-			}
-		}
-	}
-	if(s.isGroup) {
-		if(points.length == 0) throw "No points for bounding box";
-		var left = points[0].x;
-		var top = points[0].y;
-		var right = points[0].x;
-		var bottom = points[0].y;
-		var _g1 = 1, _g = points.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(points[i].x < left) left = points[i].x;
-			if(points[i].x > right) right = points[i].x;
-			if(points[i].y < top) top = points[i].y;
-			if(points[i].y > bottom) bottom = points[i].y;
-		}
-		var cx = (right + left) / 2;
-		var cy = (bottom + top) / 2;
-		var _g1 = 0, _g = points.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			points[i].x -= cx;
-			points[i].y -= cy;
-		}
-	}
-	if(!touchmypixel.geom.Triangulator.isWindingDirectionCCW(points)) points.reverse();
-	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]",{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 520, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "parseElementPoly"}); else points.pop();
-	var triangles = touchmypixel.geom.Triangulator.triangulate(points);
-	var polys = touchmypixel.geom.Triangulator.polygonizeTriangles(triangles);
-	var _g = 0;
-	while(_g < polys.length) {
-		var p = polys[_g];
-		++_g;
-		p.x.reverse();
-		p.y.reverse();
-		if(s.isGroup || true) {
-			var sx = s.x;
-			var sy = s.y;
-			var sw = s.x - s.width / 2;
-			var sh = s.height / 2;
-			sw = sh = 0;
-			xml += "\t<poly x=\"" + sx + "\" y=\"" + sy + "\" w=\"" + sw + "\"  h=\"" + sh + "\" r=\"" + s.rotation + "\" sx=\"" + s.scaleX + "\" sy=\"" + s.scaleY + "\">\n";
-		} else xml += "\t<poly x=\"0\" y=\"0\" r=\"0\" sx=\"1\" sy=\"1\" >\n";
-		var _g2 = 0, _g1 = p.nVertices;
-		while(_g2 < _g1) {
-			var i = _g2++;
-			xml += "\t\t<vert x=\"" + p.x[i] + "\" y=\"" + p.y[i] + "\" />\n";
-		}
-		xml += "\t</poly>\n";
-	}
-	return xml;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.searchTimeline = function(inScope,store) {
-	var results = [];
-	var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(inScope);
-	while(_g < _g1.length) {
-		var el = _g1[_g];
-		++_g;
-		if(touchmypixel.game.utils.JSFLTools.isInstance(el)) {
-			var el1 = el;
-			var _g2 = 0, _g3 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(el1));
-			while(_g2 < _g3.length) {
-				var el2 = _g3[_g2];
-				++_g2;
-				var el21 = el2;
-				if(touchmypixel.game.utils.JSFLTools.isComponent(el21)) switch(el21.libraryItem.linkageClassName) {
-				case "Def_Layout":
-					results.unshift({ type : "layout", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
-					break;
-				case "Def_MovieClip":
-					results.unshift({ type : "movieclip", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
-					break;
-				case "Def_Body":
-					results.unshift({ type : "body", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
-					break;
-				case "Def_GameObject":
-					results.unshift({ type : "gameObject", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
-					break;
-				case "Def_Empty":
-					results.unshift({ type : "empty", info : el21, scope : el1, children : null});
-					break;
-				}
-			}
-			if(touchmypixel.game.utils.JSFLTools.isBitmap(el1)) results.unshift({ type : "bitmap", info : el1, scope : el1, children : null}); else if(touchmypixel.game.utils.JSFLTools.isShape(el1)) {
-			}
-		}
-	}
-	return results;
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.saveXml = function(xml) {
-	var path = this.doc.pathURI;
-	path = path.substr(0,path.lastIndexOf("."));
-	path += ".xml";
-	haxe.Log.trace("EXPORTED: " + path,{ fileName : "FlaBox2dLayoutExport.hx", lineNumber : 639, className : "fboyle.layout.FlaBox2dLayoutExport", methodName : "saveXml"});
-	jsfl.FLfile.write(path,xml);
-}
-fboyle.layout.FlaBox2dLayoutExport.prototype.__class__ = fboyle.layout.FlaBox2dLayoutExport;
 if(typeof demo=='undefined') demo = {}
 demo.MainJsfl = function(p) {
 	if( p === $_ ) return;
-	new fboyle.layout.FlaBox2dLayoutExport();
+	new fboyle.layout.CollisionShapesExport();
 }
 demo.MainJsfl.__name__ = ["demo","MainJsfl"];
 demo.MainJsfl.main = function() {
@@ -1009,6 +653,326 @@ Std.random = function(x) {
 	return Math.floor(Math.random() * x);
 }
 Std.prototype.__class__ = Std;
+if(typeof fboyle=='undefined') fboyle = {}
+if(!fboyle.layout) fboyle.layout = {}
+fboyle.layout.CollisionShapesExport = function(p) {
+	if( p === $_ ) return;
+	this.doc = jsfl.Fl.getDocumentDOM();
+	this.lib = this.doc.library;
+	this.root = this.doc.timelines[0];
+	jsfl.Fl.outputPanel.clear();
+	var results = this.searchTimeline(this.root);
+	var xml = this.parseResults(results);
+	haxe.Log.trace(xml,{ fileName : "CollisionShapesExport.hx", lineNumber : 70, className : "fboyle.layout.CollisionShapesExport", methodName : "new"});
+	this.saveXml(xml);
+}
+fboyle.layout.CollisionShapesExport.__name__ = ["fboyle","layout","CollisionShapesExport"];
+fboyle.layout.CollisionShapesExport.prototype.doc = null;
+fboyle.layout.CollisionShapesExport.prototype.lib = null;
+fboyle.layout.CollisionShapesExport.prototype.root = null;
+fboyle.layout.CollisionShapesExport.prototype.parseResults = function(results) {
+	var xml = "";
+	var _g = 0;
+	while(_g < results.length) {
+		var r = results[_g];
+		++_g;
+		xml += (function($this) {
+			var $r;
+			switch(r.type) {
+			case "layout":
+				$r = $this.parseLayout(r);
+				break;
+			case "empty":
+				$r = $this.parseEmpty(r);
+				break;
+			case "shape":
+				$r = $this.parseShape(r);
+				break;
+			case "movieclip":
+				$r = $this.parseMovieClip(r);
+				break;
+			}
+			return $r;
+		}(this));
+	}
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseParameters = function(result) {
+	var sc = result.scope;
+	var xml = "";
+	xml += " name=\"" + sc.name + "\"";
+	xml += " x=\"" + sc.x + "\"";
+	xml += " y=\"" + sc.y + "\"";
+	xml += " sx=\"" + sc.scaleX + "\"";
+	xml += " sy=\"" + sc.scaleY + "\"";
+	xml += " r=\"" + sc.rotation + "\"";
+	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
+		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
+		var $it0 = def.keys();
+		while( $it0.hasNext() ) {
+			var v = $it0.next();
+			xml += " " + v + "=\"" + def.get(v) + "\"";
+		}
+	}
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseLayout = function(result) {
+	var xml = "<layout" + this.parseParameters(result);
+	xml += " w=\"" + result.scope.width + "\" h=\"" + result.scope.height + "\"";
+	xml += ">\n";
+	xml += this.parseResults(result.children);
+	xml += "</layout>\n";
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseBitmap = function(result) {
+	var linkageID;
+	var itemName = StringTools.replace(result.scope.libraryItem.name,"-","/");
+	if(result.scope.libraryItem.linkageClassName == null) {
+		haxe.Log.trace("Warning: " + result.scope.libraryItem.name + " has no linkage id",{ fileName : "CollisionShapesExport.hx", lineNumber : 137, className : "fboyle.layout.CollisionShapesExport", methodName : "parseBitmap"});
+		linkageID = itemName;
+	} else linkageID = StringTools.replace(result.scope.libraryItem.linkageClassName,"-","/");
+	var xml = "<bitmap " + this.parseParameters(result) + " file=\"" + itemName + "\" linkage=\"" + linkageID + "\" />\n";
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseMovieClip = function(result) {
+	var linkageId = result.scope.libraryItem.linkageClassName;
+	var xml = "<movieclip";
+	var sc = result.scope;
+	xml += " name=\"" + sc.name + "\"";
+	var childname = "none";
+	var spritesheet = "none";
+	var sheetindicies = [];
+	var frameWidth = "60";
+	var frameHeight = "60";
+	var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
+	var $it0 = def.keys();
+	while( $it0.hasNext() ) {
+		var v = $it0.next();
+		switch(v) {
+		case "child":
+			childname = def.get(v);
+			break;
+		case "spritesheet":
+			spritesheet = def.get(v);
+			break;
+		case "frameWidth":
+			frameWidth = def.get(v);
+			break;
+		case "frameHeight":
+			frameHeight = def.get(v);
+			break;
+		case "sheetindicies":
+			var arr = (function($this) {
+				var $r;
+				var $t = def.get(v);
+				if(Std["is"]($t,Array)) $t; else throw "Class cast error";
+				$r = $t;
+				return $r;
+			}(this));
+			var _g1 = 0, _g = arr.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				sheetindicies[i] = arr[i].value;
+			}
+			break;
+		}
+	}
+	var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(result.scope));
+	while(_g < _g1.length) {
+		var r = _g1[_g];
+		++_g;
+		if(r.elementType == "instance") {
+			var el = r;
+			var linkageId1 = el.libraryItem.linkageClassName;
+			var def1 = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
+			if(r.name == childname) {
+				xml += " linkageId=\"" + linkageId1 + "\"";
+				xml += " x=\"" + (sc.x + r.x) + "\"";
+				xml += " y=\"" + (sc.y + r.y) + "\"";
+				xml += " file=\"" + spritesheet + "\"";
+				xml += " sheetindicies=\"" + sheetindicies + "\"";
+				xml += " frameWidth=\"" + frameWidth + "\"";
+				xml += " frameHeight=\"" + frameHeight + "\"";
+				xml += " r=\"" + (sc.rotation + r.rotation) + "\"";
+				xml += " sx=\"" + r.scaleX * sc.scaleX + "\"";
+				xml += " sy=\"" + r.scaleY * sc.scaleY + "\"";
+				xml += " regX=\"" + r.x + "\"";
+				xml += " regY=\"" + r.y + "\"";
+				break;
+			}
+		}
+	}
+	xml += ">\n";
+	xml += "</movieclip>\n";
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseEmpty = function(result) {
+	var sc = result.scope;
+	var xml = "<empty";
+	xml += " name=\"" + sc.name + "\"";
+	xml += " x=\"" + sc.x + "\"";
+	xml += " y=\"" + sc.y + "\"";
+	if(touchmypixel.game.utils.JSFLTools.isComponent(result.info)) {
+		var def = touchmypixel.game.utils.JSFLTools.getDefinitionValues(result.info);
+		var $it0 = def.keys();
+		while( $it0.hasNext() ) {
+			var v = $it0.next();
+			xml += " " + v + "=\"" + def.get(v) + "\"";
+		}
+	}
+	xml += "/>\n";
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseShape = function(result) {
+	var xml = "<shape " + this.parseParameters(result) + ">\n";
+	xml += this.parseElements(result.scope);
+	xml += "</shape>\n";
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseElements = function(scope) {
+	var xml = "";
+	var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(scope));
+	while(_g < _g1.length) {
+		var child = _g1[_g];
+		++_g;
+		if(touchmypixel.game.utils.JSFLTools.isShape(child)) {
+			var s = child;
+			if(s.isRectangleObject) xml += this.parseElementRect(child); else if(s.isOvalObject) xml += this.parseElementCircle(child); else xml += this.parseElementPoly(child,scope);
+		}
+	}
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseElementCircle = function(s) {
+	var xml = "\t<circle x=\"" + s.x + "\" y=\"" + s.y + "\" w=\"" + s.width + "\"  h=\"" + s.height + "\" r=\"" + s.rotation + "\" sx=\"" + s.scaleX + "\" sy=\"" + s.scaleY + "\" />\n";
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseElementRect = function(s) {
+	var xml = this.parseElementPoly(s,null);
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.parseElementPoly = function(s,scope) {
+	var xml = "";
+	var points = new Array();
+	var lastPoint = null;
+	var _g = 0, _g1 = s.edges;
+	while(_g < _g1.length) {
+		var e = _g1[_g];
+		++_g;
+		var p1 = e.getControl(0);
+		var p2 = e.getControl(2);
+		if(points.length == 0) {
+			points.push(e.getControl(0));
+			points.push(e.getControl(2));
+			lastPoint = e.getControl(2);
+		} else {
+			var _g2 = 0, _g3 = s.edges;
+			while(_g2 < _g3.length) {
+				var e2 = _g3[_g2];
+				++_g2;
+				var p11 = e2.getControl(0);
+				var p21 = e2.getControl(2);
+				if(p11.x == lastPoint.x && p11.y == lastPoint.y) {
+					points.push(p21);
+					lastPoint = p21;
+					break;
+				}
+			}
+		}
+	}
+	if(s.isGroup) {
+		if(points.length == 0) throw "No points for bounding box";
+		var left = points[0].x;
+		var top = points[0].y;
+		var right = points[0].x;
+		var bottom = points[0].y;
+		var _g1 = 1, _g = points.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(points[i].x < left) left = points[i].x;
+			if(points[i].x > right) right = points[i].x;
+			if(points[i].y < top) top = points[i].y;
+			if(points[i].y > bottom) bottom = points[i].y;
+		}
+		var cx = (right + left) / 2;
+		var cy = (bottom + top) / 2;
+		var _g1 = 0, _g = points.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			points[i].x -= cx;
+			points[i].y -= cy;
+		}
+	}
+	if(!touchmypixel.geom.Triangulator.isWindingDirectionCCW(points)) points.reverse();
+	if(lastPoint.x != points[0].x || lastPoint.y != points[0].y) haxe.Log.trace("WARNING: shape not closed: " + scope.name + " [" + scope.libraryItem.linkageClassName + "]",{ fileName : "CollisionShapesExport.hx", lineNumber : 398, className : "fboyle.layout.CollisionShapesExport", methodName : "parseElementPoly"}); else points.pop();
+	var triangles = touchmypixel.geom.Triangulator.triangulate(points);
+	var polys = touchmypixel.geom.Triangulator.polygonizeTriangles(triangles);
+	var _g = 0;
+	while(_g < polys.length) {
+		var p = polys[_g];
+		++_g;
+		p.x.reverse();
+		p.y.reverse();
+		if(s.isGroup || true) {
+			var sx = s.x;
+			var sy = s.y;
+			var sw = s.x - s.width / 2;
+			var sh = s.height / 2;
+			sw = sh = 0;
+			xml += "\t<poly x=\"" + sx + "\" y=\"" + sy + "\" w=\"" + sw + "\"  h=\"" + sh + "\" r=\"" + s.rotation + "\" sx=\"" + s.scaleX + "\" sy=\"" + s.scaleY + "\">\n";
+		} else xml += "\t<poly x=\"0\" y=\"0\" r=\"0\" sx=\"1\" sy=\"1\" >\n";
+		var _g2 = 0, _g1 = p.nVertices;
+		while(_g2 < _g1) {
+			var i = _g2++;
+			xml += "\t\t<vert x=\"" + p.x[i] + "\" y=\"" + p.y[i] + "\" />\n";
+		}
+		xml += "\t</poly>\n";
+	}
+	return xml;
+}
+fboyle.layout.CollisionShapesExport.prototype.searchTimeline = function(inScope,store) {
+	var results = [];
+	var _g = 0, _g1 = touchmypixel.game.utils.JSFLTools.getChildren(inScope);
+	while(_g < _g1.length) {
+		var el = _g1[_g];
+		++_g;
+		if(touchmypixel.game.utils.JSFLTools.isInstance(el)) {
+			var el1 = el;
+			var _g2 = 0, _g3 = touchmypixel.game.utils.JSFLTools.getChildren(touchmypixel.game.utils.JSFLTools.getTimeline(el1));
+			while(_g2 < _g3.length) {
+				var el2 = _g3[_g2];
+				++_g2;
+				var el21 = el2;
+				if(touchmypixel.game.utils.JSFLTools.isComponent(el21)) switch(el21.libraryItem.linkageClassName) {
+				case "Def_Layout":
+					results.unshift({ type : "layout", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
+					break;
+				case "Def_Empty":
+					results.unshift({ type : "empty", info : el21, scope : el1, children : null});
+					break;
+				case "Def_Shape":
+					results.unshift({ type : "shape", info : el21, scope : el1, children : null});
+					break;
+				case "Def_MovieClip":
+					results.unshift({ type : "movieclip", info : el21, scope : el1, children : this.searchTimeline(touchmypixel.game.utils.JSFLTools.getTimeline(el1))});
+					break;
+				}
+			}
+			if(touchmypixel.game.utils.JSFLTools.isBitmap(el1)) results.unshift({ type : "bitmap", info : el1, scope : el1, children : null}); else if(touchmypixel.game.utils.JSFLTools.isShape(el1)) {
+				haxe.Log.trace("it's a shape",{ fileName : "CollisionShapesExport.hx", lineNumber : 499, className : "fboyle.layout.CollisionShapesExport", methodName : "searchTimeline"});
+				results.unshift({ type : "shape", info : el1, scope : el1, children : null});
+			}
+		}
+	}
+	return results;
+}
+fboyle.layout.CollisionShapesExport.prototype.saveXml = function(xml) {
+	var path = this.doc.pathURI;
+	path = path.substr(0,path.lastIndexOf("."));
+	path += ".xml";
+	haxe.Log.trace("EXPORTED: " + path,{ fileName : "CollisionShapesExport.hx", lineNumber : 513, className : "fboyle.layout.CollisionShapesExport", methodName : "saveXml"});
+	jsfl.FLfile.write(path,xml);
+}
+fboyle.layout.CollisionShapesExport.prototype.__class__ = fboyle.layout.CollisionShapesExport;
 if(!touchmypixel.game) touchmypixel.game = {}
 if(!touchmypixel.game.utils) touchmypixel.game.utils = {}
 touchmypixel.game.utils.JSFLTools = function() { }
